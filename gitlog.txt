@@ -1,0 +1,155 @@
+2020-12-25->0.46
+- brached from solver8. Plan to try out enhancing bitdic: relations-manager
+  inside bitdic, or outside? Holding vks-dic, vk2-dic and vk1-dic?
+2020-12-25->0.45
+- minor polish, before branching off to solver9
+2020-12-24->0.45
+- found bugs: 1. Tx: wrong generated odd number of txs? fixed: using set ops
+- vklause.clone(drops) can return empty vk.dic, in that case, not adding to vkd.
+- cfg100-450 now uses 113 secs. Much better now, but still room to optimise.
+2020-12-23->0.44
+- branch/spawn untouchset vks will not be txed: no need to clone for every
+  child bitdic. Share them will save some run.
+2020-12-22->0.43
+- Tx: txs no more a list of tuples, but dict. get rid of trans_value 
+  reverse_value stuff.
+- use class variable Branch.LAYERS for holde the tree
+- cfg100-450.json failed to have result - debugging
+2020-12-22->0.42
+- get rid of visualizr.py, TransKlauseEngine.test_me, vklause.value_overshadow 
+  vklause.set_completion,.position_value, move set_value_and_mask from __init__
+  tp vklause.hit.
+- in BitDic, move add_vk to be a method - no more inside of add_klause
+  All these reduced run ti
+  m for cfg100-450.json from 168 secs to 164
+  cProfile time from 260 to 231 secs (see docs/2020-12-21-042=100-450.info)
+- Branch/spawn: check for outdics length==1 and have opposite 0/1: 
+  this branch-child is not to exist
+- BitDic get_choice now returns changed...
+2020-12-21->0.41
+- get rid of nbits in vklause. This reduced cProfile run time for 
+  cfg100-450.json from 542secs to 277 sec.
+  see (see docs/2020-12-21-041=100-450.info)
+2020-12-21->0.40
+- cfg100-450 with solver4 was 438(533 secs cProfile) secs returning all sats. 
+  Now solver8 return only 1, but use 488(542secs cProfile) secs
+  (see docs/2020-12-21-040=100-450.info)
+  I am disappointed. But using python -m cProfile gave me some insights, for
+  optimization.
+2020-12-21->0.39
+- verification not run on normal process. *.sat file now have more info.
+  python solver8.py *.sat will verify the sat in sat file
+2020-12-20->0.38
+- choice returned by BitDic.get_choice now has 3 in the tuple:
+  kn, tsvk, tcvk, so that the kn will not be popped from tsvk
+- branch.nov3 now uses set ops to simpify. It works.
+2020-12-20->0.37
+- refactored bitdic having new get_choice and best_choice. remove transfer
+- get rid of makechoice.py
+- moving topbits_coverages to basics, get rid of drop_bits
+2020-12-19->0.36
+- best choice will be made among the shortest vks. At beginning it is 3-bits,
+  but down the tree 1,2 are preferred.
+- before making choice among vk1s, check if they cover totality
+  totality means: among the 1 bit vk, there exist two sitting on the same bit,
+  with opposite values(0 and 1)
+- if branch has totality, of spawned no children, it is renamed 'finished',
+  and it is removed from parent's children-dic
+2020-12-19->0.35
+- based on solver7/0.34
+2020-12-18->0.34
+- Sat.nov class var holding nov. In Sat.verify looping thru vks, make
+  sure vk.bits[0] < Sat.nove - safty guard.
+2020-12-18->0.33
+- VKlause.hit now can test if vk is hit by a sat( lst of tuples)
+- python solver7.py *.sat will verify *.sat file
+2020-12-18->0.32
+- new class Sat for verifying and saving into .sat file
+- VKlause.hit test now also accept v as a list of pairs: (<bit>,<bool-value>)
+- WorkBuffer.build_sats: use the end-node, trace all the way back to root
+  and collecting segment-sats to build a complete sat-array.
+- it works on config1.json, verified, and outputted in verify/config1.sat
+2020-12-17->0.31
+- put satholder in use, workbuffer/build_sats make the final sats
+  still bug: in [(3, 1), (5, 1), (6, 1), (0, 1), (7, 1), (1, 0), (2, 0), (4, 0)]
+  last 2 bits should be (0,0),(1,1), not (0,1),(1,0)!
+  But still big progress.
+- TBD: make solver7/verify_sats
+2020-12-16->0.30
+- introducing SatHolder mechanism. Done incomplete impls: TBD
+2020-12-15->0.29
+- if nov becomes 3, check for sats
+- in makechoice/best_vk1: handle when no g1-vk exists.
+- on level-0 branch, parent is original bitdic. lower brs will
+  have branch as parent.
+2020-12-15->0.28
+- move basic stuff into basics, make_vkdic to bitdic
+- add branch/nov3() for testing nov==3 coverage,... TBD
+2020-12-14->0.27
+- run till" r->(r1, r5, r7) ->{r11, r51} ->{r110 } ->{r1101}
+  r1101: nov==2: C032:{0:0}, C004: {1:0}
+  @ branch.py:65/chdic = self.prepare() having issue @makechoice.py:243
+  max argument empty. I am near to my near goal!
+2020-12-14->0.26
+- vklause now has a method: .value_overshadow(vkx), testing if, in case 
+  self.dic has the same number of, or less bits than vkx, if the value-range 
+  of vkx is already covered by self. this is useful when testing vk1 or
+  later vk2
+2020-12-14->0.25
+- bug fixes.
+- TBD: r7 has issue. It should resolve.
+2020-12-13->0.24
+- refactored wb, bitdic, branch
+2020-12-12->0.23
+- debugging workbuffer
+2020-12-11->0.22
+- design the structure of method on high level
+2020-12-10->0.21
+- move drop as BitDic method to outside of BitDic: drop_bits
+2020-12-10->0.20
+- solve_vk1 in progress
+2020-12-10->0.19
+- choice-dic did not break 3-bit processing, and getting to vk1.
+2020-12-09->0.18
+- progress: best_vk1/2/3 all return a choice-dic, in stead of a list
+2020-12-09->0.17
+- progress on 1. makechoice for vk1, branch/spawnoff1,..
+2020-12-08->0.16
+- branch/pickon_vk1, and more stabs in branch
+2020-12-08->0.15
+- first stage(nov==8 -> nov==5) done
+- vklause adds topbits(), changed mask to value.
+2020-12-07->0.14
+- cnt/cvrs is now a dict keyed by cover-v, value: set of kns
+- branch spawnoff:  hitdic for values hit, and children, for further search
+- manually made b0-1.txt, b0-5.txt b0-7.txt for analysis of child-search
+2020-12-06->0.13
+b0 split to 1,5,7 success
+makechoice/topbits_coverages modified, verified
+2020-12-06->0.12
+makechoice/topbits_coverages
+2020-12-05->0.11
+progress
+2020-12-05->0.10
+progressing
+2020-12-04->0.9
+progress
+2020-12-04->0.8
+choice now has 
+ [(<base-vkname>,..), (<cover-values), g2dic, [g1-list], [g0-list]]
+cretarium: it has the 1. most cover-values, 2. most g2s
+2020-12-03->0.7
+progress: branch.py used in solver7, using bitdic and TxEngine.
+2020-12-03->0.6
+TxEngine, BitDic
+2020-12-02->0.5
+make_choice done
+2020-12-01->0.4
+start working: makechoice
+2020-11-30->0.3
+progress
+2020-11-30->0.2
+makechoice.py - started, not yet finished how to pick the best 3-bits vklause
+2020-11-28->0.1
+New approach: solver7, based on Tx. But this time split into 8 R0..R7
+in stead of 2.
