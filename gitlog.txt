@@ -1,3 +1,5 @@
+2020-12-25->0.47
+- new class RelationManager.
 2020-12-25->0.46
 - brached from solver8. Plan to try out enhancing bitdic: relations-manager
   inside bitdic, or outside? Holding vks-dic, vk2-dic and vk1-dic?

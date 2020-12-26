@@ -4,6 +4,7 @@ from basics import get_sdic
 from bitdic import BitDic, make_vkdic
 from workbuffer import WorkBuffer
 from satholder import SatHolder, Sat
+from relationmanager import RelationManager
 
 # LAYERS = []
 Root_bitdic = None
@@ -35,24 +36,27 @@ def process(cnfname):
     keyname = 'r'
     Root_bitdic = make_bitdic(keyname, cnfname)
 
-    satslots = list(range(Root_bitdic.nov))
-    sh = SatHolder(satslots)
+    rm = RelationManager(Root_bitdic)
+    pair = rm.best_pair(3)
 
-    # make root work-buffer work-item, addi it to wb
-    witem = {  # root-node
-        'bitdic': Root_bitdic,
-        'depth': 0,             # layer-depth
-        'index': 0,             # layer-index
-        'valkey': 0,
-        'parent': Root_bitdic,  # parent-br. For root: bitdic
-        'sh': sh
-    }
-    # witem = (keyname, Root_bitdic, sh)
-    wb.add_item(witem)
-    while not wb.empty():
-        wb = wb.work_thru()
-        if type(wb).__name__ == 'Sat':
-            return wb
+    # satslots = list(range(Root_bitdic.nov))
+    # sh = SatHolder(satslots)
+
+    # # make root work-buffer work-item, addi it to wb
+    # witem = {  # root-node
+    #     'bitdic': Root_bitdic,
+    #     'depth': 0,             # layer-depth
+    #     'index': 0,             # layer-index
+    #     'valkey': 0,
+    #     'parent': Root_bitdic,  # parent-br. For root: bitdic
+    #     'sh': sh
+    # }
+    # # witem = (keyname, Root_bitdic, sh)
+    # wb.add_item(witem)
+    # while not wb.empty():
+    #     wb = wb.work_thru()
+    #     if type(wb).__name__ == 'Sat':
+    #         return wb
     return None
 
 

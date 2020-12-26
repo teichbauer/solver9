@@ -69,9 +69,6 @@ class BitDic:
             for b in vk.bits:
                 sh_sets[b] = set(self.dic[b])
             # pop a value of sh_sets: a set of kns
-            if len(sh_sets) == 0:
-                raise Exception("444")
-
             tsvk = set(sh_sets.popitem()[1])
             tcvk = tsvk.copy()
             for s in sh_sets.values():
