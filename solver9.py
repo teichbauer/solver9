@@ -37,7 +37,7 @@ def process(cnfname):
     Root_bitdic = make_bitdic(keyname, cnfname)
 
     rm = RelationManager(Root_bitdic)
-    pair = rm.best_pair(3)
+    rm.test()
 
     # satslots = list(range(Root_bitdic.nov))
     # sh = SatHolder(satslots)
