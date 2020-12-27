@@ -1,5 +1,6 @@
 class RelationManager:
     def __init__(self, bitdic):
+        self.orig_bitdic = bitdic
         self.init_vkdic = {kn: vk.clone() for kn, vk in bitdic.vkdic.items()}
         self.kns = list(self.init_vkdic.keys())
         self.bdic = {b: lst[:] for b, lst in bitdic.dic.items()}
@@ -25,6 +26,7 @@ class RelationManager:
         for kn in self.kns:
             # pop a value of sh_sets: a set of kns
             bs = set(self.init_vkdic[kn].bits)
+            bs0 = bs.copy()
             b0 = bs.pop()
             tsvk = self.reldic[kn][b0]
             tcvk = tsvk.copy()
@@ -38,11 +40,12 @@ class RelationManager:
             #      all vk in here must have <nob> bits
             # {<share-any>}: knames of vk sharing at least 1 bit with kn
             #       it is super-set of tsvk
-            pair = (tsvk, tcvk - tsvk)
+            pair = (tsvk, tcvk - tsvk, bs0)
             key = tuple(sorted(list(tsvk)))
-            self.shdic[3][key] = pair
+            if key not in self.shdic[3]:
+                self.shdic[3][key] = pair
 
-    def best_pair(self, nob):
+    def best_choice(self, nob):
         ''' Among shdic[nob], pick the best lelement - pair, keyed by tuple, of 
             (total-share-kns):([total-share-kns],[touched kns]).
             return the key and the pair
@@ -78,24 +81,59 @@ class RelationManager:
                     index = i
                     max_leng = leng
             bestkey = max_keys[index]
-            touched = self.shdic[nob][bestkey]
-            return bestkey, touched
+            touched = self.shdic[nob][bestkey][1]
+            bits = self.shdic[nob][bestkey][1]
+            return bestkey, touched, bits
 
-    def test(self):
-        k3s, pair = self.best_pair(3)
-        self.remove_choice(3, k3s, pair)
-        x = 1
-
-    def remove_choice(self, nob, bestkey, touched):
+    def remove_choice(self, nob, bestkey, touched, k3bits):
         ''' 1. remove the entry(key and value-pair) from shdic[nob]
             2. update shdic: all touched vks become vk2/vk1
             '''
+        self.shdic[nob].pop(bestkey, None)
         for k3 in bestkey:  # step 1
-            self.shdic[nob].pop(k3, None)
+            self.kns.remove(k3)
 
-        for kn in bestkey:  # key-kns with nob-bits,
-            pass
-
+        cutdic = {}  # from touched-kns: kn:<number of cut bits>
         for kn in touched:
-            pass
+            bs = set(self.reldic[kn].keys())
+            nbs = len(bs)
+            cutbs = k3bits.intersection(bs)
+            leftbs = list(bs - cutbs)
+
+            # cut bit-entries in reldic[kn]
+            for b in cutbs:
+                self.reldic[kn].pop(b, None)
+
+            knlen = len(leftbs)
+            if  knlen == 0:
+                # kn has nothing left. delete it from reldic
+                del self.reldic[kn] 
+
+                # find key in shdic[nbs] with kn in it
+                # and remove that entry in shdic
+                key = None
+                for i, k in self.shdic[nbs].items():
+                    if kn in k[0]:
+                        key = k[0]
+                        break
+                if key:
+                    self.shdic[nbs].pop(key)
+            elif knlen == 2:
+                b1, b2 = leftbs
+                s1 = self.reldic[kn][b1]
+                s2 = self.reldic[kn][b2]
+                xs = s1.intersection(s2)
+                xc = s1.union(s2)
+                ts = set([kn])
+                for k in xs:
+                    if k != kn and len(self.reldic[k]) == 2:
+                        ts.add(k)
+                self.shdic[2][kn] = (ts, xc - ts, leftbs)
+            elif knlen == 1:
+                self.shdic[1][kn] = self.reldic[kn][leftbs[0]]
+        x = 1
+
+    def test(self):
+        k3s, touched, bits = self.best_choice(3)
+        self.remove_choice(3, k3s, touched, bits)
         x = 1
