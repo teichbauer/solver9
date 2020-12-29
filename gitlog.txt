@@ -1,3 +1,11 @@
+2020-12-28->0.50
+- debug rm
+- realized, that untouched should be seperated from touched:
+  touched is child-specific, but untouched should be shared among all
+  children: solve the next level with untouched(without touched). the solution
+  can be combined with every child of the parent-br.
+- although the br is based on first 3-bits (bestkey), but the other 3-bits
+  keys, are they needed?
 2020-12-27->0.49
 - coding rm.
 2020-12-26->0.48
