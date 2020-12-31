@@ -26,17 +26,17 @@ def get_sdic(filename):
     return sdic
 
 
+def ordered_dic_string(d):
+    m = '{ '
+    ks = list(sorted(list(d.keys()), reverse=True))
+    for k in ks:
+        m += str(k) + ': ' + str(d[k]) + ', '
+    m = m.strip(', ')
+    m += ' }'
+    return m
+
+
 def print_json(nov, vkdic, fname):
-
-    def ordered_dic_string(d):
-        m = '{ '
-        ks = list(sorted(list(d.keys()), reverse=True))
-        for k in ks:
-            m += str(k) + ': ' + str(d[k]) + ', '
-        m = m.strip(', ')
-        m += ' }'
-        return m
-
     sdic = {
         'nov': nov,
         'kdic': {}

@@ -50,11 +50,11 @@ def process(cnfname):
 
 if __name__ == '__main__':
     # configfilename = 'cfg100-450.json'
-    configfilename = 'cfg60-266.json'
+    # configfilename = 'cfg60-266.json'
     # configfilename = 'cfg60-262.json'
     # configfilename = 'config1.json'
     # configfilename = 'config1.sat'
-    # configfilename = 'config20_80.sat'
+    configfilename = 'cfg12-45.json'
     # configfilename = 'cfg60-262.json'
 
     if len(sys.argv) > 1:

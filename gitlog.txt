@@ -1,3 +1,8 @@
+2020-12-31->0.52
+- crown now has vk1dic/vk2dic, saved under child-dic[val]. The sum vk12dic is 
+  saved on parent/self .vk12dic
+- looking into cfg12-45 case, for design analysis: txed with C0006/C0017 as base
+  all sollution *.tx files saved under docs
 2020-12-30->0.51
 - vkmgr.py: new class VKManager.
 - satnode.py: new class satnode

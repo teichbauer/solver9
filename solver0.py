@@ -1,9 +1,15 @@
 import sys
-# from klause import Klause
-from bitdic import make_vkdic
+from vklause import VKlause
 import time
 
 _time_count = 0.0
+
+
+def make_vkdic(kdic, nov):
+    vkdic = {}
+    for kn, klause in kdic.items():
+        vkdic[kn] = VKlause(kn, klause, nov)
+    return vkdic
 
 
 class Solver0:

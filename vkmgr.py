@@ -1,4 +1,4 @@
-from basics import topbits_coverages
+from basics import topbits_coverages, print_json
 from vklause import VKlause
 
 
@@ -8,6 +8,9 @@ class VKManager:
         self.nov = nov
         if initial:
             self.make_bdic()
+
+    def printjson(self, filename):
+        print_json(self.nov, self.vkdic, filename)
 
     def bdic_has_kn(self, kn):
         for b, s in self.bdic.items():
@@ -30,26 +33,34 @@ class VKManager:
         ''' only called on a txed clone '''
         crowns = {}  # {<cvr-val>: {kn, ..},..}
         vk12dic = {}
+        topbitlst = sorted(list(topbits), reverse=True)
         self.nov -= 3
         for k3 in choice['bestkey']:
             self.vkdic.pop(k3, None)
 
         for kn in choice['touched']:  # for a kn with at least 1 bit in k3bits
             vk = self.vkdic.pop(kn, None)  # pop out this touched kn
+            assert(vk.bits != topbitlst), f"{kn} shouldn't be total-share."
 
             cvr, odic = topbits_coverages(vk, topbits)
-            vk12 = VKlause(kn, odic, self.nov)  # None if no bit left
-            print(f'{kn}: {vk.dic}, {cvr}, {odic}')
-            if vk12:  # if vk12 has at least 1 bit in it
+            if len(odic) > 0:
+                vk12 = VKlause(kn, odic, self.nov)  # None if no bit left
                 vk12dic[kn] = vk12
                 for cv in cvr:
-                    crowns.setdefault(cv, set([])).add(kn)
+                    d = crowns.setdefault(cv, {})
+                    vk1s = d.setdefault(1, {})
+                    vk2s = d.setdefault(2, {})
+                    if len(odic) == 1:
+                        vk1s[kn] = vk12
+                    else:
+                        vk2s[kn] = vk12
+            print(f'{kn}: {vk.dic}, {cvr}, {odic}')
         # now all vks in self.vkdic are vk3s
         # and have nov -= 3 that is the same as self.nov
         for vk in self.vkdic.values():
             vk.nov = self.nov
         # make bdic based on updated vkdic (popped out all touched)
-        self.make_bdic()
+        self.make_bdic()    # make the bdic for self.vkdic - all 3-bit vks
         return crowns, vk12dic
 
     def bestchoice(self):
