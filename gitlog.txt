@@ -1,4 +1,9 @@
-2020-12-31->0.53
+2020-12-31->0.53a
+- cfg12-45.json has 7 sats: 
+  [2355, 2363, 2419, 2427, 3299, 3315, 3443]. in 9-12 space (max 512):
+  [2355, 2363, 2419, 2427] are in 4-th subspace: [307, 315, 371, 379]
+  [3299, 3315, 3443] are in 6-th subspace: [227, 243, 371]
+
 - analized cfg12-45 split behavior. After txed on C0006{10:0,8:0,1:0} and 
   C0017 {10:1,8:1,1:1}->[11,10,9], there are 12 vk3 left untouched,31 touched.
   cfg9-12.json (for 12 left in vkdic): 
