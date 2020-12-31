@@ -70,6 +70,16 @@ class TxEngine:
                 vdic[kn] = self.trans_klause(vk)
         return vdic
 
+    def trans_bdic(self, bdic):
+        dic = {}
+        for bit, s in bdic.items():
+            dic[bit] = {}
+            if bit in self.txs:
+                dic[self.txs[b]] = bdic[bit]
+            else:
+                dic[bit] = bdic[b]
+        return dic
+
     def trans_bitdic(self, bitdic):
         new_vkdic = self.trans_vkdic(bitdic.vkdic)
         # turn "19'1" -> "19't"

@@ -1,20 +1,23 @@
 import sys
 import time
 from basics import get_sdic
-from bitdic import BitDic, make_vkdic
-from workbuffer import WorkBuffer
 from satholder import SatHolder, Sat
-from relationmanager import RelationManager
+from satnode import SatNode
+from vkmgr import VKManager
+from vklause import VKlause
 
-# LAYERS = []
-Root_bitdic = None
+
+def make_vkdic(kdic, nov):
+    vkdic = {}
+    for kn, klause in kdic.items():
+        vkdic[kn] = VKlause(kn, klause, nov)
+    return vkdic
 
 
-def make_bitdic(bitdic_name, cnf_fname):
+def make_vkm(cnf_fname):
     sdic = get_sdic(cnf_fname)
     vkdic = make_vkdic(sdic['kdic'], sdic['nov'])
-    bitdic = BitDic(bitdic_name, vkdic, sdic['nov'])
-    return bitdic
+    return VKManager(vkdic, sdic['nov'], True)
 
 
 def verify_sats(sat, bitdic):
@@ -31,37 +34,23 @@ def verify_satfile(sat_filename):
 
 
 def process(cnfname):
-    global Root_bitdic
-    wb = WorkBuffer()
-    keyname = 'r'
-    Root_bitdic = make_bitdic(keyname, cnfname)
+    vkm = make_vkm(cnfname)
+    path = []
+    satslots = list(range(vkm.nov))
+    sh = SatHolder(satslots)
 
-    rm = RelationManager(Root_bitdic)
-    rm.test()
+    sn = SatNode(None, sh, vkm)
+    while sn.sats == None:
+        path.append(sn)
+        sn = sn.spawn()
+    sn.resolve(path)
 
-    # satslots = list(range(Root_bitdic.nov))
-    # sh = SatHolder(satslots)
-
-    # # make root work-buffer work-item, addi it to wb
-    # witem = {  # root-node
-    #     'bitdic': Root_bitdic,
-    #     'depth': 0,             # layer-depth
-    #     'index': 0,             # layer-index
-    #     'valkey': 0,
-    #     'parent': Root_bitdic,  # parent-br. For root: bitdic
-    #     'sh': sh
-    # }
-    # # witem = (keyname, Root_bitdic, sh)
-    # wb.add_item(witem)
-    # while not wb.empty():
-    #     wb = wb.work_thru()
-    #     if type(wb).__name__ == 'Sat':
-    #         return wb
     return None
 
 
 if __name__ == '__main__':
-    configfilename = 'cfg100-450.json'
+    # configfilename = 'cfg100-450.json'
+    configfilename = 'cfg60-266.json'
     # configfilename = 'cfg60-262.json'
     # configfilename = 'config1.json'
     # configfilename = 'config1.sat'
