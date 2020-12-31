@@ -1,3 +1,44 @@
+2020-12-31->0.53
+- analized cfg12-45 split behavior. After txed on C0006{10:0,8:0,1:0} and 
+  C0017 {10:1,8:1,1:1}->[11,10,9], there are 12 vk3 left untouched,31 touched.
+  cfg9-12.json (for 12 left in vkdic): 
+  123 x sats: [ # in the 512 value-search-space #
+    0  1  2  3  4  6  8  9  10 11 20 32 33 34 35 36 38 40 41 42 
+    43 48 49 50 51 52 56 57 58 59 64 65 66 67 68 70 72 73 74 75 76 78 84 
+    96 97 98  99  100 102 104 105 106 107 108 110 112 113 114 115 116 120 
+    121 122 123 124 129 131 136 137 161 163 168 169 177 179 184 185 193 
+    195 200 201 204 225 227 232 233 236 241 243 248 249 252 304 305 
+    306 307 308 309 312 313 314 315 340 368 369 370 371 372 376 377 
+    378 379 380 433 435 437 440 441 497 499 504 505 508 
+  ]
+  from the 8 children, 0 and 7 are covered by base C0006 and C0017.
+  all 8 children:
+  0: cfg12-45-0-9-17.json (17=vk1s + vk2s): no sat
+     cfg12-45-0-9-29-vk123.json (29: all vks): no sats 
+
+  1: cfg12-45-1-9-18.json (18=vk1s + vk2s): no sat
+     cfg12-45-1-9-30-vk123.json (30: all vks): no sats 
+
+  2: cfg12-45-2-9-13.json (13=vk1s + vk2s): 1 sat: [270] not in cfg9-12's sats
+     cfg12-45-2-9-25-vk123.json (25: all vks): no sat
+
+  3: cfg12-45-3-9-13.json (13=vk1s + vk2s): no sat
+     cfg12-45-3-9-25-vk123.json (25: all vks): no sats 
+
+  4: cfg12-45-4-9-13.json (13=vk1s + vk2s): 9 sats:
+        [283,307,310,311,315,347,371,375,379]:[307,315,371,379] in 9-12 sats
+     cfg12-45-4-9-25-vk123.json (25: all vks): [307,315,371,379]
+
+  5: cfg12-45-5-9-14.json (14=vk1s + vk2s): 2 sats:[261,277] all not in 123 sats
+     cfg12-45-5-9-26-vk123.json (26: all vks): no sats 
+
+  6: cfg12-45-6-9-10.json (10=vk1s + vk2s): 8 sat:
+       [227,231,243,247,355,359,371,375], [227, 243, 371] in 123 sats
+     cfg12-45-6-9-22-vk123.json (22: all vks): 3 sats:[277, 243, 371]
+
+  7: cfg12-45-7-9-17.json (17=vk1s + vk2s): 2 sats: [227, 243] both in 123 sats
+     cfg12-45-7-9-20.json (29: all vks): 2 sats: [227, 243]
+  
 2020-12-31->0.52
 - crown now has vk1dic/vk2dic, saved under child-dic[val]. The sum vk12dic is 
   saved on parent/self .vk12dic
