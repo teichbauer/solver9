@@ -29,7 +29,7 @@ class VKManager:
         vkdic = tx.trans_vkdic(self.vkdic)
         return VKManager(vkdic, self.nov)
 
-    def morph(self, choice, topbits):
+    def morph(self, choice, topbits, excl_cv):
         ''' only called on a txed clone '''
         crowns = {}  # {<cvr-val>: {kn, ..},..}
         vk12dic = {}
@@ -47,6 +47,8 @@ class VKManager:
                 vk12 = VKlause(kn, odic, self.nov)  # None if no bit left
                 vk12dic[kn] = vk12
                 for cv in cvr:
+                    if cv == excl_cv:
+                        continue
                     d = crowns.setdefault(cv, {})
                     vk1s = d.setdefault(1, {})
                     vk2s = d.setdefault(2, {})

@@ -1,5 +1,7 @@
+from basics import topbits_coverages
 from satholder import SatHolder
 from TransKlauseEngine import TxEngine
+from crown import Crown
 
 
 class SatNode:
@@ -8,6 +10,7 @@ class SatNode:
         self.sh = sh
         self.vkm = vkm
         self.nov = vkm.nov
+        self.children = {}
         if self.nov == 3:
             self.sats = self.nov3()
         else:
@@ -22,14 +25,21 @@ class SatNode:
         if self.topbits != self.bvk.bits:
             self.tx = TxEngine(self.bvk, self.nov)
             self.sh.transfer(self.tx)
+            bvk_cv, dum = topbits_coverages(self.tx.vklause, self.topbits)
             vkm = self.vkm.txed_clone(self.tx)
         else:
+            bvk_cv, dum = topbits_coverages(self.bvk, self.topbits)
             vkm = self.vkm
 
-        self.chdic, self.vk12dic = vkm.morph(choice, self.topbits)
+        crown_dic, self.vk12dic = vkm.morph(choice, self.topbits, bvk_cv[0])
         shtail = self.sh.spawn_tail(3)
         new_sh = SatHolder(shtail)
         self.sh.cut_tail(3)
+
+        for val, cdic in crown_dic.items():
+            crn = Crown(self, cdic[1], cdic[2], self.nov)
+            crn.simplify()
+            self.children[val] = crn
 
         self.next = SatNode(self, new_sh, vkm)
         return self.next

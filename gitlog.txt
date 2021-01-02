@@ -1,3 +1,6 @@
+2020-01-02->0.54
+- When making crowns in vkm.morph, now consider bvk cover value (blokc it)
+- progress in crown.py
 2020-12-31->0.53a
 - cfg12-45.json has 7 sats: 
   [2355, 2363, 2419, 2427, 3299, 3315, 3443]. in 9-12 space (max 512):
