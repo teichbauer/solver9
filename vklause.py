@@ -38,9 +38,9 @@ class VKlause:
         ''' For the example klause { 7:1,  5:0,     2:1      }
                               BITS:   7  6  5  4  3  2  1  0
             the relevant bits:        *     *        *
-                        self.mask:  1  0  1  0  0  1  0  0
+                          self.mask:  1  0  1  0  0  1  0  0
             surppose v = 135 bin(v):  1  0  0  0  0  1  1  1
-            x = v AND mask =        1  0  0  0  0  1  0  0
+            x = v AND mask =          1  0  0  0  0  1  0  0
             bits of v left(rest->0):  ^     ^        ^
                   self.value(132)  :  1  0  0  0  0  1  0  0
             This method set self.mask

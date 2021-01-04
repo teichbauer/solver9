@@ -1,12 +1,15 @@
+from basics import topbits_coverages
+from vklause import VKlause
+
+
 class VK12Manager:
-    def __init__(self, vk1dic, vk2dic, nov, initial=False):
+    def __init__(self, vk1dic, vk2dic, nov):
         self.nov = nov
         self.vk1dic = vk1dic
         self.vk2dic = vk2dic
-        self.done = False
-        if initial:
-            self.make_bdic()
-            self.simplify()
+        self.terminated = False  # no sat possible/total hit-blocked
+        self.make_bdic()
+        self.simplify()
 
     def make_bdic(self):
         d = self.vk1dic.copy()
@@ -19,7 +22,7 @@ class VK12Manager:
     def txed_clone(self, tx):
         vk1dic = tx.trans_vkdic(self.vk1dic)
         vk2dic = tx.trans_vkdic(self.vk2dic)
-        vk12m = VK12Manager(vk1dic, vk2dic, self.nov, True)
+        vk12m = VK12Manager(vk1dic, vk2dic, self.nov)
         return vk12m
 
     def simplify(self):
@@ -43,7 +46,7 @@ class VK12Manager:
                             self.vk1dic.pop(k, None)
                             self.bdic[bit].remove(k)
                         else:  # a opposite vk1 -> total block
-                            self.done = True
+                            self.terminated = True
                             return
                     elif k in self.vk2dic:
                         if self.vk2dic[k].dic[bit] == v1.dic[bit]:
@@ -59,3 +62,54 @@ class VK12Manager:
         else:
             # no vk1 exists - pick a vk2 as bvk
             self.bvk = list(self.vk2dic.values())[0]
+
+    def morph(self, topbits, excl_cv):
+        ln = len(topbits)
+        chdic = {}
+        nov = self.nov - ln
+
+        vkdic = self.vk1dic.copy()
+        vkdic.update(self.vk2dic)
+        for c in range(ln):
+            if c == excl_cv:
+                continue
+            vk1d = {}
+            vk2d = {}
+            for kn, vk in vkdic.items():
+                cvr, odic = topbits_coverages(vk, topbits)
+                odicln = len(odic)
+                if odicln > 0:
+                    for cv in cvr:
+                        if cv == excl_cv:
+                            continue
+                        v = VKlause(kn, odic, nov)
+                        if v:
+                            if odicln == 1:
+                                vk1d[kn] = v
+                            elif odicln == 2:
+                                vk2d[kn] = v
+            chdic[c] = VK12Manager(vk1d, vk2d, nov)
+        return chdic
+
+    def chopped_clone(self, topbits):
+        ''' make a new vk12mgr, with topbits chopped off:
+            some of vk1s/vk2s vanish, some vk2s become vk1s
+            '''
+        nov = self.nov - len(topbits)
+        kn1s = list(self.vk1dic.keys())
+        kn2s = list(self.vk2dic.keys())
+        vk1dic = {}
+        vk2dic = {}
+        for kn, vk in self.vk1dic.items():
+            v = vk.clone(topbits)
+            if v:
+                vk1dic[kn] = v
+        for kn, vk in self.vk2dic.items():
+            v = vk.clone(topbits)
+            if v:
+                if v.nob == 1:
+                    vk1dic[kn] = v
+                elif v.nob == 2:
+                    vk2dic[kn] = v
+        vkm = VK12Manager(vk1dic, vk2dic, nov)
+        return vkm

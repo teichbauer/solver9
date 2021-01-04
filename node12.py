@@ -9,6 +9,7 @@ class Node12:
         self.parent = parent
         self.vk12m = vk12m
         self.nov = vk12m.nov
+        self.psats = []  # list of partial sats
         self.children = {}
 
     def transfer_clone(self):
@@ -17,5 +18,11 @@ class Node12:
         return Node12(self.val, self, vk12m)
 
     def spawn(self):
-        txed_node = self.transfer_clone()
+        txed = self.transfer_clone()
+        self.bvk = txed.vk12m.bvk
         cutn = self.bvk.nob
+        self.topbits = list(range(self.nov - 1, self.nov - 1 - cutn, -1))
+        cvr, dummy = topbits_coverages(self.bvk, self.topbits)
+        chdic = txed.vk12m.morph(self.topbits, cvr[0])
+        for val, vkm in chdic.items():
+            self.children = Node12(val, self, vkm)

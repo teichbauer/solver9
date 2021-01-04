@@ -26,14 +26,13 @@ class VKManager:
         ''' only called on a txed clone '''
         crowns = {}  # {<cvr-val>: {kn, ..},..}
         vk12dic = {}
-        topbitlst = sorted(list(topbits), reverse=True)
         self.nov -= 3
         for k3 in choice['bestkey']:
             self.vkdic.pop(k3, None)
 
         for kn in choice['touched']:  # for a kn with at least 1 bit in k3bits
             vk = self.vkdic.pop(kn, None)  # pop out this touched kn
-            assert(vk.bits != topbitlst), f"{kn} shouldn't be total-share."
+            assert(vk.bits != topbits), f"{kn} shouldn't be total-share."
 
             cvr, odic = topbits_coverages(vk, topbits)
             if len(odic) > 0:
