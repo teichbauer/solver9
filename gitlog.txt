@@ -1,3 +1,5 @@
+2021-01-03->0.56
+- progress on vk12mgr.py and node12.py
 2021-01-03->0.55
 - Node12 will take care of vk12dic, for every satnode's child.
 - new class VK12Manager / vk12m.py

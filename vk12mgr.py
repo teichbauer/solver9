@@ -16,6 +16,12 @@ class VK12Manager:
             for b in vk.dic:
                 self.bdic[b].add(kn)
 
+    def txed_clone(self, tx):
+        vk1dic = tx.trans_vkdic(self.vk1dic)
+        vk2dic = tx.trans_vkdic(self.vk2dic)
+        vk12m = VK12Manager(vk1dic, vk2dic, self.nov, True)
+        return vk12m
+
     def simplify(self):
         kn1s = list(self.vk1dic.keys())
         if len(kn1s) > 0:

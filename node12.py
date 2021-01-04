@@ -1,4 +1,6 @@
+from basics import topbits_coverages, print_json
 from TransKlauseEngine import TxEngine
+from vk12mgr import VK12Manager
 
 
 class Node12:
@@ -9,12 +11,11 @@ class Node12:
         self.nov = vk12m.nov
         self.children = {}
 
-    def transfer_clone(self, base_vk):
-        tx = TxEngine(base_vk, self.nov)
-        vk1dic = tx.trans_vkdic(self.vk1dic)
-        vk2dic = tx.trans_vkdic(self.vk2dic)
-        return Node12(self.parent, vk1dic, vk2dic, self.nov)
+    def transfer_clone(self):
+        tx = TxEngine(self.bvk, self.nov)
+        vk12m = self.vk12m.txed_clone(tx)
+        return Node12(self.val, self, vk12m)
 
     def spawn(self):
-        txed_crn = self.transfer_clone(self.bvk)
+        txed_node = self.transfer_clone()
         cutn = self.bvk.nob

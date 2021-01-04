@@ -2,7 +2,7 @@ from basics import topbits_coverages, print_json
 from satholder import SatHolder
 from TransKlauseEngine import TxEngine
 from node12 import Node12
-from vk12m import VK12Manager
+from vk12mgr import VK12Manager
 
 
 class SatNode:
