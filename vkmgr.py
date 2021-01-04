@@ -12,13 +12,6 @@ class VKManager:
     def printjson(self, filename):
         print_json(self.nov, self.vkdic, filename)
 
-    def bdic_has_kn(self, kn):
-        for b, s in self.bdic.items():
-            if kn in s:
-                print(f'{kn} in bdic[{b}] !')
-                return True
-        return False
-
     def make_bdic(self):
         self.bdic = {b: set([]) for b in range(self.nov)}
         for kn, vk in self.vkdic.items():

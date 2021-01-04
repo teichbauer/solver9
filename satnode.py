@@ -1,7 +1,8 @@
-from basics import topbits_coverages
+from basics import topbits_coverages, print_json
 from satholder import SatHolder
 from TransKlauseEngine import TxEngine
-from crown import Crown
+from node12 import Node12
+from vk12m import VK12Manager
 
 
 class SatNode:
@@ -37,9 +38,13 @@ class SatNode:
         self.sh.cut_tail(3)
 
         for val, cdic in crown_dic.items():
-            crn = Crown(self, cdic[1], cdic[2], self.nov)
-            crn.simplify()
-            self.children[val] = crn
+            vk12m = VK12Manager(cdic[1], cdic[2], vkm.nov, True)
+            node = Node12(val, self, vk12m)
+            self.children[val] = node
+            x = 1
+
+        for val, crn in self.children.items():
+            crn.solve()
 
         self.next = SatNode(self, new_sh, vkm)
         return self.next
