@@ -23,6 +23,8 @@ class VK12Manager:
         vk1dic = tx.trans_vkdic(self.vk1dic)
         vk2dic = tx.trans_vkdic(self.vk2dic)
         vk12m = VK12Manager(vk1dic, vk2dic, self.nov)
+        # take tx's vk as bvk, not the one picked by VK12Manager constructor
+        vk12m.bvk = tx.vklause
         return vk12m
 
     def simplify(self):
@@ -76,18 +78,12 @@ class VK12Manager:
             vk1d = {}
             vk2d = {}
             for kn, vk in vkdic.items():
-                cvr, odic = topbits_coverages(vk, topbits)
-                odicln = len(odic)
-                if odicln > 0:
-                    for cv in cvr:
-                        if cv == excl_cv:
-                            continue
-                        v = VKlause(kn, odic, nov)
-                        if v:
-                            if odicln == 1:
-                                vk1d[kn] = v
-                            elif odicln == 2:
-                                vk2d[kn] = v
+                v = vk.clone(topbits)
+                if v:
+                    if v.nob == 1:
+                        vk1d[kn] = v
+                    elif v.nob == 2:
+                        vk2d[kn] = v
             chdic[c] = VK12Manager(vk1d, vk2d, nov)
         return chdic
 

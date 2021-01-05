@@ -1,3 +1,13 @@
+2021-01-04->0.59
+- refactored/fixed vk12mgr, and node12
+- made satnode's loop thru children with sorted val-keys. When loop with
+  for k, v in dict.items(), it is really not deterministic about the calling
+  sequence. I need that in debugging.
+- tested cfg12-45's children(1,2,3,4,5,6,7)'s spawn. With the reduction in
+  child-5's C0016/C0045 removed by nov==8/vk1:C0044
+  child-6's C0013/C0002 removed by nov==8/vk1: C0014/C0009
+  So far node12 works fine with vk12mgr.
+  TBD: node12.spawn all the way till one child finds sats?
 2021-01-04->0.58
 - progress on vk12m / node12
 2021-01-04->0.57

@@ -42,8 +42,11 @@ class SatNode:
             node = Node12(val, self, vk12m)
             self.children[val] = node
 
-        for val, ch in self.children.items():
-            ch.spawn()
+        vals = sorted(list(self.children.keys()))
+        for val in vals:
+            self.children[val].spawn()
+        # for val, ch in self.children.items():
+        #     ch.spawn()
 
         self.next = SatNode(self, new_sh, vkm)
         return self.next
