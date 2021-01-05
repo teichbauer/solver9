@@ -48,7 +48,7 @@ class VKManager:
                         vk1s[kn] = vk12
                     else:
                         vk2s[kn] = vk12
-            print(f'{kn}: {vk.dic}, {cvr}, {odic}')
+            # print(f'{kn}: {vk.dic}, {cvr}, {odic}')
         # now all vks in self.vkdic are vk3s
         # and have nov -= 3 that is the same as self.nov
         for vk in self.vkdic.values():

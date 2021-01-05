@@ -27,11 +27,19 @@ class VK12Manager:
         vk12m.bvk = tx.vklause
         return vk12m
 
+    def highst_vk1(self):
+        hvk = None
+        for kn, vk in self.vk1dic.items():
+            if vk.bits[0] == self.nov - 1:
+                hvk = vk
+            elif hvk == None:
+                hvk = vk
+
     def simplify(self):
         kn1s = list(self.vk1dic.keys())
         if len(kn1s) > 0:
             # pick first vk1 as bvk
-            self.bvk = list(self.vk1dic.values())[0]
+            self.bvk = self.highst_vk1()
             maxtouch_cnt = 0
             while len(kn1s) > 0:
                 k1 = kn1s.pop(0)
@@ -72,6 +80,8 @@ class VK12Manager:
 
         vkdic = self.vk1dic.copy()
         vkdic.update(self.vk2dic)
+        if len(vkdic) == 1:
+            return None
         for c in range(2 ** ln):
             if c == excl_cv:
                 continue
@@ -84,6 +94,8 @@ class VK12Manager:
                         vk1d[kn] = v
                     elif v.nob == 2:
                         vk2d[kn] = v
+            if len(vk1d) == 0 and len(vk2d) == 0:
+                return None
             chdic[c] = VK12Manager(vk1d, vk2d, nov)
         return chdic
 

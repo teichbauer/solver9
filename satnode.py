@@ -43,13 +43,22 @@ class SatNode:
             self.children[val] = node
 
         vals = sorted(list(self.children.keys()))
-        for val in vals:
-            self.children[val].spawn()
-        # for val, ch in self.children.items():
-        #     ch.spawn()
+        # for val in vals:
+        #     self.children[val].spawn()
+        best_child = self.digchild(self.children[vals.pop()])
 
         self.next = SatNode(self, new_sh, vkm)
+
         return self.next
+
+    def digchild(self, ch):
+        node = ch
+        while node.state == 0:
+            chs = node.spawn()
+            if len(chs) == 0:
+                break
+            node = chs[0]
+        return node
 
     def resolve(self, path):
         pass

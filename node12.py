@@ -9,8 +9,10 @@ class Node12:
         self.parent = parent
         self.vk12m = vk12m
         self.nov = vk12m.nov
+        self.name = f'{self.nov}-{val}'
         self.psats = []  # list of partial sats
-        self.children = {}
+        self.state = 0
+        self.nexts = []
 
     def spawn(self):
         self.tx = TxEngine(self.vk12m.bvk, self.nov)
@@ -19,5 +21,13 @@ class Node12:
         self.topbits = list(range(self.nov - 1, self.nov - 1 - cutn, -1))
         cvr, dummy = topbits_coverages(vk12m.bvk, self.topbits)
         chdic = vk12m.morph(self.topbits, cvr[0])
-        for val, vkm in chdic.items():
-            self.children = Node12(val, self, vkm)
+        if chdic == None:
+            self.state = 1
+        elif len(chdic) == 0:
+            self.state = 2
+        else:
+            for val, vkm in chdic.items():
+                self.nexts.append(Node12(val, self, vkm))
+        noc = len(self.nexts)
+        print(f'{self.name} has {noc} children.')
+        return self.nexts
