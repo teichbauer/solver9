@@ -20,19 +20,6 @@ def make_vkm(cnf_fname):
     return VKManager(vkdic, sdic['nov'], True)
 
 
-def verify_sats(sat, bitdic):
-    return sat.verify(bitdic)
-
-
-def verify_satfile(sat_filename):
-    cnf_fname = sat_filename.split('.')[0] + '.json'
-    bitdic = make_bitdic('r', cnf_fname)
-    sat_dic = eval(open('verify/' + sat_filename).read())
-    sat = Sat(sat_dic['end-node-name'], sat_dic['sats'])
-    verif, intv = sat.verify(bitdic)
-    return verif, intv
-
-
 def process(cnfname):
     vkm = make_vkm(cnfname)
     path = []

@@ -70,7 +70,7 @@ class VK12Manager:
 
         vkdic = self.vk1dic.copy()
         vkdic.update(self.vk2dic)
-        for c in range(ln):
+        for c in range(2 ** ln):
             if c == excl_cv:
                 continue
             vk1d = {}

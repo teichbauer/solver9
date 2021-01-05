@@ -80,17 +80,6 @@ class TxEngine:
                 dic[bit] = bdic[b]
         return dic
 
-    def trans_bitdic(self, bitdic):
-        new_vkdic = self.trans_vkdic(bitdic.vkdic)
-        # turn "19'1" -> "19't"
-        name = bitdic.name + '-t'
-        # new_bitdic = BitDic(self.name, name, new_vkdic, bitdic.nov)
-        new_bitdic = bitdic.__class__(
-            name,
-            new_vkdic,
-            bitdic.nov)
-        return new_bitdic
-
     def output(self):
         msg = self.name + ': '+str(self.start_vklause.dic) + ', '
         msg += 'txn: ' + str(self.txs) + ', '

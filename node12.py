@@ -13,16 +13,15 @@ class Node12:
         self.children = {}
 
     def transfer_clone(self):
-        tx = TxEngine(self.bvk, self.nov)
+        tx = TxEngine(self.vk12m.bvk, self.nov)
         vk12m = self.vk12m.txed_clone(tx)
         return Node12(self.val, self, vk12m)
 
     def spawn(self):
         txed = self.transfer_clone()
-        self.bvk = txed.vk12m.bvk
-        cutn = self.bvk.nob
+        cutn = txed.vk12m.bvk.nob
         self.topbits = list(range(self.nov - 1, self.nov - 1 - cutn, -1))
-        cvr, dummy = topbits_coverages(self.bvk, self.topbits)
+        cvr, dummy = topbits_coverages(txed.vk12m.bvk, self.topbits)
         chdic = txed.vk12m.morph(self.topbits, cvr[0])
         for val, vkm in chdic.items():
             self.children = Node12(val, self, vkm)
