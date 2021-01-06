@@ -38,6 +38,7 @@ class SatNode:
         self.sh.cut_tail(3)
 
         for val, cdic in crown_dic.items():
+            # call both make_bdic/simplify (def: both True)
             vk12m = VK12Manager(cdic[1], cdic[2], vkm.nov)
             node = Node12(val, self, vk12m)
             self.children[val] = node

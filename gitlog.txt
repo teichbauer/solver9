@@ -1,3 +1,7 @@
+2021-01-06->0.62
+- optimized a bit for VK12Manager constructor: choices for call/not-call
+  of make_bdic and simplify.
+- still need to find/fix the bug in 0.61
 2021-01-05->0.61
 - effort to pick default vk1 as bvk with the 1 bit sit on highst pos.
   This can  optimize. But this has brought in a bug. Need to find it.

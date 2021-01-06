@@ -3,18 +3,22 @@ from vklause import VKlause
 
 
 class VK12Manager:
-    def __init__(self, vk1dic, vk2dic, nov, clone=False):
+    def __init__(self, vk1dic, vk2dic, nov, callmbd=True, callsmp=True):
+        ''' callop[0]: True/False call/not-call self.make_bdic()
+            callop[1]: True/False call/not-call self.somplify()
+            '''
         self.nov = nov
         self.vk1dic = vk1dic
         self.vk2dic = vk2dic
         self.terminated = False  # no sat possible/total hit-blocked
-        if not clone:
+        if callmbd:
             self.make_bdic()
+        if callsmp:
             self.simplify()
 
     def clone(self):
-        vkm = VK12Manager(
-            self.vk1dic.copy(), self.vk2dic.copy(), self.nov, True)
+        vkm = VK12Manager(self.vk1dic.copy(), self.vk2dic.copy(), self.nov,
+                          False, False)  # no calls: make_bdic/simplify
         vkm.bdic = self.bdic.copy()
         return vkm
 
@@ -29,7 +33,8 @@ class VK12Manager:
     def txed_clone(self, tx):
         vk1dic = tx.trans_vkdic(self.vk1dic)
         vk2dic = tx.trans_vkdic(self.vk2dic)
-        vk12m = VK12Manager(vk1dic, vk2dic, self.nov)
+        # make a new vk12m call make_bdic, but not simplify
+        vk12m = VK12Manager(vk1dic, vk2dic, self.nov, True, False)
         # take tx's vk as bvk, not the one picked by VK12Manager constructor
         vk12m.bvk = tx.vklause
         return vk12m
@@ -49,6 +54,14 @@ class VK12Manager:
         return hvk
 
     def simplify(self):
+        ''' A. len(vk1s) > 0
+            1. test if 2 opposite vk1s (same bit/opposite value): 
+                if True terminated = True
+            2. if 2 vk1s have same bit, same value, remove that one vk1
+            3. pick self.bvk: the one with most touch of vk2s;
+               among the same touch-count, pick the one with bit == nov - 1
+            B. len(vk1s) == 0, pick random 1 vk2 as bvk
+            '''
         kn1s = list(self.vk1dic.keys())
         if len(kn1s) > 0:
             # pick first vk1 as bvk
@@ -78,9 +91,10 @@ class VK12Manager:
                         else:
                             # vk2 with opposite bit-value: count as a touch
                             touch_cnt += 1
-                    if touch_cnt > maxtouch_cnt:
-                        maxtouch_cnt = touch_cnt
-                        # pick a better vk1 as bvk
+                if touch_cnt > maxtouch_cnt:
+                    maxtouch_cnt = touch_cnt
+                    # pick a better vk1 as bvk
+                    if self.bvk.kname != k1:
                         self.bvk = v1
         else:
             # no vk1 exists - pick a vk2 as bvk
@@ -109,5 +123,6 @@ class VK12Manager:
                         vk2d[kn] = v
             if len(vk1d) == 0 and len(vk2d) == 0:
                 return None
+            # make a shortened vk12m, call both make_bdic/simplify
             chdic[c] = VK12Manager(vk1d, vk2d, nov)
         return chdic
