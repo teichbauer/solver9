@@ -15,8 +15,11 @@ class Node12:
         self.nexts = []
 
     def spawn(self):
-        self.tx = TxEngine(self.vk12m.bvk, self.nov)
-        vk12m = self.vk12m.txed_clone(self.tx)
+        if self.vk12m.need_tx():
+            self.tx = TxEngine(self.vk12m.bvk, self.nov)
+            vk12m = self.vk12m.txed_clone(self.tx)
+        else:
+            vk12m = self.vk12m.clone()
         cutn = vk12m.bvk.nob
         self.topbits = list(range(self.nov - 1, self.nov - 1 - cutn, -1))
         cvr, dummy = topbits_coverages(vk12m.bvk, self.topbits)

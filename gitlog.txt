@@ -1,3 +1,7 @@
+2021-01-05->0.61
+- effort to pick default vk1 as bvk with the 1 bit sit on highst pos.
+  This can  optimize. But this has brought in a bug. Need to find it.
+  TBD.
 2021-01-05->0.60
 - give node12 inst a name. children is a list now (was dict)
 - pick highst bit vk1 as default bvk in vk12m

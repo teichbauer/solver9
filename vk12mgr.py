@@ -3,13 +3,20 @@ from vklause import VKlause
 
 
 class VK12Manager:
-    def __init__(self, vk1dic, vk2dic, nov):
+    def __init__(self, vk1dic, vk2dic, nov, clone=False):
         self.nov = nov
         self.vk1dic = vk1dic
         self.vk2dic = vk2dic
         self.terminated = False  # no sat possible/total hit-blocked
-        self.make_bdic()
-        self.simplify()
+        if not clone:
+            self.make_bdic()
+            self.simplify()
+
+    def clone(self):
+        vkm = VK12Manager(
+            self.vk1dic.copy(), self.vk2dic.copy(), self.nov, True)
+        vkm.bdic = self.bdic.copy()
+        return vkm
 
     def make_bdic(self):
         d = self.vk1dic.copy()
@@ -27,13 +34,19 @@ class VK12Manager:
         vk12m.bvk = tx.vklause
         return vk12m
 
+    def need_tx(self):
+        vk = self.bvk
+        tbs = list(range(self.nov-1, self.nov-1-vk.nob, -1))
+        return tbs != vk.bits
+
     def highst_vk1(self):
         hvk = None
         for kn, vk in self.vk1dic.items():
             if vk.bits[0] == self.nov - 1:
-                hvk = vk
+                return vk
             elif hvk == None:
                 hvk = vk
+        return hvk
 
     def simplify(self):
         kn1s = list(self.vk1dic.keys())
@@ -98,26 +111,3 @@ class VK12Manager:
                 return None
             chdic[c] = VK12Manager(vk1d, vk2d, nov)
         return chdic
-
-    def chopped_clone(self, topbits):
-        ''' make a new vk12mgr, with topbits chopped off:
-            some of vk1s/vk2s vanish, some vk2s become vk1s
-            '''
-        nov = self.nov - len(topbits)
-        kn1s = list(self.vk1dic.keys())
-        kn2s = list(self.vk2dic.keys())
-        vk1dic = {}
-        vk2dic = {}
-        for kn, vk in self.vk1dic.items():
-            v = vk.clone(topbits)
-            if v:
-                vk1dic[kn] = v
-        for kn, vk in self.vk2dic.items():
-            v = vk.clone(topbits)
-            if v:
-                if v.nob == 1:
-                    vk1dic[kn] = v
-                elif v.nob == 2:
-                    vk2dic[kn] = v
-        vkm = VK12Manager(vk1dic, vk2dic, nov)
-        return vkm
