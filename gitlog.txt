@@ -1,3 +1,11 @@
+2021-01-06->0.63
+- believe found the bug/fixed: when doing vk12m.clone(), bvk not set.
+  this causes isse when calling topbits_coverages(vkm.bvk, topbits)
+  Solution: vk12m.txed_clone or vk12m.clone both will NOT set bvk.
+  But vk12m now has a method .bvk_topvalue. Node12.spaw(): before doing
+  tx, get cv = self.vk12m.bvk_topvalue() and use this cv in vk12m.morph
+  This also optimized away topbits_coverages in node12 and vk12m.
+- TBD: test it
 2021-01-06->0.62
 - optimized a bit for VK12Manager constructor: choices for call/not-call
   of make_bdic and simplify.

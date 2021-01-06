@@ -1,4 +1,3 @@
-from basics import topbits_coverages
 from vklause import VKlause
 
 
@@ -22,6 +21,13 @@ class VK12Manager:
         vkm.bdic = self.bdic.copy()
         return vkm
 
+    def bvk_topvalue(self):
+        vk = self.bvk
+        value = vk.dic[vk.bits[0]]
+        if vk.nob == 2:
+            value = (value << 1) | vk.dic[vk.bits[1]]
+        return value
+
     def make_bdic(self):
         d = self.vk1dic.copy()
         d.update(self.vk2dic)
@@ -35,8 +41,6 @@ class VK12Manager:
         vk2dic = tx.trans_vkdic(self.vk2dic)
         # make a new vk12m call make_bdic, but not simplify
         vk12m = VK12Manager(vk1dic, vk2dic, self.nov, True, False)
-        # take tx's vk as bvk, not the one picked by VK12Manager constructor
-        vk12m.bvk = tx.vklause
         return vk12m
 
     def need_tx(self):
@@ -116,7 +120,7 @@ class VK12Manager:
             vk2d = {}
             for kn, vk in vkdic.items():
                 v = vk.clone(topbits)
-                if v:
+                if v:  # if all bits are gone/dropped: v==None -> drop v
                     if v.nob == 1:
                         vk1d[kn] = v
                     elif v.nob == 2:
