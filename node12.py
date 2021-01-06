@@ -26,14 +26,13 @@ class Node12:
     def spawn(self):
         # self.vk12m must have bvk
         assert(self.vk12m.bvk != None)
-
+        self.topbits = self.get_topbits(self.vk12m.bvk.nob)
         cv = self.vk12m.bvk_topvalue()
         if self.vk12m.need_tx():
             self.tx = TxEngine(self.vk12m.bvk, self.nov)
             vk12m = self.vk12m.txed_clone(self.tx)
         else:
             vk12m = self.vk12m.clone()
-        self.topbits = self.get_topbits(self.bvk.nob)
         chdic = vk12m.morph(self.topbits, cv)
         if chdic == None:
             self.state = 1
