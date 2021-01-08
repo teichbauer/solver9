@@ -56,10 +56,10 @@ class Sat:
 
 class SatHolder:
     ''' Manages original variable names. Originally: [0,1,2,..<nov-1>]
-        Instance owned by every branch as .sh. At the very beginning, 
-        br0.sh's array is nov long. br0 has 3 bit-cut, and has 
-        a tx :[(4,7,(2,6),(1,5),...]. br0.sh will call transfer(br0.tx), 
-        then cut its tail([0,1,...<nov-4>]) for giving it to br0's every child. 
+        Instance owned by every branch as .sh. At the very beginning,
+        br0.sh's array is nov long. br0 has 3 bit-cut, and has
+        a tx :[(4,7,(2,6),(1,5),...]. br0.sh will call transfer(br0.tx),
+        then cut its tail([0,1,...<nov-4>]) for giving it to br0's every child.
         Afterwards, br0.sh only keeps 3 [4,2,1]
         when br0 has children[1], children[5] (1,5 are sat-values for them),
         the part of sats for this 3-bit will be
@@ -76,6 +76,9 @@ class SatHolder:
     def __init__(self, varray):
         self.varray = varray
 
+    def clone(self):
+        return SatHolder(self.varray[:])
+
     def spawn_tail(self, cutcnt):
         return self.varray[:-cutcnt]
 
@@ -85,15 +88,24 @@ class SatHolder:
     def cut_tail(self, cutcnt):
         self.varray = self.varray[-cutcnt:]
 
+    def get_psats(self, val):
+        nd = len(self.varray)
+        assert(val < (2 ** nd))
+        satdic = {}
+        for ind, vn in enumerate(self.varray):
+            v = get_bit(val, ind)
+            satdic[vn] = v
+        return satdic
+
     def get_segment_sats(self, chil_keyvalue):
-        ''' assert check: 
+        ''' assert check:
                varray length can be 1, 2 or 3, where sat-value can be:
                (0,1), (0,1,2,3) or (0,1,2,3,4,5,6,7)
-            operational example: 
+            operational example:
                 varray: [231, 8]: names of two variables,
                 varray[0] == 231, varray[1] == 8
                 And sat chil_keyvalue: 2 == bin( 10 )
-                output: 
+                output:
             return value is a list of tuples, as like:
                 [(231,0), (8,1)]:
                 variable-231 has boolean chil_keyvalue 0

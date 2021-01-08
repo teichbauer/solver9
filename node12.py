@@ -1,46 +1,50 @@
 from basics import print_json
 from TransKlauseEngine import TxEngine
 from vk12mgr import VK12Manager
+from basics import topvalue, topbits
+from satholder import SatHolder
 
 
 class Node12:
-    def __init__(self, val, parent, vk12m):
+    def __init__(self, val, parent, vk12m, sh, ppsats):
         self.val = val
         self.parent = parent
         self.vk12m = vk12m
+        self.sh = sh
         self.nov = vk12m.nov
         self.name = f'{self.nov}-{val}'
-        self.psats = []  # list of partial sats
+        self.ppsats = ppsats  # parent-partial-sat
         self.state = 0
         self.nexts = []
-
-    def get_topbits(self, n):
-        t = self.nov - 1
-        lst = []
-        while n > 0:
-            lst.append(t)
-            t -= 1
-            n -= 1
-        return lst
 
     def spawn(self):
         # self.vk12m must have bvk
         assert(self.vk12m.bvk != None)
-        self.topbits = self.get_topbits(self.vk12m.bvk.nob)
-        cv = self.vk12m.bvk_topvalue()
+        nob = self.vk12m.bvk.nob
+        self.topbits = topbits(self.nov, nob)
+
+        # what if > 1 bvks (nob==2), need cvs to be excluded in morph
+        cv = topvalue(self.vk12m.bvk)
         if self.vk12m.need_tx():
             self.tx = TxEngine(self.vk12m.bvk, self.nov)
+            self.sh.transfer(self.tx)
             vk12m = self.vk12m.txed_clone(self.tx)
         else:
             vk12m = self.vk12m.clone()
         chdic = vk12m.morph(self.topbits, cv)
+        shtail = self.sh.spawn_tail(nob)
+        new_sh = SatHolder(shtail)
+        self.sh.cut_tail(nob)
+
         if chdic == None:
             self.state = 1
         elif len(chdic) == 0:
             self.state = 2
         else:
             for val, vkm in chdic.items():
-                self.nexts.append(Node12(val, self, vkm))
+                psats = self.sh.get_psats(val)
+                node = Node12(val, self, vkm, new_sh.clone(), psats)
+                self.nexts.append()
         noc = len(self.nexts)
         print(f'{self.name} has {noc} children.')
         return self.nexts

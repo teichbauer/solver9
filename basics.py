@@ -57,6 +57,27 @@ def print_json(nov, vkdic, fname):
         f.write('    }\n}')
 
 
+def topvalue(vk):
+    # shift all bit to top positions and return that n-bits value
+    # E.G. {7:1, 5:0, 0:1} -> 101/5
+    bits = vk.bits[:]
+    v = 0
+    while bits:
+        v = (v << 1) | vk.dic[bits.pop(0)]
+    return v
+
+
+def topbits(nov, nob):
+    # for nov = 5 (bits: 4,3,2,1,0), nob == 2 -> get [4,3]
+    t = nov - 1
+    lst = []
+    while nob > 0:
+        lst.append(t)
+        t -= 1
+        nob -= 1
+    return lst
+
+
 def topbits_coverages(vk, topbits):
     ''' example: vk.dic: {7:1, 4:1, 1:0}, topbits:[7,6]. for the 2 bits
         allvalues: [00,01,10,11]/[0,1,2,3] vk only hit 10/2,11/3, 

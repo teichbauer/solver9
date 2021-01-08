@@ -1,4 +1,4 @@
-from basics import topbits_coverages, print_json
+from basics import topbits_coverages, topvalue, topbits, print_json
 from satholder import SatHolder
 from TransKlauseEngine import TxEngine
 from node12 import Node12
@@ -16,7 +16,7 @@ class SatNode:
             self.sats = self.nov3()
         else:
             self.sats = None
-        self.topbits = list(range(self.nov - 1, self.nov - 1 - 3, -1))
+        self.topbits = topbits(self.nov, 3)
         if len(vkm.vkdic) == 0:
             self.sats = self.max_sats()
 
@@ -26,27 +26,27 @@ class SatNode:
         if self.topbits != self.bvk.bits:
             self.tx = TxEngine(self.bvk, self.nov)
             self.sh.transfer(self.tx)
-            bvk_cv, dum = topbits_coverages(self.tx.vklause, self.topbits)
             vkm = self.vkm.txed_clone(self.tx)
         else:
-            bvk_cv, dum = topbits_coverages(self.bvk, self.topbits)
             vkm = self.vkm
 
-        crown_dic, self.vk12dic = vkm.morph(choice, self.topbits, bvk_cv[0])
+        excl_cvs = [topvalue(vkm.vkdic[kn]) for kn in choice['bestkey']]
+
+        crown_dic = vkm.morph(choice, self.topbits, excl_cvs)
         shtail = self.sh.spawn_tail(3)
         new_sh = SatHolder(shtail)
         self.sh.cut_tail(3)
 
         for val, cdic in crown_dic.items():
             # call both make_bdic/simplify (def: both True)
+            psats = self.sh.get_psats(val)
             vk12m = VK12Manager(cdic[1], cdic[2], vkm.nov)
-            node = Node12(val, self, vk12m)
+            node = Node12(val, self, vk12m, new_sh.clone(), psats)
             self.children[val] = node
 
         vals = sorted(list(self.children.keys()))
-        # for val in vals:
-        #     self.children[val].spawn()
-        best_child = self.digchild(self.children[vals.pop()])
+        for val in vals:
+            self.digchild(self.children[val])
 
         self.next = SatNode(self, new_sh, vkm)
 

@@ -1,3 +1,9 @@
+2021-01-07->0.65
+- enhanced satholder with get_psats dic for tracing {var>:<val>,..}
+- refactored/optimized basics/node12/satnode
+- TBD: issue: vk12m - if no vk1, when picking bvk, there can be multiple
+  vk2 sitting on the same 2 bits, in that case exccl-cvs?
+  And, how pick the best vk2?
 2021-01-06->0.64
 - minor fix. The approach introed by 0.63 works!
 2021-01-06->0.63

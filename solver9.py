@@ -1,6 +1,6 @@
 import sys
 import time
-from basics import get_sdic
+from basics import get_sdic, topvalue
 from satholder import SatHolder, Sat
 from satnode import SatNode
 from vkmgr import VKManager
@@ -35,13 +35,22 @@ def process(cnfname):
     return None
 
 
-if __name__ == '__main__':
+def test_topvalue():
+    sdic = get_sdic('config1.json')
+    vkdic = make_vkdic(sdic['kdic'], sdic['nov'])
+    for kn, vk in vkdic.items():
+        d = str(vk.dic)
+        v = topvalue(vk)
+        print(f'{d} has topvalue: {v}')
+
+
+def work():
     # configfilename = 'cfg100-450.json'
     # configfilename = 'cfg60-266.json'
     # configfilename = 'cfg60-262.json'
-    # configfilename = 'config1.json'
+    configfilename = 'config1.json'
     # configfilename = 'config1.sat'
-    configfilename = 'cfg12-45.json'
+    # configfilename = 'cfg12-45.json'
     # configfilename = 'cfg60-262.json'
 
     if len(sys.argv) > 1:
@@ -70,3 +79,8 @@ if __name__ == '__main__':
         print(f'Time used: {time_used}')
 
     x = 1
+
+
+if __name__ == '__main__':
+    work()
+    # test_topvalue()

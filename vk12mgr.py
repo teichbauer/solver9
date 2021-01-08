@@ -1,4 +1,5 @@
 from vklause import VKlause
+from basics import topvalue
 
 
 class VK12Manager:
@@ -20,13 +21,6 @@ class VK12Manager:
                           False, False)  # no calls: make_bdic/simplify
         vkm.bdic = self.bdic.copy()
         return vkm
-
-    def bvk_topvalue(self):
-        vk = self.bvk
-        value = vk.dic[vk.bits[0]]
-        if vk.nob == 2:
-            value = (value << 1) | vk.dic[vk.bits[1]]
-        return value
 
     def make_bdic(self):
         d = self.vk1dic.copy()

@@ -22,10 +22,9 @@ class VKManager:
         vkdic = tx.trans_vkdic(self.vkdic)
         return VKManager(vkdic, self.nov)
 
-    def morph(self, choice, topbits, excl_cv):
+    def morph(self, choice, topbits, excl_cvs):
         ''' only called on a txed clone '''
         crowns = {}  # {<cvr-val>: {kn, ..},..}
-        vk12dic = {}
         self.nov -= 3
         for k3 in choice['bestkey']:
             self.vkdic.pop(k3, None)
@@ -37,25 +36,21 @@ class VKManager:
             cvr, odic = topbits_coverages(vk, topbits)
             if len(odic) > 0:
                 vk12 = VKlause(kn, odic, self.nov)  # None if no bit left
-                vk12dic[kn] = vk12
                 for cv in cvr:
-                    if cv == excl_cv:
+                    if cv in excl_cvs:
                         continue
                     d = crowns.setdefault(cv, {})
-                    vk1s = d.setdefault(1, {})
-                    vk2s = d.setdefault(2, {})
                     if len(odic) == 1:
-                        vk1s[kn] = vk12
+                        d.setdefault(1, {})[kn] = vk12
                     else:
-                        vk2s[kn] = vk12
-            # print(f'{kn}: {vk.dic}, {cvr}, {odic}')
+                        d.setdefault(2, {})[kn] = vk12
         # now all vks in self.vkdic are vk3s
         # and have nov -= 3 that is the same as self.nov
         for vk in self.vkdic.values():
             vk.nov = self.nov
         # make bdic based on updated vkdic (popped out all touched)
         self.make_bdic()    # make the bdic for self.vkdic - all 3-bit vks
-        return crowns, vk12dic
+        return crowns
 
     def bestchoice(self):
         ''' return: {(kn1,kn2): set([tkn1, tkn2,..]),'bits': bits}
