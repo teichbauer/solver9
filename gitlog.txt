@@ -1,3 +1,8 @@
+2021-01-08->0.66
+- code for vk12m: in case no vk1 exists, pick the best vk2. Always set a list
+  self.bvk_cvs, either from vk1 bvk or vk2 bvk. Now in morph, test if a value
+  is in self.bvk_cvs, for exclusion.
+- refactored 
 2021-01-07->0.65
 - enhanced satholder with get_psats dic for tracing {var>:<val>,..}
 - refactored/optimized basics/node12/satnode
@@ -16,7 +21,7 @@
 - TBD: test it
 2021-01-06->0.62
 - optimized a bit for VK12Manager constructor: choices for call/not-call
-  of make_bdic and simplify.
+  of make_bdic and normalize.
 - still need to find/fix the bug in 0.61
 2021-01-05->0.61
 - effort to pick default vk1 as bvk with the 1 bit sit on highst pos.

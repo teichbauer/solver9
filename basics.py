@@ -82,8 +82,7 @@ def topbits_coverages(vk, topbits):
     ''' example: vk.dic: {7:1, 4:1, 1:0}, topbits:[7,6]. for the 2 bits
         allvalues: [00,01,10,11]/[0,1,2,3] vk only hit 10/2,11/3, 
         {4:1, 1:0} lying outside of topbits - outdic: {4:1, 1:0}
-        return [2,3], {4:1, 1:0}
-        '''
+        return [2,3], {4:1, 1:0}   '''
     outdic = {}
     L = len(topbits)
     allvalues = list(range(2**L))

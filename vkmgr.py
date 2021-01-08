@@ -71,7 +71,7 @@ class VKManager:
             for b in bits:
                 sh_sets[b] = set(self.bdic[b])
 
-            tsvk = set(sh_sets.popitem()[1])
+            tsvk = set(sh_sets.popitem()[1])  # [0] is bit, [1] is the set
             tcvk = tsvk.copy()
             for s in sh_sets.values():
                 tsvk = tsvk.intersection(s)
