@@ -1,3 +1,7 @@
+2021-01-08->0.67
+- tested vk12m.best_vk2, with manually deleted vk1dic in config1,json
+  setting.
+- refactored some.
 2021-01-08->0.66
 - code for vk12m: in case no vk1 exists, pick the best vk2. Always set a list
   self.bvk_cvs, either from vk1 bvk or vk2 bvk. Now in morph, test if a value

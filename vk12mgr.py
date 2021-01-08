@@ -7,6 +7,7 @@ class VK12Manager:
         ''' callop[0]: True/False call/not-call self.make_bdic()
             callop[1]: True/False call/not-call self.somplify()   '''
         self.nov = nov
+        self.bdic = None
         self.vk1dic = vk1dic
         self.vk2dic = vk2dic
         self.terminated = False  # no sat possible/total hit-blocked
@@ -58,8 +59,8 @@ class VK12Manager:
             # on the same 2 bits as vk does. tc is the kns vk touches
             # both ts, tc exclude vk.kname (vk itself)
             sh_sets = {}
-            for b in bits:
-                s = set(self.bdic[b])
+            for b in vk.bits:
+                s = self.bdic[b].copy()
                 s.remove(vk.kname)
                 sh_sets[b] = s
             ts = set(sh_sets.popitem()[1])  # [0] is bit, [1] is the set
@@ -76,8 +77,8 @@ class VK12Manager:
         for kn, tp in choices.items():
             if bvk == None:
                 bvk = tp[0]
-                max_tsleng = len(bvk[0])
-                max_tcleng = len(bvk[1])
+                max_tsleng = len(bvk)
+                max_tcleng = len(tp[1])
             else:
                 lns = len(tp[0])
                 lnc = len(tp[1])
@@ -90,6 +91,14 @@ class VK12Manager:
                         bvk = tp[0]
                         max_tcleng = lnc
         return bvk
+
+    def _remove_vk(self, vk):
+        if self.bdic:
+            for b in vk.bits:
+                if vk.kname in self.bdic[b]:
+                    self.bdic[b].remove(vk.kname)
+        self.vk1dic.pop(vk.kname, None)
+        self.vk2dic.pop(vk.kname, None)
 
     def normalize(self):
         ''' A. len(vk1s) > 0
@@ -117,15 +126,14 @@ class VK12Manager:
                     if k in kn1s:
                         if self.vk1dic[k].dic[bit] == v1.dic[bit]:
                             kn1s.remove(k)
-                            self.vk1dic.pop(k, None)
-                            self.bdic[bit].remove(k)
+                            self._remove_vk(self.vk1dic[k])
                         else:  # a opposite vk1 -> total block
                             self.terminated = True
                             return
                     elif k in self.vk2dic:
                         if self.vk2dic[k].dic[bit] == v1.dic[bit]:
-                            self.vk2dic.pop(k, None)
-                            self.bdic[bit].remove(k)
+                            # vk2 is over-shadowed by v1. remove it
+                            self._remove_vk(self.vk2dic[k])
                         else:
                             # vk2 with opposite bit-value: count as a touch
                             touch_cnt += 1

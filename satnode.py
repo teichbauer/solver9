@@ -37,12 +37,16 @@ class SatNode:
         new_sh = SatHolder(shtail)
         self.sh.cut_tail(3)
 
-        for val, cdic in crown_dic.items():
+        vals = sorted(list(crown_dic.keys()))
+        for val in vals:
+            cdic = crown_dic[val]
+        # for val, cdic in crown_dic.items():
             # call both make_bdic/normalize (def: both True)
             psats = self.sh.get_psats(val)
             vk12m = VK12Manager(cdic[1], cdic[2], vkm.nov)
-            node = Node12(val, self, vk12m, new_sh.clone(), psats)
-            self.children[val] = node
+            if not vk12m.terminated:
+                node = Node12(val, self, vk12m, new_sh.clone(), psats)
+                self.children[val] = node
 
         vals = sorted(list(self.children.keys()))
         for val in vals:
