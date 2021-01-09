@@ -1,3 +1,7 @@
+2021-01-08->0.68
+- tested vk2 as bvk (multiple), and if bvk_cvs counts 4 (2**2 ==4)
+  then no space left -> self.terminated = True
+- vk12m.bvk_cvs is a set, no more list.
 2021-01-08->0.67
 - tested vk12m.best_vk2, with manually deleted vk1dic in config1,json
   setting.

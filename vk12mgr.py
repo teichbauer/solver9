@@ -72,25 +72,32 @@ class VK12Manager:
 
         kn2s = list(self.vk2dic.keys())
         n = len(kn2s)
-        choices = {kn: ts_tc_vks(self, vk) for kn, vk in self.vk2dic.items()}
+        choices = {}
+        for kn, vk in self.vk2dic.items():
+            ts, tc = ts_tc_vks(self, vk)
+            ts.add(kn)
+            tp = tuple(sorted(list(ts)))
+            choices[tp] = tc
+        # choices = {kn: ts_tc_vks(self, vk) for kn, vk in self.vk2dic.items()}
         bvk = None
-        for kn, tp in choices.items():
+        for ts, tc in choices.items():
             if bvk == None:
-                bvk = tp[0]
-                max_tsleng = len(bvk)
-                max_tcleng = len(tp[1])
+                bvk = ts
+                max_tsleng = len(ts)
+                max_tcleng = len(tc)
             else:
-                lns = len(tp[0])
-                lnc = len(tp[1])
+                lns = len(ts)
+                lnc = len(tc)
                 if lns > max_tsleng:
-                    bvk = tp[0]
+                    bvk = ts
                     max_tsleng = lns
                     max_tcleng = lnc
-                elif lns == max_tslengt:
+                elif lns == max_tsleng:
                     if lnc > max_tcleng:
-                        bvk = tp[0]
+                        bvk = ts
                         max_tcleng = lnc
         return bvk
+    # end of --- def best_vk2(self):
 
     def _remove_vk(self, vk):
         if self.bdic:
@@ -108,7 +115,7 @@ class VK12Manager:
             3. pick self.bvk: the one with most touch of vk2s;
                among the same touch-count, pick the one with bit == nov - 1
             B. len(vk1s) == 0, pick the best vk2 as bvk   '''
-        self.bvk_cvs = []
+        self.bvk_cvs = set([])
         kn1s = list(self.vk1dic.keys())
         if len(kn1s) > 0:
             # pick first vk1 as bvk
@@ -142,12 +149,15 @@ class VK12Manager:
                     # pick a better vk1 as bvk
                     if self.bvk.kname != k1:
                         self.bvk = v1
-            self.bvk_cvs.append(topvalue(self.bvk))
+            self.bvk_cvs.add(topvalue(self.bvk))
         else:
             # no vk1 exists - pick the best vk2 as bvk. can be multiple.
             self.bvk = self.best_vk2()
-            for vk in self.bvk:
-                self.bvk_cvs.append(topvalue(vk))
+            for kn in self.bvk:
+                vk = self.vk2dic[kn]
+                self.bvk_cvs.add(topvalue(vk))
+            if len(self.bvk_cvs) == 4:
+                self.terminated = True
 
     def morph(self, topbits):
         ln = len(topbits)
