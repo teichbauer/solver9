@@ -174,17 +174,20 @@ class VK12Manager:
             if len(self.bvk_cvs) == 4:
                 self.terminated = True
 
-    def morph(self, topbits):
+    def union_vkdic(self):
+        vkdic = self.vk1dic.copy()
+        vkdic.update(self.vk2dic)
+        return vkdic
+
+    def morph(self, topbits, bvk_cvs):
         ln = len(topbits)
         chdic = {}
         nov = self.nov - ln
-
-        vkdic = self.vk1dic.copy()
-        vkdic.update(self.vk2dic)
+        vkdic = self.union_vkdic()
         if len(vkdic) == 1:
             return None
         for c in range(2 ** ln):
-            if c in self.bvk_cvs:
+            if c in bvk_cvs:
                 continue
             vk1d = {}
             vk2d = {}

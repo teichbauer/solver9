@@ -61,8 +61,15 @@ class SatNode:
         while node.state == 0:
             chs = node.spawn()
             if len(chs) == 0:
-                break
-            node = chs[0]
+                if node.state == 1:
+                    print(f'{node.name} has sats:')
+                    print(node.ppsats)
+                elif node.state < 0:
+                    print(f'{node.name} is dead')
+                else:
+                    print(f'{node.name} is weird')
+            else:
+                node = chs[0]
         return node
 
     def resolve(self, path):

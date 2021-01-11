@@ -1,3 +1,5 @@
+2021-01-11->0.70
+- progress on vk12mgr and node12, on collecting sats. Some refactoring on both.
 2021-01-10->0.69
 - fixes in vk12mgr and node12.
 2021-01-08->0.68
