@@ -1,3 +1,5 @@
+2021-01-10->0.69
+- fixes in vk12mgr and node12.
 2021-01-08->0.68
 - tested vk2 as bvk (multiple), and if bvk_cvs counts 4 (2**2 ==4)
   then no space left -> self.terminated = True

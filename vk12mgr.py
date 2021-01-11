@@ -42,6 +42,7 @@ class VK12Manager:
         return topbits(self.nov, vk.nob) != vk.bits
 
     def highst_vk1(self):
+        # pick a vk1 with bit on nov-1, if not exists, pick first vk1 as bvk
         hvk = None
         for kn, vk in self.vk1dic.items():
             if vk.bits[0] == self.nov - 1:
@@ -107,37 +108,51 @@ class VK12Manager:
         self.vk1dic.pop(vk.kname, None)
         self.vk2dic.pop(vk.kname, None)
 
-    def normalize(self):
-        ''' A. len(vk1s) > 0
-            1. test if 2 opposite vk1s (same bit/opposite value): 
+    def clean_vk1s(self):
+        ''' 1. test if 2 opposite vk1s (same bit/opposite value): 
                 if True terminated = True
-            2. if 2 vk1s have same bit, same value, remove that one vk1
-            3. pick self.bvk: the one with most touch of vk2s;
-               among the same touch-count, pick the one with bit == nov - 1
-            B. len(vk1s) == 0, pick the best vk2 as bvk   '''
+            2. if 2 vk1s have same bit, same value, remove that one vk1 '''
+        kns = list(self.vk1dic.keys())
+        i = 0
+        while i < (len(kns) - 1):
+            vk = self.vk1dic[kns[i]]
+            j = i + 1
+            while j < len(kns):
+                # for j in range(i+1, ln):
+                vkx = self.vk1dic[kns[j]]
+                if vkx.bits[0] == vk.bits[0]:
+                    if vkx.dic[vkx.bits[0]] == vk.dic[vk.bits[0]]:
+                        self._remove_vk(vkx)
+                        kns.remove(vkx.kname)
+                    else:
+                        self.terminated = True
+                        return None
+                else:
+                    j += 1
+            i += 1
+        # pick a vk1 with bit@(nov-1) as bvk, if exists.
+        # may be replaced by better choice in normalize
+        self.bvk = self.bvk = self.highst_vk1()
+        return kns
+
+    def normalize(self):
+        ''' if len(vk1s) > 0
+               pick a vk1 as self.bvk: the one with most touch of vk2s;
+            if no vk1 exists, pick the best vk2 as bvk by self.best_vk2() '''
         self.bvk_cvs = set([])
-        kn1s = list(self.vk1dic.keys())
-        if len(kn1s) > 0:
-            # pick first vk1 as bvk
-            self.bvk = self.highst_vk1()
+        if len(self.vk1dic) > 0:
+            kn1s = self.clean_vk1s()
+            if kn1s == None:
+                return
             maxtouch_cnt = 0
             while len(kn1s) > 0:
                 k1 = kn1s.pop(0)
                 v1 = self.vk1dic[k1]
                 bit = v1.bits[0]
-                # for loop may change its size, use a clone for looping
-                knset = self.bdic[bit].copy()
-                knset.remove(k1)
                 touch_cnt = 0
-                for k in knset:
-                    if k in kn1s:
-                        if self.vk1dic[k].dic[bit] == v1.dic[bit]:
-                            kn1s.remove(k)
-                            self._remove_vk(self.vk1dic[k])
-                        else:  # a opposite vk1 -> total block
-                            self.terminated = True
-                            return
-                    elif k in self.vk2dic:
+                kns = self.bdic[bit].copy()
+                for k in kns:
+                    if k in self.vk2dic:
                         if self.vk2dic[k].dic[bit] == v1.dic[bit]:
                             # vk2 is over-shadowed by v1. remove it
                             self._remove_vk(self.vk2dic[k])

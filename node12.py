@@ -24,14 +24,14 @@ class Node12:
         self.topbits = topbits(self.nov, nob)
 
         # what if > 1 bvks (nob==2), need cvs to be excluded in morph
-        cv = topvalue(self.vk12m.bvk)
         if self.vk12m.need_tx():
             self.tx = TxEngine(self.vk12m.bvk, self.nov)
             self.sh.transfer(self.tx)
             vk12m = self.vk12m.txed_clone(self.tx)
         else:
             vk12m = self.vk12m.clone()
-        chdic = vk12m.morph(self.topbits, cv)
+        vk12m.bvk_cvs = self.vkm12m.bvk_cvs
+        chdic = vk12m.morph(self.topbits)
         shtail = self.sh.spawn_tail(nob)
         new_sh = SatHolder(shtail)
         self.sh.cut_tail(nob)
