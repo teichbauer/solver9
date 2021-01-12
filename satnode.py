@@ -11,7 +11,9 @@ class SatNode:
         self.sh = sh
         self.vkm = vkm
         self.nov = vkm.nov
+        self.name = f'sn-{self.nov}'
         self.children = {}
+        self.sats2s = {}
         if self.nov == 3:
             self.sats = self.nov3()
         else:
@@ -46,7 +48,8 @@ class SatNode:
             vk12m = VK12Manager(cdic[1], cdic[2], vkm.nov)
             if not vk12m.terminated:
                 node = Node12(val, self, vk12m, new_sh.clone(), psats)
-                self.children[val] = node
+                if node.state == 0:
+                    self.children[val] = node
 
         vals = sorted(list(self.children.keys()))
         for val in vals:
@@ -60,12 +63,16 @@ class SatNode:
         node = ch
         while node.state == 0:
             chs = node.spawn()
+            ln = len(chs)
+            print(f"{node.name} has {ln} nexts")
+
             if len(chs) == 0:
                 if node.state == 1:
                     print(f'{node.name} has sats:')
                     print(node.ppsats)
                 elif node.state < 0:
                     print(f'{node.name} is dead')
+                    node.suicide()
                 else:
                     print(f'{node.name} is weird')
             else:

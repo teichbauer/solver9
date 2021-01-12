@@ -20,22 +20,36 @@ class Node12:
             sats = self.nov3_sats()
             ln = len(sats)
             if ln > 0:
-                satdic = self.sh.get_psats(sats[0])
-                if ln > 1:
-                    for v in range(1, len(sats)):
-                        dic = self.sh.get_psats()
-                        self.merge_sats(satdic, dic)
-                self.ppsats.update(satdic)
-                self.state = 1
+                self.collect_psat(sats)
+                self.state = 1      # hit at least 1 psat
             else:
-                self.state = -1
+                self.state = -1     # no sat possible
+
+    def collect_psat(self, sats):
+        self.ppsats.update(self.sh.get_psats(sats[0]))
+        if len(sats) > 1:
+            for i in range(1, len(sats)):
+                dic = self.sh.get_psats(sats[i])
+                self.merge_sats(self.ppsats, dic)
+        parent = self.parent
+        while True:
+            self.merge_sats(self.ppsats, parent.ppsats)
+            parent = parent.parent
+            if type(parent).__name__ == 'SatNode':
+                break
+            else:
+                val = parent.val
+        print(f"{val}/{self.name} finds psat: {self.ppsats}")
+        # parent is a SatNode instance. Fill in sats2s[val]
+        dic = parent.sats2s.setdefault(val, {})
+        dic[self.name] = self.ppsats
 
     def merge_sats(self, dic0, dic1):
         # merge dic1 into dic0 - if a key has both 0 | 1, set its value = 2
         for k, v in dic1.items():
             if k in dic0:
-                assert(dic0[k] != dic1[k])
-                dic0[k] = 2
+                if dic0[k] != dic1[k]:
+                    dic0[k] = 2
             else:
                 dic0[k] = dic1[k]
         return dic0
@@ -79,7 +93,21 @@ class Node12:
             for val, vkm in chdic.items():
                 psats = self.sh.get_psats(val)
                 node = Node12(val, self, vkm, new_sh.clone(), psats)
+                # if node.state == 0:
                 self.nexts.append(node)
-        noc = len(self.nexts)
-        print(f'{self.name} has {noc} children.')
         return self.nexts
+
+    def suicide(self):
+        print(f'{self.name} destroyed.')
+        if type(self.parent).__name__ == 'SatNode':
+            self.parent.children.pop(self.val)
+            return
+        i = 0
+        while i < len(self.parent.next()):
+            if self.parent.next[i].name == self.name:
+                self.parent.next.pop(i)
+                break
+            else:
+                i += 1
+        if len(self.parent.next) == 0:
+            self.parent.suicide()
