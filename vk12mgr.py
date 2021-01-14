@@ -182,7 +182,7 @@ class VK12Manager:
     def morph(self, topbits, bvk_cvs):
         ln = len(topbits)
         chdic = {}
-        nov = self.nov - ln
+        self.nov -= ln
         vkdic = self.union_vkdic()
         if len(vkdic) == 1:
             return {}
@@ -200,5 +200,7 @@ class VK12Manager:
                         vk2d[kn] = v
             if len(vk1d) > 0 or len(vk2d) > 0:
                 # make a shortened vk12m, call both make_bdic/normalize
-                chdic[c] = VK12Manager(vk1d, vk2d, nov)
+                vkm = VK12Manager(vk1d, vk2d, self.nov)
+                if not vkm.terminated:
+                    chdic[c] = vkm
         return chdic

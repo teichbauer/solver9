@@ -34,8 +34,8 @@ class VKManager:
             assert(vk.bits != topbits), f"{kn} shouldn't be total-share."
 
             cvr, odic = topbits_coverages(vk, topbits)
-            if len(odic) > 0:
-                vk12 = VKlause(kn, odic, self.nov)  # None if no bit left
+            if len(odic) > 0:  # if odic has no bit left, skip this vk
+                vk12 = VKlause(kn, odic, self.nov)
                 for cv in cvr:
                     if cv in excl_cvs:
                         continue

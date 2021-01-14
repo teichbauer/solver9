@@ -1,6 +1,7 @@
 from vk12mgr import VK12Manager
 from crown import Crown
 
+
 class CrownManager:
     def __init__(self, sh, nov):
         self.sh = sh
@@ -22,7 +23,7 @@ class CrownManager:
             cnt2 = len(crown.vk12m.vk2dic)
             insert_index = -1
             for i, crn in enumerate(self.crowns):
-                # ? for loop dont allow insert into src, but 
+                # ? for loop dont allow insert into src, but
                 # in this case, when I use enumerate, it does allow
                 ln = len(crn.vk12m.vk1dic)
                 if ln < cnt1:
@@ -47,4 +48,6 @@ class CrownManager:
         crn = self.crowns[self.crown_index]
         self. crown_index += 1
         result = crn.dig_thru()
+        if len(result) == 0:
+            return self.topcrown_psats()
         return result

@@ -1,7 +1,7 @@
 from basics import print_json
 from TransKlauseEngine import TxEngine
 from vk12mgr import VK12Manager
-from basics import topvalue, topbits
+from basics import topbits
 from satholder import SatHolder
 
 
@@ -14,7 +14,7 @@ class Node12:
         self.sh = sh
         self.nov = vk12m.nov
         # vname is 2 ditigs number. vname % 10 is the given val
-        self.vname = vname  # vname // 10: is the parent-nob 
+        self.vname = vname  # vname // 10: is the parent-nob
         self.satdic = satdic
         self.sats = {}
         self.state = 0
@@ -33,7 +33,6 @@ class Node12:
             parent = self.parent
         self.satdic[self.name()] = sdic
 
-
     def merge_sats(self, dic0, dic1):
         # merge dic1 into dic0 - if a key has both 0 | 1, set its value = 2
         for k, v in dic1.items():
@@ -45,9 +44,9 @@ class Node12:
         return dic0
 
     def nov3_sats(self):   # when nov==3, collect integer-sats
-        sats = []  
+        sats = []
         vkdic = self.vk12m.union_vkdic()
-        for i in range(8): # 8 = 2**3
+        for i in range(8):  # 8 = 2**3
             hit = False
             for vk in vkdic.values():
                 if vk.hit(i):
@@ -90,12 +89,12 @@ class Node12:
         if len(chdic) == 0:
             self.sats = self.sh.full_sats()
             self.state = 1  #
-            # return [] 
+            # return []
         else:
             for val, vkm in chdic.items():
                 # psats = self.sh.get_sats(val)
                 node = Node12(
-                    name_base + val,  # %10 -> val, //10 -> nob 
+                    name_base + val,  # %10 -> val, //10 -> nob
                     self,             # node's parent
                     vkm,              # vk12m for node
                     new_sh.clone(),   # sh is a clone: for sh.varray is a ref

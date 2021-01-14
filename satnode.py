@@ -24,7 +24,7 @@ class SatNode:
     def spawn(self):
         choice = self.vkm.bestchoice()
         self.bvk = self.vkm.vkdic[choice['bestkey'][0]]
-        if self.topbits != self.bvk.bits:
+        if self.topbits != choice['bits']:  # the same as self.bvk.bits:
             self.tx = TxEngine(self.bvk, self.nov)
             self.sh.transfer(self.tx)
             vkm = self.vkm.txed_clone(self.tx)
@@ -36,7 +36,7 @@ class SatNode:
         self.sh.cut_tail(3)
 
         excl_cvs = [topvalue(vkm.vkdic[kn]) for kn in choice['bestkey']]
-        crown_dic = vkm.morph(choice, self.topbits, excl_cvs) # vkm.nov -= 3
+        crown_dic = vkm.morph(choice, self.topbits, excl_cvs)  # vkm.nov -= 3
 
         for val, cdic in crown_dic.items():
             psats = self.sh.get_sats(val)
