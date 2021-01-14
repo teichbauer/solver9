@@ -29,8 +29,7 @@ def process(cnfname):
     sn = SatNode(None, sh, vkm)
     while sn.sats == None:
         path.append(sn)
-        sn = sn.spawn()
-    sn.resolve(path)
+        sn.spawn()
 
     return None
 

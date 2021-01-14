@@ -13,14 +13,13 @@ class SatNode:
         self.vkm = vkm
         self.nov = vkm.nov
         self.name = f'sn-{self.nov}'
-        self.children = {}
         self.sats = None
-        self.next_sh = SatHolder(self.sh.spawn_tail(3))
-        self.crwnmgr = CrownManager(self.next_sh, self.nov - 3)
-        self.sh.cut_tail(3)
         self.topbits = topbits(self.nov, 3)
+        self.next = None
+        self.done = False
         if len(vkm.vkdic) == 0:
-            self.sats = self.max_sats()
+            self.sats = self.sh.full_sats()
+            self.done = True
 
     def spawn(self):
         choice = self.vkm.bestchoice()
@@ -32,15 +31,17 @@ class SatNode:
         else:
             vkm = self.vkm
 
-        excl_cvs = [topvalue(vkm.vkdic[kn]) for kn in choice['bestkey']]
+        self.next_sh = SatHolder(self.sh.spawn_tail(3))
+        self.crwnmgr = CrownManager(self.next_sh, self.nov - 3)
+        self.sh.cut_tail(3)
 
+        excl_cvs = [topvalue(vkm.vkdic[kn]) for kn in choice['bestkey']]
         crown_dic = vkm.morph(choice, self.topbits, excl_cvs) # vkm.nov -= 3
 
         for val, cdic in crown_dic.items():
-            psats = self.sh.get_psats(val)
+            psats = self.sh.get_sats(val)
             self.crwnmgr.add_crown(val, psats, cdic[1], cdic[2])
 
-        self.next = None
         while True:
             psats = self.crwnmgr.topcrown_psats()
             if psats == None:

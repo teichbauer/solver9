@@ -20,18 +20,24 @@ class CrownManager:
         else:
             cnt1 = len(crown.vk12m.vk1dic)
             cnt2 = len(crown.vk12m.vk2dic)
-            inserted = False
+            insert_index = -1
             for i, crn in enumerate(self.crowns):
+                # ? for loop dont allow insert into src, but 
+                # in this case, when I use enumerate, it does allow
                 ln = len(crn.vk12m.vk1dic)
                 if ln < cnt1:
-                    self.crowns.insert(i, crown)
-                    inserted = True
+                    # self.crowns.insert(i, crown)
+                    insert_index = i
+                    break
                 elif ln == cnt1:
-                    if len(crn.vk12m.vk2dic) < cnt2:
-                        self.crowns.insert(i, crown)
-                        inserted = True
-            if not inserted:
-                self.crowns.append(crown)
+                    if len(crn.vk12m.vk2dic) < cnt2:  # TBD: should be >
+                        insert_index = i
+                        break
+            if insert_index == -1:         # no one in list has lower ranking
+                self.crowns.append(crown)  # append as lowest
+            else:
+                # behind insert_index, lements are of lower ranking. insert.
+                self.crowns.insert(insert_index, crown)
         self.crown_index = 0
         return crown
 
@@ -40,5 +46,5 @@ class CrownManager:
             return None
         crn = self.crowns[self.crown_index]
         self. crown_index += 1
-        result = crn.solve()
+        result = crn.dig_thru()
         return result

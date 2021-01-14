@@ -185,7 +185,7 @@ class VK12Manager:
         nov = self.nov - ln
         vkdic = self.union_vkdic()
         if len(vkdic) == 1:
-            return None
+            return {}
         for c in range(2 ** ln):
             if c in bvk_cvs:
                 continue
@@ -198,8 +198,7 @@ class VK12Manager:
                         vk1d[kn] = v
                     elif v.nob == 2:
                         vk2d[kn] = v
-            if len(vk1d) == 0 and len(vk2d) == 0:
-                return None
-            # make a shortened vk12m, call both make_bdic/normalize
-            chdic[c] = VK12Manager(vk1d, vk2d, nov)
+            if len(vk1d) > 0 or len(vk2d) > 0:
+                # make a shortened vk12m, call both make_bdic/normalize
+                chdic[c] = VK12Manager(vk1d, vk2d, nov)
         return chdic

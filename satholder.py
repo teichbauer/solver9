@@ -88,7 +88,7 @@ class SatHolder:
     def cut_tail(self, cutcnt):
         self.varray = self.varray[-cutcnt:]
 
-    def get_psats(self, val):
+    def get_sats(self, val):
         nd = len(self.varray)
         assert(val < (2 ** nd))
         satdic = {}
@@ -96,6 +96,10 @@ class SatHolder:
             v = get_bit(val, ind)
             satdic[vn] = v
         return satdic
+
+    def full_sats(self):
+        sats = {v:2 for v in self.varray }
+        return sats
 
     def get_segment_sats(self, chil_keyvalue):
         ''' assert check:
