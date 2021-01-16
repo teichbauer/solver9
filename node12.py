@@ -1,4 +1,4 @@
-from basics import print_json
+from basics import print_json, merge_sats
 from TransKlauseEngine import TxEngine
 from vk12mgr import VK12Manager
 from basics import topbits
@@ -14,8 +14,13 @@ class Node12:
         self.sh = sh
         self.nov = vk12m.nov
         # vname is 2 ditigs number. vname % 10 is the given val
-        self.vname = vname  # vname // 10: is the parent-nob
-        self.satdic = satdic
+        self.vname = vname    # vname // 10: is the parent-nob
+        self.satdic = satdic  # ref to crown.csats == {}
+
+        # child_satdic for next-level children:
+        # {<node-name>: <sat-dic>, ..}
+        self.child_satdic = {}
+
         self.sats = {}
         self.state = 0
         self.nexts = []
@@ -26,22 +31,17 @@ class Node12:
         return f'{self.nov}.{self.vname}'
 
     def collect_sats(self):
-        parent = self.parent
-        sdic = self.sats
-        while type(parent).__name != 'SatNode':
-            self.merge_sats(sdic, parent.sats)
-            parent = self.parent
+        node = self
+        parent = node.parent
+        sdic = node.sats.copy()
+        while type(parent).__name__ == 'Node12':
+            merge_sats(sdic, parent.sats)
+            node = parent
+            parent = parent.parent
+        assert(type(parent).__name__ == 'Crown')
+        merge_sats(sdic, parent.child_satdic[node.vname])
+        merge_sats(sdic, parent.rootsats)
         self.satdic[self.name()] = sdic
-
-    def merge_sats(self, dic0, dic1):
-        # merge dic1 into dic0 - if a key has both 0 | 1, set its value = 2
-        for k, v in dic1.items():
-            if k in dic0:
-                if dic0[k] != v:
-                    dic0[k] = 2
-            else:
-                dic0[k] = v
-        return dic0
 
     def nov3_sats(self):   # when nov==3, collect integer-sats
         sats = []
@@ -60,7 +60,7 @@ class Node12:
             self.suicide()
         else:
             for si in sats:
-                self.merge_sats(self.sats, self.sh.get_sats(si))
+                merge_sats(self.sats, self.sh.get_sats(si))
             self.collect_sats()
             self.state = 1
             # self.suicide()
@@ -84,7 +84,6 @@ class Node12:
         shtail = self.sh.spawn_tail(nob)
         new_sh = SatHolder(shtail)
         self.sh.cut_tail(nob)
-        self.sats = self.sh.get_sats(self.vname % 10)  # get the given-val
 
         if len(chdic) == 0:
             self.sats = self.sh.full_sats()
@@ -92,15 +91,15 @@ class Node12:
             # return []
         else:
             for val, vkm in chdic.items():
-                # psats = self.sh.get_sats(val)
                 node = Node12(
                     name_base + val,  # %10 -> val, //10 -> nob
                     self,             # node's parent
                     vkm,              # vk12m for node
                     new_sh.clone(),   # sh is a clone: for sh.varray is a ref
                     self.satdic)      # crown.csats, for collected partial-sats
-                # if node.state == 0:
-                self.nexts.append(node)
+                if node.state == 0:
+                    self.child_satdic[node.vname] = self.sh.get_sats(val)
+                    self.nexts.append(node)
         return self.nexts
 
     def suicide(self):

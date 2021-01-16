@@ -36,6 +36,32 @@ def ordered_dic_string(d):
     return m
 
 
+def merge_sats(self, dic0, dic1):
+    # merge dic1 into dic0 - if a key has both 0 | 1, set its value = 2
+    for k, v in dic1.items():
+        if k in dic0:
+            if dic0[k] != v:
+                dic0[k] = 2
+        else:
+            dic0[k] = v
+    return dic0
+
+
+def merge_satdics(target_dic, src_dic):
+    # satdic is a dic with keys being bit-number(varaible names), and
+    # values are the boolena values 0 | 1
+    # if a value set to be 2, this is a "wild-card": can be either 0 or 1
+    # -------------------------------------------------------------------
+    # merge src_dic into target_dic - if a key has 0 and 1, set its value = 2
+    for k, v in src_dic.items():
+        if k in target_dic:
+            if target_dic[k] != v:
+                target_dic[k] = 2
+        else:
+            target_dic[k] = v
+    return target_dic
+
+
 def print_json(nov, vkdic, fname):
     sdic = {
         'nov': nov,

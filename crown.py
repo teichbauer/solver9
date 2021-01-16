@@ -8,8 +8,11 @@ class Crown:
     def __init__(self, val, sh, psats, vk12m):
         self.sh = sh
         self.val = val
-        self.sats = psats
-        self.csats = {}
+        self.rootsats = psats
+        # child_satdic for top-level children:
+        # {<node-name>: <sat-dic>, ..}
+        self.child_satdic = {}
+        self.csats = {}  # sats of successful children
         self.vk12m = vk12m
         self.done = False
 
@@ -33,15 +36,15 @@ class Crown:
         self.sh.cut_tail(nob)
 
         for val, vkm in chdic.items():
-            # psats = self.sh.get_sats(val)
             node = Node12(
-                name_base + val,  # %10 -> val, //10 -> nob
+                name_base + val,  # node12.vname: %10 -> val, //10 -> nob
                 self,             # node's parent
                 vkm,              # vk12m for node
                 new_sh.clone(),   # sh is a clone: for sh.varray is a ref
-                self.satdic)      # crown.csats, for collected partial-sats
-            # if node.state == 0:
-            self.nodes.append(node)
+                self.csats)       # crown.csats, for collected partial-sats
+            if node.state == 0:
+                self.nodes.append(node)
+                self.child_satdic[node.vname] = self.sh.get_sats(val)
 
     def dig_thru(self):
         self.initial_nodes()

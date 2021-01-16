@@ -1,3 +1,7 @@
+2021-01-15->0.75
+- move merge_sats from node12 to basics.
+- progress on managing sats-branching, from crown to bottom-level node12.
+  Need more testing
 2021-01-14->0.74
 - fixing crown, vk12m.
 2021-01-13->0.73
