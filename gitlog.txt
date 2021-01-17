@@ -1,3 +1,6 @@
+2021-01-17->0.76
+- tested with config1.json: crown/node12 start working, and deliver psats with 
+  {7:1, 6:2, 5:1, 4:0, 3:1, 2:0, 1:1, 0:0}, where 6:2 means a wild-card for v6.
 2021-01-15->0.75
 - move merge_sats from node12 to basics.
 - progress on managing sats-branching, from crown to bottom-level node12.

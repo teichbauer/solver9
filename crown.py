@@ -40,8 +40,8 @@ class Crown:
                 name_base + val,  # node12.vname: %10 -> val, //10 -> nob
                 self,             # node's parent
                 vkm,              # vk12m for node
-                new_sh.clone(),   # sh is a clone: for sh.varray is a ref
-                self.csats)       # crown.csats, for collected partial-sats
+                new_sh.clone())   # sh is a clone: for sh.varray is a ref
+            # self.csats)       # crown.csats, for collected partial-sats
             if node.state == 0:
                 self.nodes.append(node)
                 self.child_satdic[node.vname] = self.sh.get_sats(val)
@@ -56,7 +56,7 @@ class Crown:
                 for node in nodes:
                     if node.state == 0:
                         nexts += node.spawn()
-                if len(next) == 0:
+                if len(nexts) == 0:
                     break
                 else:
                     nodes = nexts

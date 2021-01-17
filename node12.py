@@ -6,16 +6,13 @@ from satholder import SatHolder
 
 
 class Node12:
-    def __init__(self, vname, parent, vk12m, sh, satdic):
-        # self.val = val
-        # self.psats = psats
+    def __init__(self, vname, parent, vk12m, sh):
         self.parent = parent
         self.vk12m = vk12m
         self.sh = sh
         self.nov = vk12m.nov
         # vname is 2 ditigs number. vname % 10 is the given val
         self.vname = vname    # vname // 10: is the parent-nob
-        self.satdic = satdic  # ref to crown.csats == {}
 
         # child_satdic for next-level children:
         # {<node-name>: <sat-dic>, ..}
@@ -34,14 +31,17 @@ class Node12:
         node = self
         parent = node.parent
         sdic = node.sats.copy()
-        while type(parent).__name__ == 'Node12':
-            merge_sats(sdic, parent.sats)
+        while True:  # type(parent).__name__ == 'Node12':
+            merge_sats(sdic, parent.child_satdic[node.vname])
+            if type(parent).__name__ == 'Crown':
+                break
             node = parent
             parent = parent.parent
         assert(type(parent).__name__ == 'Crown')
-        merge_sats(sdic, parent.child_satdic[node.vname])
         merge_sats(sdic, parent.rootsats)
-        self.satdic[self.name()] = sdic
+        print(f'{self.name()} finds sats: {sdic}')
+        parent.csats = sdic  # set crown.csats - sats found in it.
+        self.state = 1
 
     def nov3_sats(self):   # when nov==3, collect integer-sats
         sats = []
@@ -61,10 +61,9 @@ class Node12:
         else:
             for si in sats:
                 merge_sats(self.sats, self.sh.get_sats(si))
-            self.collect_sats()
-            self.state = 1
+            self.state = 2
             # self.suicide()
-        return sats
+        return self.sats
 
     def spawn(self):
         # self.vk12m must have bvk
@@ -95,11 +94,14 @@ class Node12:
                     name_base + val,  # %10 -> val, //10 -> nob
                     self,             # node's parent
                     vkm,              # vk12m for node
-                    new_sh.clone(),   # sh is a clone: for sh.varray is a ref
-                    self.satdic)      # crown.csats, for collected partial-sats
-                if node.state == 0:
+                    new_sh.clone())   # sh is a clone: for sh.varray is a ref
+                # self.satdic)      # crown.csats, for collected partial-sats
+                if node.state != -1:
                     self.child_satdic[node.vname] = self.sh.get_sats(val)
+                if node.state == 0:
                     self.nexts.append(node)
+                elif node.state == 2:
+                    node.collect_sats()  # this will set state = 1
         return self.nexts
 
     def suicide(self):

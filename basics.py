@@ -36,7 +36,7 @@ def ordered_dic_string(d):
     return m
 
 
-def merge_sats(self, dic0, dic1):
+def merge_sats(dic0, dic1):
     # merge dic1 into dic0 - if a key has both 0 | 1, set its value = 2
     for k, v in dic1.items():
         if k in dic0:
