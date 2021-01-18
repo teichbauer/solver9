@@ -1,3 +1,5 @@
+2021-01-18->0.78
+- refactored/fixed/optimized satnode and vkmananger. Still backwards compatible.
 2021-01-17->0.77
 - change crown.csats to be list of tuple: (sat-dic, leef-node12-name). Because
   a crown may have multiple sat-dics.

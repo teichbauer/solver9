@@ -49,10 +49,11 @@ class SatNode:
                 return
             if self.next == None:
                 self.next = SatNode(self, self.next_sh, vkm)
-            sats = self.combine_sats(psats, self.next)
-            if sats:
+                sat3s = self.next.spawn()
+            self.sats = self.combine_sats(psats, sat3s)
+            if self.sats:
                 print(f'{self.name} has sats: {sats}')
-                return
+                return self.sats
 
     def combine_sats(self, psats, node):
         return True
