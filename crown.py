@@ -12,7 +12,7 @@ class Crown:
         # child_satdic for top-level children:
         # {<node-name>: <sat-dic>, ..}
         self.child_satdic = {}
-        self.csats = {}  # sats of successful children
+        self.csats = []  # sats of successful children
         self.vk12m = vk12m
         self.done = False
 
@@ -41,7 +41,6 @@ class Crown:
                 self,             # node's parent
                 vkm,              # vk12m for node
                 new_sh.clone())   # sh is a clone: for sh.varray is a ref
-            # self.csats)       # crown.csats, for collected partial-sats
             if node.state == 0:
                 self.nodes.append(node)
                 self.child_satdic[node.vname] = self.sh.get_sats(val)

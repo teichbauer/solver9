@@ -40,7 +40,7 @@ class Node12:
         assert(type(parent).__name__ == 'Crown')
         merge_sats(sdic, parent.rootsats)
         print(f'{self.name()} finds sats: {sdic}')
-        parent.csats = sdic  # set crown.csats - sats found in it.
+        parent.csats.append((sdic, self.name()))
         self.state = 1
 
     def nov3_sats(self):   # when nov==3, collect integer-sats
@@ -95,7 +95,6 @@ class Node12:
                     self,             # node's parent
                     vkm,              # vk12m for node
                     new_sh.clone())   # sh is a clone: for sh.varray is a ref
-                # self.satdic)      # crown.csats, for collected partial-sats
                 if node.state != -1:
                     self.child_satdic[node.vname] = self.sh.get_sats(val)
                 if node.state == 0:
