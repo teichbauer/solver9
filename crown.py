@@ -13,8 +13,12 @@ class Crown:
         # {<node-name>: <sat-dic>, ..}
         self.child_satdic = {}
         self.csats = []  # sats of successful children
-        self.vk12m = vk12m
-        self.done = False
+        if type(vk12m) == type([]):
+            self.csats = vk12m
+            self.done = True
+        else:
+            self.vk12m = vk12m
+            self.done = False
 
     def initial_nodes(self):
         self.nodes = []
@@ -44,6 +48,9 @@ class Crown:
             if node.state == 0:
                 self.nodes.append(node)
                 self.child_satdic[node.vname] = self.sh.get_sats(val)
+
+    def direct_sats(self, tbs, cvrs):
+        pass
 
     def dig_thru(self):
         self.initial_nodes()

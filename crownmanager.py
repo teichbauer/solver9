@@ -10,6 +10,17 @@ class CrownManager:
         self.crown_index = -1
 
     def add_crown(self, val, psats, vk1dic, vk2dic):
+        ln1 = len(vk1dic)
+        ln2 = len(vk2dic)
+        if ln1 + ln2 == 1:
+            if ln1:
+                csats = self.onevk_sats(vk1dic.popitem()[1])
+            else:
+                csats = self.onevk_sats(vk2dic.popitem()[1])
+            crown = Crown(val, self.sh, psats, csats)
+            self.crowns.insert(0, crown)
+            return
+
         vk12m = VK12Manager(vk1dic, vk2dic, self.nov)
         if vk12m.terminated:
             return None
@@ -18,6 +29,7 @@ class CrownManager:
         # adde to ranked self.crown list
         if len(self.crowns) == 0:
             self.crowns.append(crown)
+            self.crown_index = 0
         else:
             cnt1 = len(crown.vk12m.vk1dic)
             cnt2 = len(crown.vk12m.vk2dic)
@@ -39,8 +51,40 @@ class CrownManager:
             else:
                 # behind insert_index, lements are of lower ranking. insert.
                 self.crowns.insert(insert_index, crown)
-        self.crown_index = 0
         return crown
+
+    def _vk1_sdic(self, vk):
+        sdic = {}
+        for b in range(len(self.sh.varray)):
+            val = (vk.dic[b] + 1) % 2  # oppo val of vk.dic[b]
+            if b == vk.bits[0]:
+                sdic[b] = val
+            else:
+                sdic[b] = 2
+        return [(sdic, f'{self.nov}.1{val}')]
+
+    def _vk2_sdic(self, vk):
+        b0 = vk.bits[0]
+        b1 = vk.bits[1]
+        d0 = {b0: (vk.dic[b0] + 1) % 2, b1: vk.dic[b1]}
+        d1 = {b0: vk.dic[b0], b1: (vk.dic[b1] + 1) % 2}
+        for b in range(len(self.sh.varray)):
+            if b not in vk.bits:
+                d0[b] = 2
+                d1[b] = 2
+        return [(d0, 'name1'), (d1, 'name2')]
+
+    def onevk_sats(self, vk):
+        sdic = {}
+        if vk.nob == 1:
+            for b in range(len(self.sh.varray)):
+                if b == vk.bits[0]:
+                    sdic[b] = (vk.dic[b] + 1) % 2  # oppo val of vk.dic[b]
+                else:
+                    sdic[b] = 2
+        else:
+            pass
+        return sdic
 
     def topcrown_psats(self):
         if self.crown_index >= len(self.crowns):

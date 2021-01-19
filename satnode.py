@@ -40,7 +40,8 @@ class SatNode:
 
         for val, cdic in crown_dic.items():
             psats = self.sh.get_sats(val)
-            self.crwnmgr.add_crown(val, psats, cdic[1], cdic[2])
+            self.crwnmgr.add_crown(
+                val, psats, cdic.get(1, {}), cdic.get(2, {}))
 
         while True:
             psats = self.crwnmgr.topcrown_psats()
