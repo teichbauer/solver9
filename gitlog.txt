@@ -1,3 +1,5 @@
+2021-01-20->0.82
+- recode vkmgr.morph, and crownmanager/satnode.
 2021-01-20->0.81
 - optimized vkmgr.bestchoice: take away all tsvk kns from candidates - Because
   a kn can not be in >1 best-keys. This reduce the loop-count.

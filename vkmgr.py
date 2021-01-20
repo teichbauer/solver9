@@ -22,6 +22,38 @@ class VKManager:
         vkdic = tx.trans_vkdic(self.vkdic)
         return VKManager(vkdic, self.nov)
 
+    # def morph(self, choice, topbits, excl_cvs):
+    #     ''' only called on a txed clone '''
+    #     crowns = {}  # {<cvr-val>: {kn, ..},..}
+    #     self.nov -= 3
+    #     for k3 in choice['bestkey']:
+    #         self.vkdic.pop(k3, None)
+
+    #     # TBD: here, I am not looping thru all vals 0..7 - I should do it
+
+    #     for kn in choice['touched']:  # for a kn with at least 1 bit in k3bits
+    #         vk = self.vkdic.pop(kn, None)  # pop out this touched kn
+    #         assert(vk.bits != topbits), f"{kn} shouldn't be total-share."
+
+    #         cvr, odic = topbits_coverages(vk, topbits)
+    #         if len(odic) > 0:  # if odic has no bit left, skip this vk
+    #             vk12 = VKlause(kn, odic, self.nov)
+    #             for cv in cvr:
+    #                 if cv in excl_cvs:
+    #                     continue
+    #                 d = crowns.setdefault(cv, {})
+    #                 if len(odic) == 1:
+    #                     d.setdefault(1, {})[kn] = vk12
+    #                 else:
+    #                     d.setdefault(2, {})[kn] = vk12
+    #     # now all left-over vks in self.vkdic are vk3s
+    #     # now set their nov -= 3, the same as self.nov
+    #     for vk in self.vkdic.values():
+    #         vk.nov = self.nov
+    #     # re-make self.bdic, based on updated vkdic (popped out all touched)
+    #     self.make_bdic()    # make the bdic for self.vkdic - all 3-bit vks
+    #     return crowns
+
     def morph(self, choice, topbits, excl_cvs):
         ''' only called on a txed clone '''
         crowns = {}  # {<cvr-val>: {kn, ..},..}
@@ -29,30 +61,38 @@ class VKManager:
         for k3 in choice['bestkey']:
             self.vkdic.pop(k3, None)
 
-        # TBD: here, I am not looping thru all vals 0..7 - I should do it
-
-        for kn in choice['touched']:  # for a kn with at least 1 bit in k3bits
-            vk = self.vkdic.pop(kn, None)  # pop out this touched kn
-            assert(vk.bits != topbits), f"{kn} shouldn't be total-share."
-
+        tdic = {}
+        for kn in choice['touched']:
+            vk = self.vkdic.pop(kn, None)
             cvr, odic = topbits_coverages(vk, topbits)
-            if len(odic) > 0:  # if odic has no bit left, skip this vk
-                vk12 = VKlause(kn, odic, self.nov)
-                for cv in cvr:
-                    if cv in excl_cvs:
-                        continue
-                    d = crowns.setdefault(cv, {})
-                    if len(odic) == 1:
-                        d.setdefault(1, {})[kn] = vk12
-                    else:
-                        d.setdefault(2, {})[kn] = vk12
-        # now all vks in self.vkdic are vk3s
-        # and have nov -= 3 that is the same as self.nov
+            if len(odic) > 0:
+                tdic[tuple(cvr)] = VKlause(kn, odic, self.nov)
+
+        # all left-over vks in self.vkdic are vk3s
+        # now set their nov -= 3, the same as self.nov
         for vk in self.vkdic.values():
             vk.nov = self.nov
-        # make bdic based on updated vkdic (popped out all touched)
+
+        # 2**3 == 8 - number of possible children of the satnoe, as crowns
+        # put into satnode.crownmgr.crowns list
+        for val in range(8):
+            if val in excl_cvs:
+                continue
+            d = crowns.setdefault(val, {})
+            for cvr in tdic:
+                if val in cvr:  # touched kn/kv does have outside bit
+                    svk = tdic[cvr]
+                    if svk.nob == 1:
+                        d.setdefault(1, {})[svk.kname] = svk
+                    elif svk.nob == 2:
+                        d.setdefault(2, {})[svk.kname] = svk
+            if len(d) == 0:
+                crowns[val] = "full-coverage"
+
+        # re-make self.bdic, based on updated vkdic (popped out all touched)
         self.make_bdic()    # make the bdic for self.vkdic - all 3-bit vks
         return crowns
+    # enf of def morph()
 
     def bestchoice(self):
         ''' return: {(kn1,kn2): set([tkn1, tkn2,..]),'bits': bits}
