@@ -1,3 +1,5 @@
+2021-01-20->0.83
+- simplify what last checked in.
 2021-01-20->0.82
 - recode vkmgr.morph, and crownmanager/satnode.
 2021-01-20->0.81

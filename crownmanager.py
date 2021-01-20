@@ -9,21 +9,18 @@ class CrownManager:
         self.crowns = []
         self.crown_index = -1
 
-    def add_done_crown(self, val, psats):
-        sdic = {v: 2 for v in self.sh.varray}
-        csats = [sdic, f"({self.nov}){val}-full"]
-        crown = Crown(val, psats, csats)
-        crown.done = True
-        self.crowns.insert(0, crown)
-
     def add_crown(self, val, psats, vk1dic, vk2dic):
         ln1 = len(vk1dic)
         ln2 = len(vk2dic)
-        if ln1 + ln2 == 1:
-            if ln1:
-                csats = self._vk1_sdic(vk1dic.popitem()[1])
-            else:
-                csats = self._vk2_sdic(vk1dic.popitem()[1])
+        if ln1 + ln2 < 2:
+            if ln1 + ln2 == 0:
+                sdic = {v: 2 for v in self.sh.varray}
+                csats = [sdic, f"({self.nov}){val}-full"]
+            elif ln1 + ln2 == 1:
+                if ln1:
+                    csats = self._vk1_sdic(vk1dic.popitem()[1])
+                else:
+                    csats = self._vk2_sdic(vk1dic.popitem()[1])
             crown = Crown(val, self.sh, psats, csats)
             self.crowns.insert(0, crown)
             return
