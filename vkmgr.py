@@ -64,17 +64,17 @@ class VKManager:
         max_tsleng = -1
         max_tcleng = -1
         best_bits = None
-        for kn, vk in self.vkdic.items():
-            if best_choice and kn in best_choice[0]:
-                continue
-            # 3 sets. each has kns sharing 1 bit of vk
-            # {<bit>:<set of kns sharing this bit>,..}
+        kns = set(self.vkdic.keys())  # candidates-set of kn for besy-key
+        while len(kns) > 0:
+            kn = kns.pop()
+            vk = self.vkdic[kn]
+            # sh_sets: {<bit>:<set of kns sharing this bit>,..} for each vk-bit
             sh_sets = {}  # dict keyed by bit, value is a set of kns on the bit
             bits = vk.bits
             for b in bits:
                 sh_sets[b] = self.bdic[b].copy()
             # dict.popitem() pops a tuple: (<key>,<value>) from dict
-            tsvk = sh_sets.popitem()[1]  # [0] is bit, [1] is the set
+            tsvk = sh_sets.popitem()[1]  # [0] is the bit/key, [1] is the set
             tcvk = tsvk.copy()
             for s in sh_sets.values():
                 tsvk = tsvk.intersection(s)
@@ -86,6 +86,7 @@ class VKManager:
             # {<share-any>}: set of kname: of vks sharing min 1 bit with kn
             #      it is a super-set of tsvk
             chc = (tsvk, tcvk - tsvk)
+            kns -= tsvk   # take kns in tsvk out of candidates-set
             ltsvk = len(tsvk)
             if ltsvk < max_tsleng:
                 continue

@@ -1,3 +1,6 @@
+2021-01-20->0.81
+- optimized vkmgr.bestchoice: take away all tsvk kns from candidates - Because
+  a kn can not be in >1 best-keys. This reduce the loop-count.
 2021-01-19->0.80
 - possible bug in vkmgr.py/morph: I should loop thru all 2**3 == 8 vals?
   TBD: analysis
