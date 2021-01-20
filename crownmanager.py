@@ -14,9 +14,9 @@ class CrownManager:
         ln2 = len(vk2dic)
         if ln1 + ln2 == 1:
             if ln1:
-                csats = self.onevk_sats(vk1dic.popitem()[1])
+                csats = self._vk1_sdic(vk1dic.popitem()[1])
             else:
-                csats = self.onevk_sats(vk2dic.popitem()[1])
+                csats = self._vk2_sdic(vk1dic.popitem()[1])
             crown = Crown(val, self.sh, psats, csats)
             self.crowns.insert(0, crown)
             return
@@ -35,6 +35,8 @@ class CrownManager:
             cnt2 = len(crown.vk12m.vk2dic)
             insert_index = -1
             for i, crn in enumerate(self.crowns):
+                if crn.done:  # done crown(s) remain front
+                    continue
                 # ? for loop dont allow insert into src, but
                 # in this case, when I use enumerate, it does allow
                 ln = len(crn.vk12m.vk1dic)
@@ -54,37 +56,24 @@ class CrownManager:
         return crown
 
     def _vk1_sdic(self, vk):
-        sdic = {}
-        for b in range(len(self.sh.varray)):
-            val = (vk.dic[b] + 1) % 2  # oppo val of vk.dic[b]
-            if b == vk.bits[0]:
-                sdic[b] = val
-            else:
-                sdic[b] = 2
+        val = (list(vk.dic.values())[0] + 1) % 2  # oppo val of vk.dic.value
+        v0 = self.sh.varray[0]
+        sdic = {v0: val}
+        for b in range(1, len(self.sh.varray)):
+            sdic[self.sh.varray[b]] = 2
         return [(sdic, f'{self.nov}.1{val}')]
 
     def _vk2_sdic(self, vk):
-        b0 = vk.bits[0]
-        b1 = vk.bits[1]
-        d0 = {b0: (vk.dic[b0] + 1) % 2, b1: vk.dic[b1]}
-        d1 = {b0: vk.dic[b0], b1: (vk.dic[b1] + 1) % 2}
-        for b in range(len(self.sh.varray)):
-            if b not in vk.bits:
-                d0[b] = 2
-                d1[b] = 2
+        v0 = self.sh.varray[0]  # var-name in sh[0] (original bit-number)
+        v1 = self.sh.varray[1]  # var-name in sh[1] (original bit-number)
+        val_0 = vk.bits[1]      # vk.bits is reverse-sorted(descending), so
+        val_1 = vk.bits[0]      # bits[1] maps to sh[0], bits[0] to sh[1]
+        d0 = {v0: (val_0 + 1) % 2, v1: val_1}    # flip val_0
+        d1 = {v0: val_0, v1: (val_1 + 1) % 2}    # flip val_1
+        for b in range(2, len(self.sh.varray)):  # rest of sh.varray - [2:]
+            d0[self.sh.varray[b]] = 2
+            d1[self.sh.varray[b]] = 2
         return [(d0, 'name1'), (d1, 'name2')]
-
-    def onevk_sats(self, vk):
-        sdic = {}
-        if vk.nob == 1:
-            for b in range(len(self.sh.varray)):
-                if b == vk.bits[0]:
-                    sdic[b] = (vk.dic[b] + 1) % 2  # oppo val of vk.dic[b]
-                else:
-                    sdic[b] = 2
-        else:
-            pass
-        return sdic
 
     def topcrown_psats(self):
         if self.crown_index >= len(self.crowns):

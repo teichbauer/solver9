@@ -12,12 +12,12 @@ class Crown:
         # child_satdic for top-level children:
         # {<node-name>: <sat-dic>, ..}
         self.child_satdic = {}
-        self.csats = []  # sats of successful children
-        if type(vk12m) == type([]):
-            self.csats = vk12m
+        if type(vk12m) == type([]):  # vk12m is actually csats list
+            self.csats = vk12m       # assign csats list
             self.done = True
         else:
             self.vk12m = vk12m
+            self.csats = []  # sats of successful children
             self.done = False
 
     def initial_nodes(self):

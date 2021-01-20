@@ -1,3 +1,7 @@
+2021-01-19->0.80
+- possible bug in vkmgr.py/morph: I should loop thru all 2**3 == 8 vals?
+  TBD: analysis
+- coding in crown and crownmanager for covering when only 1 vk left.
 2021-01-18->0.79
 - fix in satnode cdic[1] > cdic.get(1,{}), cdic[2] > cdic.get(2, {})
 - progress on handling the case of cown top-level node with only 1 vk
@@ -161,7 +165,8 @@
 2020-12-25->0.47
 - new class RelationManager.
 2020-12-25->0.46
-- brached from solver8. Plan to try out enhancing bitdic: relations-manager
+- brached from solver8 -> solver9
+  Plan to try out enhancing bitdic: relations-manager
   inside bitdic, or outside? Holding vks-dic, vk2-dic and vk1-dic?
 2020-12-25->0.45
 - minor polish, before branching off to solver9

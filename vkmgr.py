@@ -29,6 +29,8 @@ class VKManager:
         for k3 in choice['bestkey']:
             self.vkdic.pop(k3, None)
 
+        # TBD: here, I am not looping thru all vals 0..7 - I should do it
+
         for kn in choice['touched']:  # for a kn with at least 1 bit in k3bits
             vk = self.vkdic.pop(kn, None)  # pop out this touched kn
             assert(vk.bits != topbits), f"{kn} shouldn't be total-share."
