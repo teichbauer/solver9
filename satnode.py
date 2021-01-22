@@ -35,13 +35,12 @@ class SatNode:
         self.crwnmgr = CrownManager(self.next_sh, self.nov - 3)
         self.sh.cut_tail(3)
 
-        excl_cvs = [topvalue(vkm.vkdic[kn]) for kn in choice['bestkey']]
-        crown_dic = vkm.morph(choice, self.topbits, excl_cvs)  # vkm.nov -= 3
+        crown_dic = vkm.morph(self.topbits)  # vkm.nov -= 3
+        # after morph, vkm.vkdic only have vk3s left, if any
 
-        for val, cdic in crown_dic.items():
+        for val, vkdic in crown_dic.items():
             psats = self.sh.get_sats(val)
-            self.crwnmgr.add_crown(
-                val, psats, cdic.get(1, {}), cdic.get(2, {}))
+            self.crwnmgr.add_crown(val, psats, vkdic)
 
         while True:
             psats = self.crwnmgr.topcrown_psats()

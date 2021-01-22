@@ -45,7 +45,7 @@ class Node12:
 
     def nov3_sats(self):   # when nov==3, collect integer-sats
         sats = []
-        vkdic = self.vk12m.union_vkdic()
+        vkdic = self.vk12m.vkdic
         for i in range(8):  # 8 = 2**3
             hit = False
             for vk in vkdic.values():

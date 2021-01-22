@@ -9,23 +9,23 @@ class CrownManager:
         self.crowns = []
         self.crown_index = -1
 
-    def add_crown(self, val, psats, vk1dic, vk2dic):
-        ln1 = len(vk1dic)
-        ln2 = len(vk2dic)
-        if ln1 + ln2 < 2:
-            if ln1 + ln2 == 0:
+    def add_crown(self, val, psats, vkdic):
+        ln = len(vkdic)
+        if ln < 2:
+            if ln == 0:
                 sdic = {v: 2 for v in self.sh.varray}
                 csats = [sdic, f"({self.nov}){val}-full"]
-            elif ln1 + ln2 == 1:
-                if ln1:
-                    csats = self._vk1_sdic(vk1dic.popitem()[1])
+            elif ln == 1:
+                vk = list(vkdic.values())[0]
+                if vk.nob == 1:
+                    csats = self._vk1_sdic()
                 else:
-                    csats = self._vk2_sdic(vk1dic.popitem()[1])
+                    csats = self._vk2_sdic()
             crown = Crown(val, self.sh, psats, csats)
             self.crowns.insert(0, crown)
             return
 
-        vk12m = VK12Manager(vk1dic, vk2dic, self.nov)
+        vk12m = VK12Manager(vkdic, self.nov)
         if vk12m.terminated:
             return None
         crown = Crown(val, self.sh.clone(), psats, vk12m)
@@ -35,21 +35,21 @@ class CrownManager:
             self.crowns.append(crown)
             self.crown_index = 0
         else:
-            cnt1 = len(crown.vk12m.vk1dic)
-            cnt2 = len(crown.vk12m.vk2dic)
+            cnt1 = len(crown.vk12m.kn1s)
+            cnt2 = len(crown.vk12m.kn2s)
             insert_index = -1
             for i, crn in enumerate(self.crowns):
                 if crn.done:  # done crown(s) remain front
                     continue
                 # ? for loop dont allow insert into src, but
                 # in this case, when I use enumerate, it does allow
-                ln = len(crn.vk12m.vk1dic)
+                ln = len(crn.vk12m.kn1s)
                 if ln < cnt1:
                     # self.crowns.insert(i, crown)
                     insert_index = i
                     break
                 elif ln == cnt1:
-                    if len(crn.vk12m.vk2dic) < cnt2:  # TBD: should be >
+                    if len(crn.vk12m.kn2s) < cnt2:  # TBD: should be >
                         insert_index = i
                         break
             if insert_index == -1:         # no one in list has lower ranking

@@ -112,8 +112,8 @@ def topbits_coverages(vk, topbits):
     outdic = {}
     L = len(topbits)
     allvalues = list(range(2**L))
-    coverage_range = allvalues[:]
-    new_nov = vk.nov - len(topbits)
+    cvs = []
+    new_nov = vk.nov - L
 
     dic = {}
     for b in vk.dic:
@@ -127,6 +127,6 @@ def topbits_coverages(vk, topbits):
             if get_bit(x, bit) != v:
                 conflict = True
                 break
-        if conflict:
-            coverage_range.remove(x)
-    return coverage_range, outdic
+        if not conflict:
+            cvs.append(x)
+    return cvs, outdic

@@ -1,3 +1,6 @@
+2021-01-21->0.84
+- refactored vkmgr/morph, and vk12m: now use vkdic, and kn1s/kn2s
+- TBD: vk12m.morph
 2021-01-20->0.83
 - simplify what last checked in.
 2021-01-20->0.82

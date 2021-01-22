@@ -29,65 +29,79 @@ class VKManager:
     #     for k3 in choice['bestkey']:
     #         self.vkdic.pop(k3, None)
 
-    #     # TBD: here, I am not looping thru all vals 0..7 - I should do it
-
-    #     for kn in choice['touched']:  # for a kn with at least 1 bit in k3bits
-    #         vk = self.vkdic.pop(kn, None)  # pop out this touched kn
-    #         assert(vk.bits != topbits), f"{kn} shouldn't be total-share."
-
+    #     # tdic: dict for every touched vk:
+    #     # key: tuple of covered-values, value: list of vks that
+    #     # have the same covered-values
+    #     tdic = {}
+    #     for kn in choice['touched']:
+    #         vk = self.vkdic.pop(kn, None)
     #         cvr, odic = topbits_coverages(vk, topbits)
-    #         if len(odic) > 0:  # if odic has no bit left, skip this vk
-    #             vk12 = VKlause(kn, odic, self.nov)
-    #             for cv in cvr:
-    #                 if cv in excl_cvs:
-    #                     continue
-    #                 d = crowns.setdefault(cv, {})
-    #                 if len(odic) == 1:
-    #                     d.setdefault(1, {})[kn] = vk12
-    #                 else:
-    #                     d.setdefault(2, {})[kn] = vk12
-    #     # now all left-over vks in self.vkdic are vk3s
+    #         if len(odic) > 0:
+    #             tdic.setdefault(tuple(cvr), []).append(
+    #                 VKlause(kn, odic, self.nov))
+
+    #     # all left-over vks in self.vkdic are vk3s
     #     # now set their nov -= 3, the same as self.nov
     #     for vk in self.vkdic.values():
     #         vk.nov = self.nov
+
+    #     # 2**3 == 8 - number of possible children of the satnoe, as crowns
+    #     # put into satnode.crownmgr.crowns list
+    #     for val in range(8):
+    #         if val in excl_cvs:
+    #             continue
+    #         d = crowns.setdefault(val, {})
+    #         for cvr in tdic:
+    #             if val in cvr:  # touched kn/kv does have outside bit
+    #                 vks = tdic[cvr]
+    #                 for vk in vks:
+    #                     if vk.nob == 1:
+    #                         d.setdefault(1, {})[vk.kname] = vk
+    #                     elif vk.nob == 2:
+    #                         d.setdefault(2, {})[vk.kname] = vk
+
     #     # re-make self.bdic, based on updated vkdic (popped out all touched)
     #     self.make_bdic()    # make the bdic for self.vkdic - all 3-bit vks
     #     return crowns
+    # # enf of def morph()
 
-    def morph(self, choice, topbits, excl_cvs):
+    def morph(self, topbits):  # , excl_cvs):
         ''' only called on a txed clone '''
         crowns = {}  # {<cvr-val>: {kn, ..},..}
+        excl_cvs = set([])
+        kns = list(self.vkdic.keys())
         self.nov -= 3
-        for k3 in choice['bestkey']:
-            self.vkdic.pop(k3, None)
 
+        # tdic: dict for every touched vk:
+        # key: tuple of covered-values, value: list of vks that
+        # have the same covered-values
         tdic = {}
-        for kn in choice['touched']:
-            vk = self.vkdic.pop(kn, None)
+        for kn in kns:
+            vk = self.vkdic[kn]
             cvr, odic = topbits_coverages(vk, topbits)
-            if len(odic) > 0:
-                tdic.setdefault(tuple(cvr), []).append(
-                    VKlause(kn, odic, self.nov))
-
-        # all left-over vks in self.vkdic are vk3s
-        # now set their nov -= 3, the same as self.nov
-        for vk in self.vkdic.values():
-            vk.nov = self.nov
+            ln = len(odic)
+            if ln < vk.nob:
+                self.vkdic.pop(kn)
+                if ln == 0:     # vk is within topbits, no bit left
+                    for v in cvr:  # collect vk's cover-value
+                        excl_cvs.add(v)
+                else:           # vk has 1 / 2 bits cut away by topbits
+                    tdic.setdefault(tuple(cvr), []).append(
+                        VKlause(kn, odic, self.nov))
+            else:  # vk.nob == ln
+                vk.nov = self.nov
 
         # 2**3 == 8 - number of possible children of the satnoe, as crowns
         # put into satnode.crownmgr.crowns list
         for val in range(8):
             if val in excl_cvs:
                 continue
-            d = crowns.setdefault(val, {})
+            vk12dic = crowns.setdefault(val, {})
             for cvr in tdic:
                 if val in cvr:  # touched kn/kv does have outside bit
                     vks = tdic[cvr]
                     for vk in vks:
-                        if vk.nob == 1:
-                            d.setdefault(1, {})[vk.kname] = vk
-                        elif vk.nob == 2:
-                            d.setdefault(2, {})[vk.kname] = vk
+                        vk12dic[vk.kname] = vk
 
         # re-make self.bdic, based on updated vkdic (popped out all touched)
         self.make_bdic()    # make the bdic for self.vkdic - all 3-bit vks
