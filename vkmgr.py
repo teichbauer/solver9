@@ -22,50 +22,7 @@ class VKManager:
         vkdic = tx.trans_vkdic(self.vkdic)
         return VKManager(vkdic, self.nov)
 
-    # def morph(self, choice, topbits, excl_cvs):
-    #     ''' only called on a txed clone '''
-    #     crowns = {}  # {<cvr-val>: {kn, ..},..}
-    #     self.nov -= 3
-    #     for k3 in choice['bestkey']:
-    #         self.vkdic.pop(k3, None)
-
-    #     # tdic: dict for every touched vk:
-    #     # key: tuple of covered-values, value: list of vks that
-    #     # have the same covered-values
-    #     tdic = {}
-    #     for kn in choice['touched']:
-    #         vk = self.vkdic.pop(kn, None)
-    #         cvr, odic = topbits_coverages(vk, topbits)
-    #         if len(odic) > 0:
-    #             tdic.setdefault(tuple(cvr), []).append(
-    #                 VKlause(kn, odic, self.nov))
-
-    #     # all left-over vks in self.vkdic are vk3s
-    #     # now set their nov -= 3, the same as self.nov
-    #     for vk in self.vkdic.values():
-    #         vk.nov = self.nov
-
-    #     # 2**3 == 8 - number of possible children of the satnoe, as crowns
-    #     # put into satnode.crownmgr.crowns list
-    #     for val in range(8):
-    #         if val in excl_cvs:
-    #             continue
-    #         d = crowns.setdefault(val, {})
-    #         for cvr in tdic:
-    #             if val in cvr:  # touched kn/kv does have outside bit
-    #                 vks = tdic[cvr]
-    #                 for vk in vks:
-    #                     if vk.nob == 1:
-    #                         d.setdefault(1, {})[vk.kname] = vk
-    #                     elif vk.nob == 2:
-    #                         d.setdefault(2, {})[vk.kname] = vk
-
-    #     # re-make self.bdic, based on updated vkdic (popped out all touched)
-    #     self.make_bdic()    # make the bdic for self.vkdic - all 3-bit vks
-    #     return crowns
-    # # enf of def morph()
-
-    def morph(self, topbits):  # , excl_cvs):
+    def morph(self, topbits):
         ''' only called on a txed clone '''
         crowns = {}  # {<cvr-val>: {kn, ..},..}
         excl_cvs = set([])

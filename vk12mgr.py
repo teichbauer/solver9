@@ -1,5 +1,5 @@
 from vklause import VKlause
-from basics import topvalue, topbits
+from basics import topvalue, topbits, topbits_coverages
 
 
 class VK12Manager:
@@ -145,10 +145,7 @@ class VK12Manager:
             if self.clean_vk1s() == None:  # terminated
                 return
             maxtouch_cnt = 0
-            # clone kn1s - so pop of kn1s wont change self.kn1s
-            kn1s = self.kn1s[:]
-            while len(kn1s) > 0:
-                k1 = kn1s.pop(0)
+            for k1 in self.kn1s:
                 v1 = self.vkdic[k1]
                 bit = v1.bits[0]
                 touch_cnt = 0
@@ -176,28 +173,64 @@ class VK12Manager:
             if len(self.bvk_cvs) == 4:
                 self.terminated = True
 
-    def morph(self, topbits, bvk_cvs):
-        ln = len(topbits)
+    # def morph(self, topbits, bvk_cvs):
+    #     ln = len(topbits)
+    #     chdic = {}
+    #     self.nov -= ln
+    #     vkdic = self.union_vkdic()
+    #     if len(vkdic) == 1:
+    #         return {}
+    #     for c in range(2 ** ln):
+    #         if c in bvk_cvs:
+    #             continue
+    #         vk1d = {}
+    #         vk2d = {}
+    #         for kn, vk in vkdic.items():
+    #             v = vk.clone(topbits)
+    #             if v:  # if all bits are gone/dropped: v==None -> drop v
+    #                 if v.nob == 1:
+    #                     vk1d[kn] = v
+    #                 elif v.nob == 2:
+    #                     vk2d[kn] = v
+    #         if len(vk1d) > 0 or len(vk2d) > 0:
+    #             # make a shortened vk12m, call both make_bdic/normalize
+    #             vkm = VK12Manager(vk1d, vk2d, self.nov)
+    #             if not vkm.terminated:
+    #                 chdic[c] = vkm
+    #     return chdic
+
+    def morph(self, topbits):
         chdic = {}
-        self.nov -= ln
-        vkdic = self.union_vkdic()
-        if len(vkdic) == 1:
-            return {}
-        for c in range(2 ** ln):
-            if c in bvk_cvs:
+        L = len(topbits)
+        self.nov -= L
+        excl_cvs = set([])
+
+        tdic = {}
+        kns = list(self.vkdic.keys())
+        for kn in kns:
+            vk = self.vkdic[kn]
+            cvr, odic = topbits_coverages(vk, topbits)
+            ln = len(odic)
+            if ln < vk.nob:
+                if ln == 0:
+                    for v in cvr:
+                        excl_cvs.add(v)
+                else:  # ln == 1
+                    tdic.setdefault(tuple(cvr), []).append(
+                        VKlause(kn, odic, self.nov)
+                    )
+            else:
+                vk.nov = self.nov
+        for val in range(L):
+            if val in excl_cvs:
                 continue
-            vk1d = {}
-            vk2d = {}
-            for kn, vk in vkdic.items():
-                v = vk.clone(topbits)
-                if v:  # if all bits are gone/dropped: v==None -> drop v
-                    if v.nob == 1:
-                        vk1d[kn] = v
-                    elif v.nob == 2:
-                        vk2d[kn] = v
-            if len(vk1d) > 0 or len(vk2d) > 0:
-                # make a shortened vk12m, call both make_bdic/normalize
-                vkm = VK12Manager(vk1d, vk2d, self.nov)
-                if not vkm.terminated:
-                    chdic[c] = vkm
+            vkd = {}
+            for cvr in tdic:
+                if val in cvr:
+                    vks = tdic[cvr]
+                    for vk in vks:
+                        vkd[vk.kname] = vk
+            vkm = VK12Manager(vkd, self.nov)
+            if not vkm.terminated:
+                chdic[val] = vkm
         return chdic
