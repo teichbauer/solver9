@@ -1,3 +1,5 @@
+2021-01-22->0.86
+- re-code vk12m.morph. bvk_cvs no more needed.
 2021-01-22->0.85
 - impl vk12m.morph the same way as in vkm.morph. TBD: test
 2021-01-21->0.84

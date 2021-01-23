@@ -140,7 +140,6 @@ class VK12Manager:
         ''' if len(vk1s) > 0
                pick a vk1 as self.bvk: the one with most touch of vk2s;
             if no vk1 exists, pick the best vk2 as bvk by self.best_vk2() '''
-        self.bvk_cvs = set([])
         if len(self.kn1s) > 0:
             if self.clean_vk1s() == None:  # terminated
                 return
@@ -163,41 +162,15 @@ class VK12Manager:
                     # pick a better vk1 as bvk
                     if self.bvk.kname != k1:
                         self.bvk = v1
-            self.bvk_cvs.add(topvalue(self.bvk))
         else:
             # no vk1 exists - pick the best vk2 as bvk. can be multiple.
+            bvk_cvs = set([])   # collect all covered-values
             self.bvk = self.best_vk2()
             for kn in self.bvk:
                 vk = self.vkdic[kn]
-                self.bvk_cvs.add(topvalue(vk))
-            if len(self.bvk_cvs) == 4:
+                bvk_cvs.add(topvalue(vk))
+            if len(bvk_cvs) == 4:  # if all 4 values are covered: done
                 self.terminated = True
-
-    # def morph(self, topbits, bvk_cvs):
-    #     ln = len(topbits)
-    #     chdic = {}
-    #     self.nov -= ln
-    #     vkdic = self.union_vkdic()
-    #     if len(vkdic) == 1:
-    #         return {}
-    #     for c in range(2 ** ln):
-    #         if c in bvk_cvs:
-    #             continue
-    #         vk1d = {}
-    #         vk2d = {}
-    #         for kn, vk in vkdic.items():
-    #             v = vk.clone(topbits)
-    #             if v:  # if all bits are gone/dropped: v==None -> drop v
-    #                 if v.nob == 1:
-    #                     vk1d[kn] = v
-    #                 elif v.nob == 2:
-    #                     vk2d[kn] = v
-    #         if len(vk1d) > 0 or len(vk2d) > 0:
-    #             # make a shortened vk12m, call both make_bdic/normalize
-    #             vkm = VK12Manager(vk1d, vk2d, self.nov)
-    #             if not vkm.terminated:
-    #                 chdic[c] = vkm
-    #     return chdic
 
     def morph(self, topbits):
         chdic = {}
@@ -210,18 +183,14 @@ class VK12Manager:
         for kn in kns:
             vk = self.vkdic[kn]
             cvr, odic = topbits_coverages(vk, topbits)
-            ln = len(odic)
-            if ln < vk.nob:
-                if ln == 0:
-                    for v in cvr:
-                        excl_cvs.add(v)
-                else:  # ln == 1
-                    tdic.setdefault(tuple(cvr), []).append(
-                        VKlause(kn, odic, self.nov)
-                    )
+            if len(odic) == 0:
+                for v in cvr:
+                    excl_cvs.add(v)
             else:
-                vk.nov = self.nov
-        for val in range(L):
+                tdic.setdefault(tuple(cvr), []).append(
+                    VKlause(kn, odic, self.nov)
+                )
+        for val in range(2 ** L):
             if val in excl_cvs:
                 continue
             vkd = {}

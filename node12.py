@@ -79,7 +79,7 @@ class Node12:
             vk12m = self.vk12m.txed_clone(self.tx)
         else:
             vk12m = self.vk12m.clone()
-        chdic = vk12m.morph(self.topbits)  # , self.vk12m.bvk_cvs)
+        chdic = vk12m.morph(self.topbits)
         shtail = self.sh.spawn_tail(nob)
         new_sh = SatHolder(shtail)
         self.sh.cut_tail(nob)

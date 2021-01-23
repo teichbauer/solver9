@@ -32,7 +32,7 @@ class Crown:
             vk12m = self.vk12m.txed_clone(tx)
         else:
             vk12m = self.vk12m.clone()
-        chdic = vk12m.morph(tbs, self.vk12m.bvk_cvs)
+        chdic = vk12m.morph(tbs)
         if len(chdic) == 0:
             return
         shtail = self.sh.spawn_tail(nob)
