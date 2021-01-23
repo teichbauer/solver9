@@ -14,13 +14,13 @@ class CrownManager:
         if ln < 2:
             if ln == 0:
                 sdic = {v: 2 for v in self.sh.varray}
-                csats = [sdic, f"({self.nov}){val}-full"]
+                csats = [sdic, f"{self.nov}.{val}-full"]
             elif ln == 1:
                 vk = list(vkdic.values())[0]
                 if vk.nob == 1:
-                    csats = self._vk1_sdic()
+                    csats = self._vk1_sdic(vk)
                 else:
-                    csats = self._vk2_sdic()
+                    csats = self._vk2_sdic(vk)
             crown = Crown(val, self.sh, psats, csats)
             self.crowns.insert(0, crown)
             return
@@ -59,32 +59,43 @@ class CrownManager:
                 self.crowns.insert(insert_index, crown)
         return crown
 
+    def _oppo(self, binary_value):
+        return (binary_value + 1) % 2
+
     def _vk1_sdic(self, vk):
-        val = (list(vk.dic.values())[0] + 1) % 2  # oppo val of vk.dic.value
-        v0 = self.sh.varray[0]
-        sdic = {v0: val}
-        for b in range(1, len(self.sh.varray)):
-            sdic[self.sh.varray[b]] = 2
-        return [(sdic, f'{self.nov}.1{val}')]
+        sdic = {}
+        for b in range(len(self.sh.varray)):
+            if b == vk.bits[0]:  # set oppo val of vk.dic[bit]
+                sdic[self.sh.varray[b]] = self._oppo(vk.dic[vk.bits[0]])
+            else:
+                sdic[self.sh.varray[b]] = 2
+        return [(sdic, f'{self.nov}.{vk.kname}')]
 
     def _vk2_sdic(self, vk):
-        v0 = self.sh.varray[0]  # var-name in sh[0] (original bit-number)
-        v1 = self.sh.varray[1]  # var-name in sh[1] (original bit-number)
-        val_0 = vk.bits[1]      # vk.bits is reverse-sorted(descending), so
-        val_1 = vk.bits[0]      # bits[1] maps to sh[0], bits[0] to sh[1]
-        d0 = {v0: (val_0 + 1) % 2, v1: val_1}    # flip val_0
-        d1 = {v0: val_0, v1: (val_1 + 1) % 2}    # flip val_1
-        for b in range(2, len(self.sh.varray)):  # rest of sh.varray - [2:]
-            d0[self.sh.varray[b]] = 2
-            d1[self.sh.varray[b]] = 2
-        return [(d0, 'name1'), (d1, 'name2')]
+        b0 = vk.bits[0]
+        b1 = vk.bits[1]
+        sidc0 = {}
+        sidc1 = {}
+
+        for b in range(len(self.sh.varray):
+            if b != b0:
+                sdic0[self.sh.varray[b]]=2
+            else:
+                sdic0[self.sh.varray[b]]=self._oppo(vk.dic[b0])
+
+        for b in range(len(self.sh.varray):
+            if b != b1:
+                sdic1[self.sh.varray[b]]=2
+            else:
+                sdic1[self.sh.varray[b]]=self._oppo(vk.dic[b1])
+        return [(sdic0, 'name1'), (sdic1, 'name2')]
 
     def topcrown_psats(self):
         if self.crown_index >= len(self.crowns):
             return None
-        crn = self.crowns[self.crown_index]
+        crn=self.crowns[self.crown_index]
         self. crown_index += 1
-        result = crn.dig_thru()
+        result=crn.dig_thru()
         if len(result) == 0:
             return self.topcrown_psats()
         return result

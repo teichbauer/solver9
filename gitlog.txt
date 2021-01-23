@@ -1,3 +1,5 @@
+2021-01-23->0.87
+- fixes in crownmanager._vk1_sdic/._vk2_sdic, and in crown.
 2021-01-22->0.86
 - re-code vk12m.morph. bvk_cvs no more needed.
 2021-01-22->0.85
