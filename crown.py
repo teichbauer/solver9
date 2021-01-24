@@ -53,18 +53,19 @@ class Crown:
         pass
 
     def dig_thru(self):
-        self.initial_nodes()
-        self.done = len(self.nodes) == 0
         if not self.done:
-            nodes = self.nodes
-            nexts = []
-            while True:
-                for node in nodes:
-                    if node.state == 0:
-                        nexts += node.spawn()
-                if len(nexts) == 0:
-                    break
-                else:
-                    nodes = nexts
-            self.done = True
+            self.initial_nodes()
+            self.done = len(self.nodes) == 0
+            if not self.done:
+                nodes = self.nodes
+                nexts = []
+                while True:
+                    for node in nodes:
+                        if node.state == 0:
+                            nexts += node.spawn()
+                    if len(nexts) == 0:
+                        break
+                    else:
+                        nodes = nexts
+                self.done = True
         return self.csats

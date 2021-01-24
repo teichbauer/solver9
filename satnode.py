@@ -22,6 +22,8 @@ class SatNode:
             self.done = True
 
     def spawn(self):
+        if self.done:
+            return self.sats
         choice = self.vkm.bestchoice()
         self.bvk = self.vkm.vkdic[choice['bestkey'][0]]
         if self.topbits != choice['bits']:  # the same as self.bvk.bits:

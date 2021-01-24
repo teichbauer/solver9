@@ -77,25 +77,25 @@ class CrownManager:
         sidc0 = {}
         sidc1 = {}
 
-        for b in range(len(self.sh.varray):
+        for b in range(len(self.sh.varray)):
             if b != b0:
-                sdic0[self.sh.varray[b]]=2
+                sdic0[self.sh.varray[b]] = 2
             else:
-                sdic0[self.sh.varray[b]]=self._oppo(vk.dic[b0])
+                sdic0[self.sh.varray[b]] = self._oppo(vk.dic[b0])
 
-        for b in range(len(self.sh.varray):
+        for b in range(len(self.sh.varray)):
             if b != b1:
-                sdic1[self.sh.varray[b]]=2
+                sdic1[self.sh.varray[b]] = 2
             else:
-                sdic1[self.sh.varray[b]]=self._oppo(vk.dic[b1])
+                sdic1[self.sh.varray[b]] = self._oppo(vk.dic[b1])
         return [(sdic0, 'name1'), (sdic1, 'name2')]
 
     def topcrown_psats(self):
         if self.crown_index >= len(self.crowns):
             return None
-        crn=self.crowns[self.crown_index]
+        crn = self.crowns[self.crown_index]
         self. crown_index += 1
-        result=crn.dig_thru()
+        result = crn.dig_thru()
         if len(result) == 0:
             return self.topcrown_psats()
         return result
