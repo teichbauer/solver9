@@ -9,6 +9,10 @@ class VKManager:
         if initial:
             self.make_bdic()
 
+    def clone(self):
+        vkdic = {kname: vk.clone() for kn, vk in self.vkdic.item()}
+        return VKManager(vkdic, self.nov, True)
+
     def printjson(self, filename):
         print_json(self.nov, self.vkdic, filename)
 

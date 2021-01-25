@@ -1,3 +1,6 @@
+2021-01-25->0.91
+- progress: don't create self.next ( an inst of SatNode) in constructor. But
+  when needed.
 2021-01-25->0.90
 - re-designed/impl. of satnote, interaction between it and crownmanager/crown.
 - test not yet done.

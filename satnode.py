@@ -42,6 +42,9 @@ class SatNode:
             if psats == None:
                 print(f'{self.name} has no sats')
                 return None
+            if self.next == None:
+                self.next = SatNode(
+                    self, self.next_stuff[0], self.next_stuff[1])
             self.sats = self.next.spawn(psats)
             if self.sats and len(self.sats) > 0:
                 print(f'{self.name} has sats: {self.sats}')
@@ -53,16 +56,17 @@ class SatNode:
         if self.topbits != choice['bits']:  # the same as self.bvk.bits:
             self.tx = TxEngine(self.bvk, self.nov)
             self.sh.transfer(self.tx)
-            self.tx_vkm = self.vkm.txed_clone(self.tx)
+            tx_vkm = self.vkm.txed_clone(self.tx)
         else:
-            self.tx_vkm = self.vkm
+            tx_vkm = self.vkm.clone()
 
-        self.next_sh = SatHolder(self.sh.spawn_tail(3))
-        self.crwnmgr = CrownManager(self.next_sh, self.nov - 3)
+        next_sh = SatHolder(self.sh.spawn_tail(3))
+        self.crwnmgr = CrownManager(next_sh, self.nov - 3)
         self.sh.cut_tail(3)
         # after tx_vkm.morph, tx_vkm only has (.vkdic) vk3 left, if any
-        self.raw_crown_dic = self.tx_vkm.morph(self.topbits)  # vkm.nov -= 3
-        self.next = SatNode(self, self.next_sh, self.tx_vkm)
+        self.raw_crown_dic = tx_vkm.morph(self.topbits)  # vkm.nov -= 3
+        # self.next = SatNode(self, next_sh, tx_vkm)
+        self.next_stuff = (next_sh, tx_vkm)
 
     def spawn0(self, satfilter=None):
         if self.done:
