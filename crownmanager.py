@@ -90,12 +90,36 @@ class CrownManager:
                 sdic1[self.sh.varray[b]] = self._oppo(vk.dic[b1])
         return [(sdic0, 'name1'), (sdic1, 'name2')]
 
-    def topcrown_psats(self):
+    def next_psats(self):
+        ''' self.crowns has a list of crowns, each (after it resolved) has
+            a list of solutions. self.solution_cursor points to the cuurent
+            solution of current crown. Calling this, next solution is returned,
+            and next call will return the next - moving thru all solutions
+            of each crown, till there's no more: return None.
+            '''
         if self.crown_index >= len(self.crowns):
             return None
-        crn = self.crowns[self.crown_index]
-        self. crown_index += 1
-        result = crn.dig_thru()
-        if len(result) == 0:
-            return self.topcrown_psats()
-        return result
+        # if current crown not resolved, resolve it
+        if not self.crowns[self.crown_index].done:
+            self.crowns[self.crown_index].resolve()
+
+        # if cursor is with-in current crown: return next solution. If not,
+        # next crown set to be current, and call this again
+        if self.solution_cursor < len(self.crowns[self.crown_index].csats):
+            res = self.crowns[self.crown_index].csats[self.solution_cursor]
+            self.solution_cursor += 1
+            return res
+        else:
+            self.crown_index += 1       # set to next crown
+            self.solution_cursor = 0    # reset cursor
+            return self.next_psats()    # recursive call
+
+    # def topcrown_psats(self):
+    #     if self.crown_index >= len(self.crowns):
+    #         return None
+    #     crn = self.crowns[self.crown_index]
+    #     self. crown_index += 1
+    #     result = crn.resolve()
+    #     if len(result) == 0:
+    #         return self.topcrown_psats()
+    #     return result

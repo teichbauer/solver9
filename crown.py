@@ -49,10 +49,7 @@ class Crown:
                 self.nodes.append(node)
                 self.child_satdic[node.vname] = self.sh.get_sats(val)
 
-    def direct_sats(self, tbs, cvrs):
-        pass
-
-    def dig_thru(self):
+    def resolve(self):
         if not self.done:
             self.initial_nodes()
             self.done = len(self.nodes) == 0

@@ -1,3 +1,6 @@
+2021-01-25->0.90
+- re-designed/impl. of satnote, interaction between it and crownmanager/crown.
+- test not yet done.
 2021-01-24->0.89
 - satnode.filter_children - how to loop  TBD
 2021-01-23->0.88

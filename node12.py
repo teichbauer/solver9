@@ -40,6 +40,7 @@ class Node12:
         assert(type(parent).__name__ == 'Crown')
         merge_sats(sdic, parent.rootsats)
         print(f'{self.name()} finds sats: {sdic}')
+        # add/append (sdic,>name>) to crown.csats list
         parent.csats.append((sdic, self.name()))
         self.state = 1
 
