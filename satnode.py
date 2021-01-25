@@ -21,7 +21,7 @@ class SatNode:
             self.sats = self.sh.full_sats()
             self.done = True
 
-    def spawn(self):
+    def spawn(self, satfilter=None):
         if self.done:
             return self.sats
         choice = self.vkm.bestchoice()
@@ -39,6 +39,8 @@ class SatNode:
 
         crown_dic = vkm.morph(self.topbits)  # vkm.nov -= 3
         # after morph, vkm.vkdic only have vk3s left, if any
+        if satfilter:
+            crown_dic = self.filter_children(crown_dic, satfilter)
 
         for val, vkdic in crown_dic.items():
             psats = self.sh.get_sats(val)
@@ -51,11 +53,27 @@ class SatNode:
                 return
             if self.next == None:
                 self.next = SatNode(self, self.next_sh, vkm)
-                sat3s = self.next.spawn()
+                sat3s = self.next.spawn(psats)
             self.sats = self.combine_sats(psats, sat3s)
             if self.sats:
                 print(f'{self.name} has sats: {sats}')
                 return self.sats
+
+    def filter_children(self, chdic, satfilter):
+        vals = list(chdic.keys())
+        for val in vals:
+            conflict = False
+            d = self.sh.get_sats(val)
+            for b, v in d.items():
+                if b in satfilter:
+                    if satfilter[b] == 2:
+                        continue
+                    conflict = satfilter[b] != v
+                    if conflict:
+                        break
+            if conflict:
+                chdic.pop(val)
+        return chdic
 
     def combine_sats(self, psats, node):
         return True
