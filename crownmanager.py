@@ -1,5 +1,6 @@
 from vk12mgr import VK12Manager
 from crown import Crown
+from basics import sdic_fail
 
 
 class CrownManager:
@@ -8,21 +9,30 @@ class CrownManager:
         self.nov = nov
         self.crowns = []
         self.crown_index = -1
+        self.solution_cursor = 0
 
-    def add_crown(self, val, psats, vkdic):
+    def add_crown(self, val, psats, vkdic, satfilter=None):
         ln = len(vkdic)
         if ln < 2:
             if ln == 0:
                 sdic = {v: 2 for v in self.sh.varray}
-                csats = [sdic, f"{self.nov}.{val}-full"]
+                csats = [(sdic, f"{self.nov}.{val}-full")]
             elif ln == 1:
                 vk = list(vkdic.values())[0]
                 if vk.nob == 1:
                     csats = self._vk1_sdic(vk)
                 else:
                     csats = self._vk2_sdic(vk)
-            crown = Crown(val, self.sh, psats, csats)
-            self.crowns.insert(0, crown)
+            if satfilter:
+                i = 0
+                while i < len(csats):
+                    if sdic_fail(satfilter, csats[i][0]):
+                        csats.pop(i)
+                    else:
+                        i += 1
+            if len(csats) > 0:
+                crown = Crown(val, self.sh, psats, csats)
+                self.crowns.insert(0, crown)
             return
 
         vk12m = VK12Manager(vkdic, self.nov)

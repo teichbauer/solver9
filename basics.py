@@ -130,3 +130,14 @@ def topbits_coverages(vk, topbits):
         if not conflict:
             cvs.append(x)
     return cvs, outdic
+
+
+def sdic_fail(dic0, dic1):
+    ' see if dic1 has <key>:<value> pair violating dic0 '
+    for b, v in dic1.items():    # check every k/v in dic1
+        if b in dic0:            # if dic0 doesn't have it: don't care
+            if dic0[b] == 2:     # dic0[b] tolerates both values
+                continue         # let it thru
+            if dic0[b] != v:     # violates dic0[b] value, stop here
+                return True      # return True: dic1 fails
+    return False
