@@ -68,9 +68,9 @@ class SatNode:
                 if not sdic_fail(satfilter, sats):
                     self.sats = sats
             else:
-                self.sats = sats
+                self.sats = self.combine_sats(sats, psats)
             if self.sats and len(self.sats) > 0:
-                self.sats = self.combine_sats(psats, self.sats)
+                self.sats = self.combine_sats(psats[0], self.sats)
                 print(f'{self.name} has sats: {self.sats}')
             return self.sats
 

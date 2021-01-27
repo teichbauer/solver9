@@ -134,10 +134,15 @@ def topbits_coverages(vk, topbits):
 
 def sdic_fail(dic0, dic1):
     ' see if dic1 has <key>:<value> pair violating dic0 '
-    for b, v in dic1.items():    # check every k/v in dic1
+    d1 = dic1.copy()    # dic1 may get updated. a copy for for loop
+    for b, v in d1.items():    # check every k/v in dic1
         if b in dic0:            # if dic0 doesn't have it: don't care
             if dic0[b] == 2:     # dic0[b] tolerates both values
                 continue         # let it thru
             if dic0[b] != v:     # violates dic0[b] value, stop here
-                return True      # return True: dic1 fails
+                if v == 2:       # when dic1[b] is 2, allowing 0|1,
+                    # set it to be dic0[b]
+                    dic1[b] = dic0[b]
+                else:
+                    return True  # return True: dic1 fails
     return False
