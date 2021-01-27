@@ -1,4 +1,4 @@
-from basics import topbits_coverages, topvalue, topbits, sdic_fail, print_json
+from basics import topbits, sdic_fail, unite_satdics, print_json
 from satholder import SatHolder
 from TransKlauseEngine import TxEngine
 from node12 import Node12
@@ -63,14 +63,16 @@ class SatNode:
             if self.next == None:
                 self.next = SatNode(
                     self, self.next_stuff[0], self.next_stuff[1])
-            sats = self.next.spawn(psats[0])
+            sats = self.next.spawn(psats)
             if satfilter:
                 if not sdic_fail(satfilter, sats):
                     self.sats = sats
             else:
-                self.sats = self.combine_sats(sats, psats)
+                # self.sats = self.combine_sats(sats, psats)
+                self.sats = unite_satdics(sats, psats)
             if self.sats and len(self.sats) > 0:
-                self.sats = self.combine_sats(psats[0], self.sats)
+                # self.sats = self.combine_sats(psats, self.sats)
+                self.sats = unite_satdics(psats, self.sats)
                 print(f'{self.name} has sats: {self.sats}')
             return self.sats
 

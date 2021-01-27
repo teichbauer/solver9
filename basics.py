@@ -146,3 +146,26 @@ def sdic_fail(dic0, dic1):
                 else:
                     return True  # return True: dic1 fails
     return False
+
+
+def unite_satdics(sdic0, sdic1):
+    res = {}
+    unified_keys = set(sdic0.keys()).union(set(sdic1.keys()))
+    for b in unified_keys:
+        if (b in sdic0) and (b in sdic1):
+            if sdic0[b] != sdic1[b]:
+                if sdic0[b] == 2:
+                    res[b] = sdic1[b]
+                elif sdic1[b] == 2:
+                    res[b] = sdic0[b]
+                else:
+                    # conflicting values (0,1) on the same bit
+                    return None
+            else:  # sdic0[b] == sdic1[b]
+                res[b] = sdic0[b]
+        else:      # b is in sdic0, OR in sdic1, but not in both
+            if b in sdic0:
+                res[b] = sdic0[b]
+            elif b in sdic1:
+                res[b] = sdic1[b]
+    return res

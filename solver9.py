@@ -31,7 +31,7 @@ def process(cnfname):
         path.append(sn)
         sn.spawn()
 
-    return None
+    return sn.sats
 
 
 def test_topvalue():
@@ -64,7 +64,8 @@ def work():
 
     elif configfilename.endswith('.json'):
         start_time = time.time()
-        sat = process(configfilename)
+        satdic = process(configfilename)
+        sat = Sat(configfilename.split('.')[0], list(satdic.items()))
         now_time = time.time()
         if sat:
             sat.cnf_file = configfilename

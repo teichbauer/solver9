@@ -1,5 +1,5 @@
 from node12 import Node12
-from basics import topbits
+from basics import topbits, unite_satdics
 from TransKlauseEngine import TxEngine
 from satholder import SatHolder
 
@@ -48,6 +48,10 @@ class Crown:
             if node.state == 0:
                 self.nodes.append(node)
                 self.child_satdic[node.vname] = self.sh.get_sats(val)
+
+    def get_psat(self, index):
+        ' combine rootsats with csats[index][0] '
+        return unite_satdics(self.rootsats, self.csats[index][0])
 
     def resolve(self):
         if not self.done:

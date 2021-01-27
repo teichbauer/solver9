@@ -33,6 +33,7 @@ class CrownManager:
             if len(csats) > 0:
                 crown = Crown(val, self.sh, psats, csats)
                 self.crowns.insert(0, crown)
+                self.crown_index = 0
             return
 
         vk12m = VK12Manager(vkdic, self.nov)
@@ -116,20 +117,11 @@ class CrownManager:
         # if cursor is with-in current crown: return next solution. If not,
         # next crown set to be current, and call this again
         if self.solution_cursor < len(self.crowns[self.crown_index].csats):
-            res = self.crowns[self.crown_index].csats[self.solution_cursor]
+            # res = self.crowns[self.crown_index].csats[self.solution_cursor]
+            res = self.crowns[self.crown_index].get_psat(self.solution_cursor)
             self.solution_cursor += 1
             return res
         else:
             self.crown_index += 1       # set to next crown
             self.solution_cursor = 0    # reset cursor
             return self.next_psats()    # recursive call
-
-    # def topcrown_psats(self):
-    #     if self.crown_index >= len(self.crowns):
-    #         return None
-    #     crn = self.crowns[self.crown_index]
-    #     self. crown_index += 1
-    #     result = crn.resolve()
-    #     if len(result) == 0:
-    #         return self.topcrown_psats()
-    #     return result

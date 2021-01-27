@@ -1,3 +1,5 @@
+2021-01-27->0.94
+- success with config1.json
 2021-01-26->0.93
 - basics/sdic_fail(d0, d1) also set d1's value from 2 to 0|1 if d0 requires that
 - TBD: how to get the final sats, with crown/psats. Need more analysis.
