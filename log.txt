@@ -1,4 +1,4 @@
-20202-12-11
+2020-02-12-11
 LAYERS is a list. the number of element relfects the depth of the tree.
 Each time I process a 3-bits, 2-bits or 1-bit clause-group, will result in a 
 new list-element, I call it a layer element (E). So LAYERS = [E,E1,E2,...]
@@ -379,3 +379,7 @@ Basic train of thought, using config1.json (37 clauses, 8 bits/variables).
     C011: {7:1  5:0  1:0   }
     C017: {6:0  5:0  1:1   } -> Done
         
+2021-01-27
+solver9 works for config1.json. But hangs on cfg12-45.json.
+I felt solver9 has a new design that is pretty promissing. But it has bug I have
+to fix. At least now on cfg12-45.json

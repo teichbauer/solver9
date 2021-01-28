@@ -81,15 +81,15 @@ class Node12:
         else:
             vk12m = self.vk12m.clone()
         chdic = vk12m.morph(self.topbits)
-        shtail = self.sh.spawn_tail(nob)
-        new_sh = SatHolder(shtail)
-        self.sh.cut_tail(nob)
 
         if len(chdic) == 0:
             self.sats = self.sh.full_sats()
             self.state = 1  #
             # return []
         else:
+            shtail = self.sh.spawn_tail(nob)
+            new_sh = SatHolder(shtail)
+            self.sh.cut_tail(nob)
             for val, vkm in chdic.items():
                 node = Node12(
                     name_base + val,  # %10 -> val, //10 -> nob

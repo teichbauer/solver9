@@ -47,9 +47,9 @@ def work():
     # configfilename = 'cfg100-450.json'
     # configfilename = 'cfg60-266.json'
     # configfilename = 'cfg60-262.json'
-    configfilename = 'config1.json'
+    # configfilename = 'config1.json'
     # configfilename = 'config1.sat'
-    # configfilename = 'cfg12-45.json'
+    configfilename = 'cfg12-45.json'
     # configfilename = 'cfg60-262.json'
 
     if len(sys.argv) > 1:

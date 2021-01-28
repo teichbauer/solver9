@@ -68,5 +68,6 @@ class Crown:
                         break
                     else:
                         nodes = nexts
+                        nexts = []
                 self.done = True
         return self.csats

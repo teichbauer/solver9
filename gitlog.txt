@@ -1,3 +1,7 @@
+2021-01-28->0.95
+- start testing with cfg12-45.json
+- optimization in node12, and crownmanager(iterative replace recursion)
+- fix in crown/resolve
 2021-01-27->0.94
 - success with config1.json
 2021-01-26->0.93

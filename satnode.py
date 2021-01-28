@@ -56,7 +56,7 @@ class SatNode:
 
         while True:
             # psats = self.crwnmgr.topcrown_psats()
-            psats = self.crwnmgr.next_psats()
+            psats = self.crwnmgr.next_psat()
             if psats == None:
                 print(f'{self.name} has no sats')
                 return None
