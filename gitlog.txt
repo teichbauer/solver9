@@ -1,3 +1,9 @@
+2021-01-29->0.97
+- CrownManager: separates a method .init(), for reset crowns list 
+  This should be called every time satnode.spawn is called. Because it has a 
+  different satfilterfilter every time it is called. This satfilter comes from 
+  one of the node12's that are made by different satnode.parent children.
+- satnode.spawn now has the call self.crnmgr.init() in it.
 2021-01-28->0.96
 - cfg12-45.json has 7 sats:
   [2017, 2033, 3953, 2865, 2873, 2929, 2937]: [a,b,c,d,e,f,g]

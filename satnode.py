@@ -50,6 +50,7 @@ class SatNode:
         else:
             crown_dic = self.raw_crown_dic
 
+        self.crwnmgr.init()
         for val, vkdic in crown_dic.items():
             psats = self.sh.get_sats(val)
             self.crwnmgr.add_crown(val, psats, vkdic, satfilter)

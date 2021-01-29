@@ -7,6 +7,9 @@ class CrownManager:
     def __init__(self, sh, nov):
         self.sh = sh
         self.nov = nov
+        self.init()
+        
+    def init(self):
         self.crowns = []
         self.crown_index = -1
         self.solution_cursor = 0
