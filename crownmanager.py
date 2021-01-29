@@ -7,9 +7,9 @@ class CrownManager:
     def __init__(self, sh, nov):
         self.sh = sh
         self.nov = nov
-        self.init()
+        # self.init()  # be called every time satnode.spawn is called.
         
-    def init(self):
+    def init(self):    # be called every time satnode.spawn is called.
         self.crowns = []
         self.crown_index = -1
         self.solution_cursor = 0

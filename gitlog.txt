@@ -1,3 +1,5 @@
+2021-01-29->0.98
+- minor optimization in crownmanager: init no more called in constructor.
 2021-01-29->0.97
 - CrownManager: separates a method .init(), for reset crowns list 
   This should be called every time satnode.spawn is called. Because it has a 
