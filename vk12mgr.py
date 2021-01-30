@@ -98,6 +98,7 @@ class VK12Manager:
                     if lnc > max_tcleng:
                         bvk = ts
                         max_tcleng = lnc
+        # bvk is a tuple. But only first kv in it is returned
         return bvk
     # end of --- def best_vk2(self):
 
@@ -133,7 +134,7 @@ class VK12Manager:
             i += 1
         # pick a vk1 with bit@(nov-1) as bvk, if exists.
         # may be replaced by better choice in normalize
-        self.bvk = self.bvk = self.highst_vk1()
+        self.bvk = self.highst_vk1()
         return self.kn1s
 
     def normalize(self):
@@ -162,15 +163,18 @@ class VK12Manager:
                     # pick a better vk1 as bvk
                     if self.bvk.kname != k1:
                         self.bvk = v1
-        else:
+        elif len(self.kn2s) > 0:
             # no vk1 exists - pick the best vk2 as bvk. can be multiple.
             bvk_cvs = set([])   # collect all covered-values
-            self.bvk = self.best_vk2()
-            for kn in self.bvk:
+            kns = self.best_vk2()
+            self.bvk = self.vkdic[kns[0]]
+            for kn in kns:
                 vk = self.vkdic[kn]
                 bvk_cvs.add(topvalue(vk))
             if len(bvk_cvs) == 4:  # if all 4 values are covered: done
                 self.terminated = True
+        else:  # no vk at all
+            self.terminated = True
 
     def morph(self, topbits):
         chdic = {}
@@ -202,4 +206,8 @@ class VK12Manager:
             vkm = VK12Manager(vkd, self.nov)
             if not vkm.terminated:
                 chdic[val] = vkm
+            else:  # terminated == True
+                if len(vkm.vkdic) == 0:
+                    chdic[val] = None
+
         return chdic

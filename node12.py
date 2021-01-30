@@ -97,7 +97,7 @@ class Node12:
                     vkm,              # vk12m for node
                     new_sh.clone())   # sh is a clone: for sh.varray is a ref
                 if node.state != -1:
-                    self.child_satdic[node.vname] = self.sh.get_sats(val)
+                    self.child_satdic[val] = self.sh.get_sats(val)
                 if node.state == 0:
                     self.nexts.append(node)
                 elif node.state == 2:

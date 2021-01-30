@@ -1,3 +1,10 @@
+2021-01-29->0.99
+- crown.initial_nodes: when no vk exists (len(vkdic)==0), vkm.terminated = True
+  and in vkm.morph, if terminated==True and no vk, chdic[val] = None.
+  This chdic[val]==None will set crown.child_satdic[val] = sh.full_sats()
+- child_satdic will be keyed by val, no more by node.vname. So is the case also
+  in node12.child_satdic.
+- TBD: testing
 2021-01-29->0.98
 - minor optimization in crownmanager: init no more called in constructor.
 2021-01-29->0.97

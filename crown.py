@@ -40,14 +40,17 @@ class Crown:
         self.sh.cut_tail(nob)
 
         for val, vkm in chdic.items():
-            node = Node12(
-                name_base + val,  # node12.vname: %10 -> val, //10 -> nob
-                self,             # node's parent
-                vkm,              # vk12m for node
-                new_sh.clone())   # sh is a clone: for sh.varray is a ref
-            if node.state == 0:
-                self.nodes.append(node)
-                self.child_satdic[node.vname] = self.sh.get_sats(val)
+            if vkm:
+                node = Node12(
+                    name_base + val,  # node12.vname: %10 -> val, //10 -> nob
+                    self,             # node's parent
+                    vkm,              # vk12m for node
+                    new_sh.clone())   # sh is a clone: for sh.varray is a ref
+                if node.state == 0:
+                    self.nodes.append(node)
+                    self.child_satdic[val] = self.sh.get_sats(val)
+            else:  # vkm == None
+                self.child_satdic[val] = self.sh.full_sats()
 
     def get_psat(self, index):
         ' combine rootsats with csats[index][0] '
