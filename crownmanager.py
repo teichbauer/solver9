@@ -8,11 +8,10 @@ class CrownManager:
         self.sh = sh
         self.nov = nov
         # self.init()  # be called every time satnode.spawn is called.
-        
+
     def init(self):    # be called every time satnode.spawn is called.
         self.crowns = []
         self.crown_index = -1
-        self.solution_cursor = 0
 
     def add_crown(self, val, psats, vkdic, satfilter=None):
         ln = len(vkdic)

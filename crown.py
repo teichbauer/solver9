@@ -46,11 +46,16 @@ class Crown:
                     self,             # node's parent
                     vkm,              # vk12m for node
                     new_sh.clone())   # sh is a clone: for sh.varray is a ref
-                if node.state == 0:
-                    self.nodes.append(node)
-                    self.child_satdic[val] = self.sh.get_sats(val)
-            else:  # vkm == None
-                self.child_satdic[val] = self.sh.full_sats()
+            else:
+                tail_sat = new_sh.full_sats()
+                node = Node12(
+                    name_base + val,
+                    self,
+                    tail_sat,
+                    None)
+            # node.state can be 0 or 2
+            self.nodes.append(node)
+            self.child_satdic[val] = self.sh.get_sats(val)
 
     def get_psat(self, index):
         ' combine rootsats with csats[index][0] '

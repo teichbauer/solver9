@@ -203,11 +203,11 @@ class VK12Manager:
                     vks = tdic[cvr]
                     for vk in vks:
                         vkd[vk.kname] = vk
-            vkm = VK12Manager(vkd, self.nov)
-            if not vkm.terminated:
-                chdic[val] = vkm
-            else:  # terminated == True
-                if len(vkm.vkdic) == 0:
-                    chdic[val] = None
+            if len(vkd) == 0:
+                chdic[val] = None
+            else:
+                vkm = VK12Manager(vkd, self.nov)
+                if not vkm.terminated:
+                    chdic[val] = vkm
 
         return chdic
