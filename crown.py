@@ -72,6 +72,8 @@ class Crown:
                     for node in nodes:
                         if node.state == 0:
                             nexts += node.spawn()
+                        elif node.state == 2:
+                            node.collect_sats()
                     if len(nexts) == 0:
                         break
                     else:

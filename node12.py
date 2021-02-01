@@ -12,9 +12,10 @@ class Node12:
         self.vname = vname    # vname // 10: is the parent-nob
         self.nexts = []
         self.sh = sh
-        if type(vk12m) == type({}):
-            self.sats = vk12m
-            self.state = 2
+        if type(vk12m) == type({}):  # when vk12m is a dict(full-sats)
+            self.sats = vk12m        # save the full-sats
+            self.nov = len(vk12m)
+            self.state = 2          # this will trigger collect_sats() call
         else:
             self.vk12m = vk12m
             self.nov = vk12m.nov
@@ -69,12 +70,6 @@ class Node12:
         return self.sats
 
     def spawn(self):
-        if self.state == 2:
-            self.collect_sats()
-            return self.nexts
-        elif self.state == 1:
-            return self.nexts
-
         # self.vk12m must have bvk
         assert(self.vk12m.bvk != None)
         nob = self.vk12m.bvk.nob    # nob can be 1 or 2
