@@ -128,19 +128,19 @@ class CrownManager:
             self.solution_cursor = 0    # reset cursor
             return self.next_psats()    # recursive call
 
-    def next_psat(self):
+    def next_psat(self, satfilter):
         self.solution_cursor = 0
         while self.crown_index < len(self.crowns):
-            res = self.get_psat()
+            res = self.get_psat(satfilter)
             if res:
                 return res
         return None
 
-    def get_psat(self):
+    def get_psat(self, satfilter):
         " get current crown's csat. "
         # if current crown not resolved, resolve it
         if not self.crowns[self.crown_index].done:
-            self.crowns[self.crown_index].resolve()
+            self.crowns[self.crown_index].resolve(satfilter)
 
         if len(self.crowns[self.crown_index].csats) == 0:
             self.crown_index += 1

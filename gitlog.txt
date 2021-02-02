@@ -1,3 +1,6 @@
+2021-02-01->0.102
+- using satfilter in crown.solve
+- TBD: more testing
 2021-02-01->0.101
 - refactored node12 and crown.
 - TBD: satfilter needs to put into crnmgr.next_psat.

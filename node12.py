@@ -1,4 +1,4 @@
-from basics import print_json, merge_sats
+from basics import print_json, merge_sats, unite_satdics
 from TransKlauseEngine import TxEngine
 from vk12mgr import VK12Manager
 from basics import topbits
@@ -31,7 +31,7 @@ class Node12:
     def name(self):
         return f'{self.nov}.{self.vname}'
 
-    def collect_sats(self):
+    def collect_sats(self, satfilter):
         node = self
         parent = node.parent
         sdic = node.sats.copy()
@@ -43,9 +43,12 @@ class Node12:
             parent = parent.parent
         assert(type(parent).__name__ == 'Crown')
         merge_sats(sdic, parent.rootsats)
-        print(f'{self.name()} finds sats: {sdic}')
-        # add/append (sdic,>name>) to crown.csats list
-        parent.csats.append((sdic, self.name()))
+        if satfilter:
+            sdic = unite_satdics(sdic, satfilter)
+        if sdic:
+            print(f'{self.name()} finds sats: {sdic}')
+            # add/append (sdic,>name>) to crown.csats list
+            parent.csats.append((sdic, self.name()))
         self.state = 1
 
     def nov3_sats(self):   # when nov==3, collect integer-sats
@@ -69,7 +72,7 @@ class Node12:
             # self.suicide()
         return self.sats
 
-    def spawn(self):
+    def spawn(self, satfilter):
         # self.vk12m must have bvk
         assert(self.vk12m.bvk != None)
         nob = self.vk12m.bvk.nob    # nob can be 1 or 2
@@ -103,7 +106,7 @@ class Node12:
                 if node.state == 0:
                     self.nexts.append(node)
                 elif node.state == 2:
-                    node.collect_sats()  # this will set state to 1
+                    node.collect_sats(satfilter)  # this will set state to 1
         return self.nexts
 
     def suicide(self):

@@ -61,7 +61,7 @@ class Crown:
         ' combine rootsats with csats[index][0] '
         return unite_satdics(self.rootsats, self.csats[index][0])
 
-    def resolve(self):
+    def resolve(self, satfilter):
         if not self.done:
             self.initial_nodes()
             self.done = len(self.nodes) == 0
@@ -71,9 +71,9 @@ class Crown:
                 while True:
                     for node in nodes:
                         if node.state == 0:
-                            nexts += node.spawn()
+                            nexts += node.spawn(satfilter)
                         elif node.state == 2:
-                            node.collect_sats()
+                            node.collect_sats(satfilter)
                     if len(nexts) == 0:
                         break
                     else:
