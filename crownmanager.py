@@ -12,6 +12,7 @@ class CrownManager:
     def init(self):    # be called every time satnode.spawn is called.
         self.crowns = []
         self.crown_index = -1
+        self.solution_cursor = 0
 
     def add_crown(self, val, psats, vkdic, satfilter=None):
         ln = len(vkdic)
@@ -129,7 +130,6 @@ class CrownManager:
             return self.next_psats()    # recursive call
 
     def next_psat(self, satfilter):
-        self.solution_cursor = 0
         while self.crown_index < len(self.crowns):
             res = self.get_psat(satfilter)
             if res:

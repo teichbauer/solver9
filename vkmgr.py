@@ -33,10 +33,10 @@ class VKManager:
         kns = list(self.vkdic.keys())
         self.nov -= 3
 
-        # tdic: dict for every touched vk:
+        # tdic: dict for every touched vk: all are vk12, vk3 are in self.vkdic
         # key: tuple of covered-values, value: list of vks that
         # have the same covered-values
-        tdic = {}
+        tdic = {}  # tdic purposed for vk12dic -> later vk12m
         for kn in kns:
             vk = self.vkdic[kn]
             cvr, odic = topbits_coverages(vk, topbits)
@@ -49,7 +49,7 @@ class VKManager:
                 else:           # vk has 1 / 2 bits cut away by topbits
                     tdic.setdefault(tuple(cvr), []).append(
                         VKlause(kn, odic, self.nov))
-            else:  # vk.nob == ln
+            else:  # vk.nob == ln: this vk3 remains in self.vkdic
                 vk.nov = self.nov
 
         # 2**3 == 8 - number of possible children of the satnoe, as crowns
@@ -66,7 +66,7 @@ class VKManager:
 
         # re-make self.bdic, based on updated vkdic (popped out all touched)
         self.make_bdic()    # make the bdic for self.vkdic - all 3-bit vks
-        return crowns
+        return crowns       # crowns for making crowns with node12
     # enf of def morph()
 
     def bestchoice(self):

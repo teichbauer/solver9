@@ -133,7 +133,9 @@ def topbits_coverages(vk, topbits):
 
 
 def sdic_fail(dic0, dic1):
-    ' see if dic1 has <key>:<value> pair violating dic0 '
+    ''' see if dic1 has <key>:<value> pair violating dic0. if dic1 has
+        v:2, and dic0[v] = 0 or 1, dic1[v] will be modified to 0 or 1
+        '''
     d1 = dic1.copy()    # dic1 may get updated. a copy for for loop
     for b, v in d1.items():    # check every k/v in dic1
         if b in dic0:            # if dic0 doesn't have it: don't care

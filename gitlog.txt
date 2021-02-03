@@ -1,3 +1,7 @@
+2021-02-03->0.104
+- crown-mananger.next_psat no more set solution_cursor = 0. Done in .init()
+- satnode adds ._clone_chdic, making crown_dic a clone of self.raw_crown_dic
+- tx_vkm now attached to self(satnode instance)
 2021-02-02->0.103
 - fix a bug in satnode.
 - TDB: 1. crownmgr.next_psat always reset solution_cursor; 2 satnode has issue.
