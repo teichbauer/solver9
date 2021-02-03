@@ -88,8 +88,8 @@ class CrownManager:
     def _vk2_sdic(self, vk):
         b0 = vk.bits[0]
         b1 = vk.bits[1]
-        sidc0 = {}
-        sidc1 = {}
+        sdic0 = {}
+        sdic1 = {}
 
         for b in range(len(self.sh.varray)):
             if b != b0:

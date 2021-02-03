@@ -1,3 +1,5 @@
+2021-02-03->0.106
+- fix in crownmanager/_vk2_sdic(vk)
 2021-02-03->0.105
 - fix in node12: when chdic[<val>] == None, set node12 with sh.full_sats
 2021-02-03->0.104
