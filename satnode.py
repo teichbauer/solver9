@@ -49,7 +49,8 @@ class SatNode:
             crown_dic = self.filter_children(self.raw_crown_dic, satfilter)
         else:
             crown_dic = self.raw_crown_dic
-
+        if len(crown_dic) == 0:
+            return None
         self.crwnmgr.init()
         for val, vkdic in crown_dic.items():
             psats = self.sh.get_sats(val)
@@ -65,6 +66,8 @@ class SatNode:
                 self.next = SatNode(
                     self, self.next_stuff[0], self.next_stuff[1])
             sats = self.next.spawn(psats)
+            if not sats:  # psats resulted in nothing.
+                continue
             if satfilter:
                 if not sdic_fail(satfilter, sats):
                     self.sats = sats
