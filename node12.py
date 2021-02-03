@@ -15,8 +15,8 @@ class Node12:
         if type(vk12m) == type({}):  # when vk12m is a dict(full-sats)
             self.sats = vk12m        # save the full-sats
             self.nov = len(vk12m)
-            self.state = 2          # this will trigger collect_sats() call
-        else:
+            self.state = 2           # this will trigger collect_sats() call
+        else:  # vk12m is of type VK12Manager
             self.vk12m = vk12m
             self.nov = vk12m.nov
 
@@ -97,11 +97,19 @@ class Node12:
             new_sh = SatHolder(shtail)
             self.sh.cut_tail(nob)
             for val, vkm in chdic.items():
-                node = Node12(
-                    name_base + val,  # %10 -> val, //10 -> nob
-                    self,             # node's parent
-                    vkm,              # vk12m for node
-                    new_sh.clone())   # sh is a clone: for sh.varray is a ref
+                if vkm:
+                    node = Node12(
+                        name_base + val,  # %10 -> val, //10 -> nob
+                        self,             # node's parent
+                        vkm,              # vk12m for node
+                        new_sh.clone())   # sh - clone: for sh.varray is a ref
+                else:
+                    tail_sat = new_sh.full_sats()
+                    node = Node12(
+                        name_base + val,  # %10 -> val, //10 -> nob
+                        self,
+                        tail_sat,
+                        None)
                 self.child_satdic[val] = self.sh.get_sats(val)
                 if node.state == 0:
                     self.nexts.append(node)

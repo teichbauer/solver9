@@ -1,3 +1,5 @@
+2021-02-03->0.105
+- fix in node12: when chdic[<val>] == None, set node12 with sh.full_sats
 2021-02-03->0.104
 - crown-mananger.next_psat no more set solution_cursor = 0. Done in .init()
 - satnode adds ._clone_chdic, making crown_dic a clone of self.raw_crown_dic

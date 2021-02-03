@@ -87,7 +87,7 @@ class SatNode:
         for v, vkd in chdic.items():
             d = dic.setdefault(v, {})
             for kn, vk in vkd.items():
-                d[k] = vk.clone()
+                d[kn] = vk.clone()
         return dic
 
     def filter_children(self, chdic, satfilter):
