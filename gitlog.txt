@@ -1,3 +1,6 @@
+2021-02-03->0.107
+- successfully found 1 sat(f) with 0.018secs. solver4 found all 7 for 0.046 secs
+- TBD: find all sats.
 2021-02-03->0.106
 - fix in crownmanager/_vk2_sdic(vk)
 2021-02-03->0.105

@@ -46,8 +46,8 @@ class Node12:
         if satfilter:
             sdic = unite_satdics(sdic, satfilter)
         if sdic:
-            print(f'{self.name()} finds sats: {sdic}')
-            # add/append (sdic,>name>) to crown.csats list
+            # print(f'{self.name()} finds sats: {sdic}')
+            # add/append (sdic,<name>) to crown.csats list
             parent.csats.append((sdic, self.name()))
         self.state = 1
 

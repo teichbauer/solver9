@@ -79,7 +79,7 @@ class SatNode:
             if self.sats and len(self.sats) > 0:
                 # self.sats = self.combine_sats(psats, self.sats)
                 self.sats = unite_satdics(psats, self.sats)
-                print(f'{self.name} has sats: {self.sats}')
+                # print(f'{self.name} has sats: {self.sats}')
             return self.sats
 
     def _clone_chdic(self, chdic):

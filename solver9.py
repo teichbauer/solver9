@@ -65,6 +65,7 @@ def work():
     elif configfilename.endswith('.json'):
         start_time = time.time()
         satdic = process(configfilename)
+        print(f'sat found: {satdic}')
         sat = Sat(configfilename.split('.')[0], list(satdic.items()))
         now_time = time.time()
         if sat:
