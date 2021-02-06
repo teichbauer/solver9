@@ -34,21 +34,24 @@ class Node12:
     def collect_sats(self, satfilter):
         node = self
         parent = node.parent
-        sdic = node.sats.copy()
+        sdic = node.sats
         while True:  # type(parent).__name__ == 'Node12':
-            merge_sats(sdic, parent.child_satdic[node.vname % 10])
+            sdic = unite_satdics(
+                sdic,
+                parent.child_satdic[node.vname % 10]
+                True)
             if type(parent).__name__ == 'Crown':
                 break
             node = parent
             parent = parent.parent
         assert(type(parent).__name__ == 'Crown')
-        merge_sats(sdic, parent.rootsats)
+        sdic = unite_satdics(sdic, parent.rootsats, True)
         if satfilter:
             sdic = unite_satdics(sdic, satfilter)
         if sdic:
             # print(f'{self.name()} finds sats: {sdic}')
             # add/append (sdic,<name>) to crown.csats list
-            parent.csats.append((sdic, self.name()))
+            parent.csats.append(sdic)
         self.state = 1
 
     def nov3_sats(self):   # when nov==3, collect integer-sats

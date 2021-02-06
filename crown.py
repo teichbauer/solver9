@@ -57,9 +57,9 @@ class Crown:
             self.nodes.append(node)
             self.child_satdic[val] = self.sh.get_sats(val)
 
-    def get_psat(self, index):
+    def crown_psat(self, index):
         ' combine rootsats with csats[index][0] '
-        return unite_satdics(self.rootsats, self.csats[index][0])
+        return unite_satdics(self.rootsats, self.csats[index][0], True)
 
     def resolve(self, satfilter):
         if not self.done:

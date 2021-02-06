@@ -132,42 +132,53 @@ def topbits_coverages(vk, topbits):
     return cvs, outdic
 
 
-def sdic_fail(dic0, dic1):
-    ''' see if dic1 has <key>:<value> pair violating dic0. if dic1 has
-        v:2, and dic0[v] = 0 or 1, dic1[v] will be modified to 0 or 1
+def filter_sdic(filter, sdic):
+    ''' see if sdic has <key>:<value> pair violating filter. if sdic has
+        v:2, and filter[v] = 0 or 1, sdic[v] will be modified to 0 or 1
         '''
-    d1 = dic1.copy()    # dic1 may get updated. a copy for for loop
-    for b, v in d1.items():    # check every k/v in dic1
-        if b in dic0:            # if dic0 doesn't have it: don't care
-            if dic0[b] == 2:     # dic0[b] tolerates both values
-                continue         # let it thru
-            if dic0[b] != v:     # violates dic0[b] value, stop here
-                if v == 2:       # when dic1[b] is 2, allowing 0|1,
-                    # set it to be dic0[b]
-                    dic1[b] = dic0[b]
+    d1 = sdic.copy()    # sdic may get updated. a copy for for loop
+    for b, v in d1.items():     # check every k/v in sdic
+        if b in filter:         # if filter doesn't have it: don't care
+            if filter[b] == 2:  # filter[b] tolerates both values
+                continue        # let it thru
+            if filter[b] != v:  # violates filter[b] value, stop here
+                if v == 2:      # when sdic[b] is 2, allowing 0|1,
+                    sdic[b] = filter[b]  # set it to be filter[b]
                 else:
-                    return True  # return True: dic1 fails
+                    return True  # return True: sdic fails
     return False
 
 
-def unite_satdics(sdic0, sdic1):
+def unite_satdics(s0, s1, extend=False):  # s1 as filter satdic
+    ''' restrictively filter unify/extend s0 with filter_dic(s1): 
+        1. bit in both: 
+            a: s0[bit] == s1[bit] -> {*, bit:v0, *}. (v0 is s0[bit])
+            b: v0 != v1, but v0 is 2   -> {*, bit:v1, *} / restrict v0 to v1
+            c: v0 != v1, but v1 is 2   -> {*, bit:v0, *} / passed filter s1
+            d: v0 != v1, none of v0, v1 is 2 -> return None / conflict
+        2. bit only in s0 or s1
+            a. bit in s0 only -> {bit:v0} -> filter not touched
+            b. bit only in s1 
+               if extend==True: extend with s1[bit]
+               if extend==False: doesn't take s1's bit/value. same leng as s0.
+        '''
     res = {}
-    unified_keys = set(sdic0.keys()).union(set(sdic1.keys()))
+    unified_keys = set(s0.keys()).union(set(s1.keys()))
     for b in unified_keys:
-        if (b in sdic0) and (b in sdic1):
-            if sdic0[b] != sdic1[b]:
-                if sdic0[b] == 2:
-                    res[b] = sdic1[b]
-                elif sdic1[b] == 2:
-                    res[b] = sdic0[b]
+        if (b in s0) and (b in s1):
+            if s0[b] != s1[b]:
+                if s0[b] == 2:
+                    res[b] = s1[b]
+                elif s1[b] == 2:
+                    res[b] = s0[b]
                 else:
                     # conflicting values (0,1) on the same bit
                     return None
-            else:  # sdic0[b] == sdic1[b]
-                res[b] = sdic0[b]
-        else:      # b is in sdic0, OR in sdic1, but not in both
-            if b in sdic0:
-                res[b] = sdic0[b]
-            elif b in sdic1:
-                res[b] = sdic1[b]
+            else:  # s0[b] == s1[b]
+                res[b] = s0[b]
+        else:      # b is in s0, OR in s1, but not in both
+            if b in s0:
+                res[b] = s0[b]
+            elif extend and (b in s1):
+                res[b] = s1[b]
     return res

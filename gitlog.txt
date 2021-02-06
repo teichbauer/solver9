@@ -1,3 +1,6 @@
+2021-02-05->0.108
+- refactoring on basics, crown, crownmanager, node12, satholder, satnoce.
+- TBD: figure out a way to collect sats: bottom(leave node12) up ...
 2021-02-03->0.107
 - successfully found 1 sat(f) with 0.018secs. solver4 found all 7 for 0.046 secs
 - TBD: find all sats.

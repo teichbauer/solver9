@@ -1,4 +1,4 @@
-from basics import topbits, sdic_fail, unite_satdics, print_json
+from basics import topbits, filter_sdic, unite_satdics, print_json
 from vklause import VKlause
 from satholder import SatHolder
 from TransKlauseEngine import TxEngine
@@ -71,14 +71,14 @@ class SatNode:
             if not sats:  # psats resulted in nothing.
                 continue
             if satfilter:
-                if not sdic_fail(satfilter, sats):
+                if not filter_sdic(satfilter, sats):
                     self.sats = sats
             else:
                 # self.sats = self.combine_sats(sats, psats)
-                self.sats = unite_satdics(sats, psats)
+                self.sats = unite_satdics(sats, psats, True)
             if self.sats and len(self.sats) > 0:
                 # self.sats = self.combine_sats(psats, self.sats)
-                self.sats = unite_satdics(psats, self.sats)
+                self.sats = unite_satdics(psats, self.sats, True)
                 # print(f'{self.name} has sats: {self.sats}')
             return self.sats
 
@@ -95,7 +95,7 @@ class SatNode:
         vals = list(cdic.keys())
         for val in vals:
             d = self.sh.get_sats(val)
-            if sdic_fail(satfilter, d):
+            if filter_sdic(satfilter, d):
                 cdic.pop(val)
         return cdic
 

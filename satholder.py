@@ -75,6 +75,7 @@ class SatHolder:
 
     def __init__(self, varray):
         self.varray = varray
+        self.ln = len(varray)
 
     def clone(self):
         return SatHolder(self.varray[:])
@@ -87,10 +88,10 @@ class SatHolder:
 
     def cut_tail(self, cutcnt):
         self.varray = self.varray[-cutcnt:]
+        self.ln = cutcnt
 
     def get_sats(self, val):
-        nd = len(self.varray)
-        assert(val < (2 ** nd))
+        assert(val < (2 ** self.ln))
         satdic = {}
         for ind, vn in enumerate(self.varray):
             v = get_bit(val, ind)
@@ -98,7 +99,7 @@ class SatHolder:
         return satdic
 
     def full_sats(self):
-        sats = {v:2 for v in self.varray }
+        sats = {v: 2 for v in self.varray}
         return sats
 
     def get_segment_sats(self, chil_keyvalue):
@@ -115,7 +116,7 @@ class SatHolder:
                 variable-231 has boolean chil_keyvalue 0
                 variable-8   has boolean chil_keyvalue 1
             '''
-        assert(chil_keyvalue < (2 ** len(self.varray)))
+        assert(chil_keyvalue < (2 ** self.ln))
         lst = []
         for ind, v in enumerate(self.varray):
             # every bit in varray represent a variable(original name)
