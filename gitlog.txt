@@ -1,3 +1,12 @@
+2021-02-06->0.110
+- progress on crown and node12.
+2021-02-06->0.109
+- crown and node12 have satpath - a list of sdics, from crown all the way 
+  to this node12. The leave-node12 will add an array of sdics. 
+  The leave-node12 will be in crown csats list. When crown delivers its 
+  solution sat, it will loop thru all ele in its csats: each has array of
+  sdics, each of which will combine with the whole satpath to form a complete
+  sat-dic.
 2021-02-05->0.108
 - refactoring on basics, crown, crownmanager, node12, satholder, satnoce.
 - TBD: figure out a way to collect sats: bottom(leave node12) up ...

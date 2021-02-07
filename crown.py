@@ -8,14 +8,12 @@ class Crown:
     def __init__(self, val, sh, psats, vk12m):
         self.sh = sh
         self.val = val
-        self.rootsats = psats
-        # child_satdic for top-level children:
+        self.satpath = [psats]
         # {<node-name>: <sat-dic>, ..}
         if type(vk12m) == type([]):  # vk12m is actually csats list
             self.csats = vk12m       # assign csats list
             self.done = True
         else:
-            self.child_satdic = {}
             self.vk12m = vk12m
             self.csats = []  # sats of successful children
             self.done = False
@@ -55,7 +53,7 @@ class Crown:
                     None)
             # node.state can be 0 or 2
             self.nodes.append(node)
-            self.child_satdic[val] = self.sh.get_sats(val)
+            node.satpath.append(self.sh.get_sats(val))
 
     def crown_psat(self, index):
         ' combine rootsats with csats[index][0] '
