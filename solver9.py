@@ -1,13 +1,20 @@
 import sys
 import time
-from basics import get_sdic, topvalue
+from basics import get_sdic, topvalue, FINAL
 from satholder import SatHolder, Sat
 from satnode import SatNode
 from vkmgr import VKManager
 from vklause import VKlause
 
+FINAL = {
+    'limit': 7,
+    'sats': [],
+    'nov': 0    # to be set
+}
+
 
 def make_vkdic(kdic, nov):
+    FINAL['nov'] = nov
     vkdic = {}
     for kn, klause in kdic.items():
         vkdic[kn] = VKlause(kn, klause, nov)

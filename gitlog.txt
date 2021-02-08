@@ -1,3 +1,17 @@
+2021-02-08->0.111
+- refactored crown.csats: a list of csats - each path from crown to leave node12
+  there will be a sat-path resulting to one or multiple sat(s).
+  each csat is a list of: 
+    [<sdic along the path, without last node12's sats>, [last sats]]
+  the last node12 may have multiple sats. So this csat may have multiple sats:
+  [0].update([1][i]). When delivering a csat, crown will maintain a .sub_curosr
+  only when it overflows (bigger than len(last sats)), will csat_cursor increase
+  and, when all csats of a crown are exhausted, will crownmananger.crown_index
+  gets increased. When all crowns are exhausted, crownmanager.state set to 1
+  This is a prep for collecting all possible sats.
+- basic/FINAL is the final sats collector, it can also limit how many sats 
+  should be collected,
+- TBD: finish the multiple-sat collection, and testings.
 2021-02-06->0.110
 - progress on crown and node12.
 2021-02-06->0.109

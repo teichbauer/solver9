@@ -7,7 +7,7 @@ class CrownManager:
     def __init__(self, sh, nov):
         self.sh = sh
         self.nov = nov
-        # self.init()  # be called every time satnode.spawn is called.
+        self.state = 0
 
     def init(self):    # be called every time satnode.spawn is called.
         self.crowns = []
@@ -85,16 +85,18 @@ class CrownManager:
         # if current crown not resolved, resolve it
         if not self.crowns[self.crown_index].done:
             self.crowns[self.crown_index].resolve(satfilter)
-
         if len(self.crowns[self.crown_index].csats) == 0:
             self.crown_index += 1
             return None
 
         # get csat of cursor-position in current crown. increment cursor.
         # if cursor overflow, increment crown_index and reset cursor tp 0
-        res = self.crowns[self.crown_index].crown_psat(self.csat_cursor)
-        self.csat_cursor += 1
+        res, self.csat_cursor = \
+            self.crowns[self.crown_index].crown_psat(self.csat_cursor)
         if self.csat_cursor >= len(self.crowns[self.crown_index].csats):
             self.crown_index += 1
-            self.csat_cursor = 0
+            if self.crown_index < len(self.crowns):
+                self.csat_cursor = 0
+            else:
+                self.state = 1
         return res

@@ -1,3 +1,9 @@
+FINAL = {
+    'limit': 7,
+    'sats': [],
+    'nov': 0    # to be set
+}
+
 
 def get_bit(val, bit):
     return (val >> bit) & 1

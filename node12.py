@@ -44,20 +44,25 @@ class Node12:
                 lst = []
                 for sx in sat:
                     s = filter(sx, sfilter)
-                    if s:
+                    if len(s) > 0:
                         lst += s
                 return lst
 
-        ss = filter(self.sat, satfilter)
+        ss = filter(self.sats, satfilter)
         if len(ss) == 0:
             return
         # find crown
         node = self
         while type(node).__name__ != 'Crown':
             node = node.parent
+        # unify satpath
+        sd = {}
+        for s in self.satpath:
+            sd.update(s)
         # add to crown
-        self.satpath.append(ss)
-        node.csats.append(self.satpath)
+        # self.satpath.append(ss)
+        # node.csats.append(self.satpath)
+        node.csats.append([sd, ss])
         self.state = 1
 
     def collect_sats0(self, satfilter):

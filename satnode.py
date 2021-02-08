@@ -1,4 +1,4 @@
-from basics import topbits, filter_sdic, unite_satdics, print_json
+from basics import topbits, filter_sdic, unite_satdics, print_json, FINAL
 from vklause import VKlause
 from satholder import SatHolder
 from TransKlauseEngine import TxEngine
@@ -59,7 +59,7 @@ class SatNode:
             psats = self.sh.get_sats(val)
             self.crwnmgr.add_crown(val, psats, vkdic, satfilter)
 
-        while True:
+        while self.crwnmgr.state == 0:
             psats = self.crwnmgr.next_psat(satfilter)
             if psats == None:
                 print(f'{self.name} has no sats')
@@ -74,10 +74,8 @@ class SatNode:
                 if not filter_sdic(satfilter, sats):
                     self.sats = sats
             else:
-                # self.sats = self.combine_sats(sats, psats)
                 self.sats = unite_satdics(sats, psats, True)
             if self.sats and len(self.sats) > 0:
-                # self.sats = self.combine_sats(psats, self.sats)
                 self.sats = unite_satdics(psats, self.sats, True)
                 # print(f'{self.name} has sats: {self.sats}')
             return self.sats

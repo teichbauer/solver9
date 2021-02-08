@@ -57,7 +57,17 @@ class Crown:
 
     def crown_psat(self, index):
         ' combine rootsats with csats[index][0] '
-        return unite_satdics(self.rootsats, self.csats[index][0], True)
+        csat = self.csats[index]
+        n = len(csat[1])
+        csat[0].update(csat[1][self.sub_cursor])
+        self.sub_cursor += 1
+        if self.sub_cursor < n:
+            new_index = index
+        else:
+            new_index = index + 1
+            self.sub_cursor = 0
+        return csat[0], new_index
+        # return unite_satdics(self.rootsats, self.csats[index][0], True)
 
     def resolve(self, satfilter):
         if not self.done:
@@ -78,4 +88,6 @@ class Crown:
                         nodes = nexts
                         nexts = []
                 self.done = True
+        if len(self.csats) > 0:
+            self.sub_cursor = 0  # for fetching each sub-sat within a csat
         return self.csats
