@@ -6,12 +6,6 @@ from satnode import SatNode
 from vkmgr import VKManager
 from vklause import VKlause
 
-FINAL = {
-    'limit': 7,
-    'sats': [],
-    'nov': 0    # to be set
-}
-
 
 def make_vkdic(kdic, nov):
     FINAL['nov'] = nov
@@ -34,11 +28,9 @@ def process(cnfname):
     sh = SatHolder(satslots)
 
     sn = SatNode(None, sh, vkm)
-    while sn.sats == None:
-        path.append(sn)
-        sn.spawn()
-
-    return sn.sats
+    # while sn.sats == None:
+    final = sn.spawn()
+    return final['sats']
 
 
 def test_topvalue():
@@ -71,24 +63,23 @@ def work():
 
     elif configfilename.endswith('.json'):
         start_time = time.time()
-        satdic = process(configfilename)
-        print(f'sat found: {satdic}')
-        sat = Sat(configfilename.split('.')[0], list(satdic.items()))
+        sats = process(configfilename)
+        print(f'sats found: {sats}')
+        # sat = Sat(configfilename.split('.')[0], list(satdic.items()))
         now_time = time.time()
-        if sat:
-            sat.cnf_file = configfilename
-            # result = sat.verify(Root_bitdic)
-            # if result:
-            print('saved under ' + sat.save_dir)
-            sat.save()  # save to verify/<cnf>.sat
-        else:
-            print('No sat found')
+        # if sat:
+        #     sat.cnf_file = configfilename
+        #     # result = sat.verify(Root_bitdic)
+        #     # if result:
+        #     print('saved under ' + sat.save_dir)
+        #     sat.save()  # save to verify/<cnf>.sat
+        # else:
+        #     print('No sat found')
         time_used = now_time - start_time
         print(f'Time used: {time_used}')
-
     x = 1
 
 
 if __name__ == '__main__':
     work()
-    # test_topvalue()
+    x = 1

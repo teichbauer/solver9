@@ -73,12 +73,19 @@ class SatNode:
             if satfilter:
                 if not filter_sdic(satfilter, sats):
                     self.sats = sats
-            else:
+                if self.sats and len(self.sats) > 0:
+                    self.sats = unite_satdics(psats, self.sats, True)
+                    # print(f'{self.name} has sats: {self.sats}')
+                return self.sats
+            else:  # if no satfilter, it is on top level - finalize
                 self.sats = unite_satdics(sats, psats, True)
-            if self.sats and len(self.sats) > 0:
-                self.sats = unite_satdics(psats, self.sats, True)
-                # print(f'{self.name} has sats: {self.sats}')
-            return self.sats
+                FINAL['sats'].append(self.sats)
+                if FINAL['limit'] <= len(FINAL['sats']):
+                    return FINAL['sats']
+            # if self.sats and len(self.sats) > 0:
+            #     self.sats = unite_satdics(psats, self.sats, True)
+            #     # print(f'{self.name} has sats: {self.sats}')
+            # return self.sats
 
     def _clone_chdic(self, chdic):
         dic = {}

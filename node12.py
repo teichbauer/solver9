@@ -9,6 +9,7 @@ class Node12:
     def __init__(self, vname, parent, vk12m, sh):
         self.parent = parent
         self.satpath = parent.satpath[:]
+        self.satpath_collected = None
         # vname is 2 ditigs number. vname % 10 is the given val
         self.vname = vname    # vname // 10: is the parent-nob
         self.nexts = []
@@ -22,8 +23,8 @@ class Node12:
             self.nov = vk12m.nov
 
             self.state = 0
-            if self.nov == 3:
-                self.sats = self.nov3_sats()
+            if self.nov <= 3:  # for nov=3 or less: get all sats by looping
+                self.sats = self.nov321_sats()
 
     def name(self):
         return f'{self.nov}.{self.vname}'
@@ -56,13 +57,15 @@ class Node12:
         while type(node).__name__ != 'Crown':
             node = node.parent
         # unify satpath
-        sd = {}
-        for s in self.satpath:
-            sd.update(s)
+        if not self.satpath_collected:
+            sd = {}
+            for s in self.satpath:
+                sd.update(s)
+            self.satpath_collected = sd
         # add to crown
         # self.satpath.append(ss)
         # node.csats.append(self.satpath)
-        node.csats.append([sd, ss])
+        node.csats.append([self.satpath_collected, ss])
         self.state = 1
 
     def collect_sats0(self, satfilter):
@@ -89,10 +92,11 @@ class Node12:
         self.state = 1
     # end of def collect_sats(self, satfilter):
 
-    def nov3_sats(self):   # when nov==3, collect integer-sats
+    def nov321_sats(self):   # when nov==3,2,1, collect integer-sats
         nsats = []
         vkdic = self.vk12m.vkdic
-        for i in range(8):  # 8 = 2**3
+        N = 2 ** self.nov
+        for i in range(N):  # 2** nov
             hit = False
             for vk in vkdic.values():
                 if vk.hit(i):
