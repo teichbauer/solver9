@@ -1,3 +1,5 @@
+2021-02-09->0.113
+- optimized vk12mgr a bit.
 2021-02-08->0.112
 - progress on node12/nov3_sats -> nov321_sats; satnode.py and solver9
 2021-02-08->0.111

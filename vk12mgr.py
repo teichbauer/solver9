@@ -145,6 +145,8 @@ class VK12Manager:
             if self.clean_vk1s() == None:  # terminated
                 return
             maxtouch_cnt = 0
+            if len(self.kn2s) == 0:
+                return
             for k1 in self.kn1s:
                 v1 = self.vkdic[k1]
                 bit = v1.bits[0]
