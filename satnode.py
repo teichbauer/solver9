@@ -40,9 +40,7 @@ class SatNode:
         # after tx_vkm.morph, tx_vkm only has (.vkdic) vk3 left, if any
         self.raw_crown_dic = self.tx_vkm.morph(self.topbits)  # vkm.nov -= 3
         self.next_stuff = (next_sh, self.tx_vkm)
-
-    def reset_crwnmgr(self):
-        pass
+    # end of def prepare(self):
 
     def spawn(self, satfilter=None):
         if self.done:
@@ -71,7 +69,7 @@ class SatNode:
             if not sats:  # psats resulted in nothing.
                 continue
             if satfilter:
-                if not filter_sdic(satfilter, sats):
+                if filter_sdic(satfilter, sats):
                     self.sats = sats
                 if self.sats and len(self.sats) > 0:
                     self.sats = unite_satdics(psats, self.sats, True)
@@ -82,10 +80,7 @@ class SatNode:
                 FINAL['sats'].append(self.sats)
                 if FINAL['limit'] <= len(FINAL['sats']):
                     return FINAL['sats']
-            # if self.sats and len(self.sats) > 0:
-            #     self.sats = unite_satdics(psats, self.sats, True)
-            #     # print(f'{self.name} has sats: {self.sats}')
-            # return self.sats
+    # end of def spawn(self, satfilter=None):
 
     def _clone_chdic(self, chdic):
         dic = {}
@@ -100,11 +95,6 @@ class SatNode:
         vals = list(cdic.keys())
         for val in vals:
             d = self.sh.get_sats(val)
-            if filter_sdic(satfilter, d):
+            if not filter_sdic(satfilter, d):
                 cdic.pop(val)
         return cdic
-
-    def combine_sats(self, sdic1, sdic2):
-        sdic = sdic1.copy()
-        sdic.update(sdic2)
-        return sdic

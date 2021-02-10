@@ -10,8 +10,8 @@ class Crown:
         self.val = val
         self.satpath = [psats]
         # {<node-name>: <sat-dic>, ..}
-        if type(vk12m) == type([]):  # vk12m is actually csats list
-            self.csats = vk12m       # assign csats list
+        if type(vk12m) == type([]):      # vk12m is actually csats list
+            self.csats = [psats, vk12m]  # assign csats list
             self.done = True
         else:
             self.vk12m = vk12m

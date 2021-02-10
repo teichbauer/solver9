@@ -1,6 +1,6 @@
 from vk12mgr import VK12Manager
 from crown import Crown
-from basics import filter_sdic
+from basics import filter_sdic, unite_satdics
 
 
 class CrownManager:
@@ -57,16 +57,16 @@ class CrownManager:
             return unite_satdics(sd, satfilter)
         return sd
 
-    def _vk1_sdic(self, vk, filter=None):
-        sdic = self._filter_1kvpair(vk.bits[0], vk.dic[vk.bits[0]], filter)
+    def _vk1_sdic(self, vk, satfilter=None):
+        sdic = self._filter_1kvpair(vk.bits[0], vk.dic[vk.bits[0]], satfilter)
         if sdic:
             return [sdic]
         return []
 
     def _vk2_sdic(self, vk, satfilter=None):  # vk has 2 bits
         lst = []
-        s0 = self._filter_1kvpair(vk.bits[0], vk.dic[vk.bits[0]], filter)
-        s1 = self._filter_1kvpair(vk.bits[1], vk.dic[vk.bits[1]], filter)
+        s0 = self._filter_1kvpair(vk.bits[0], vk.dic[vk.bits[0]], satfilter)
+        s1 = self._filter_1kvpair(vk.bits[1], vk.dic[vk.bits[1]], satfilter)
         if s0:
             lst.append(s0)
         if s1:
@@ -74,6 +74,8 @@ class CrownManager:
         return lst
 
     def next_psat(self, satfilter):
+        # if self.crown_index == 4:
+        #     x = 1
         while self.crown_index < len(self.crowns):
             res = self.get_psat(satfilter)
             if res:

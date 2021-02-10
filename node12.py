@@ -33,12 +33,8 @@ class Node12:
 
         def filter(sat, sfilter):
             if type(sat) == type({}):
-                if sfilter:
-                    s = filter_sdic(sat, sfilter)
-                else:
-                    s = sat
-                if s:
-                    return [s]
+                if filter_sdic(sfilter, sat):
+                    return [sat]
                 else:
                     return []
             else:
@@ -67,6 +63,7 @@ class Node12:
         # node.csats.append(self.satpath)
         node.csats.append([self.satpath_collected, ss])
         self.state = 1
+    # end of def collect_sats(self, satfilter):
 
     def collect_sats0(self, satfilter):
         node = self

@@ -142,7 +142,9 @@ def filter_sdic(filter, sdic):
     ''' see if sdic has <key>:<value> pair violating filter. if sdic has
         v:2, and filter[v] = 0 or 1, sdic[v] will be modified to 0 or 1
         '''
-    d1 = sdic.copy()    # sdic may get updated. a copy for for loop
+    if not filter:
+        return sdic
+    d1 = sdic.copy()            # sdic may get updated. a copy for looping
     for b, v in d1.items():     # check every k/v in sdic
         if b in filter:         # if filter doesn't have it: don't care
             if filter[b] == 2:  # filter[b] tolerates both values
@@ -151,8 +153,8 @@ def filter_sdic(filter, sdic):
                 if v == 2:      # when sdic[b] is 2, allowing 0|1,
                     sdic[b] = filter[b]  # set it to be filter[b]
                 else:
-                    return True  # return True: sdic fails
-    return False
+                    return False  # return False: sdic fails
+    return sdic
 
 
 def unite_satdics(s0, s1, extend=False):  # s1 as filter satdic
