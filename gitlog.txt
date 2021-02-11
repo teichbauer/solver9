@@ -1,3 +1,6 @@
+2021-02-10->0.115
+- fix in crown, new debug function in basics; optimize in 
+  crownmanager/._vk2_sdic
 2021-02-10->0.114
 - fix in crown: when vk12m is a list, make the right csats: [psats,[]]
 - refactor basics/filter_sdic, node12, satnode

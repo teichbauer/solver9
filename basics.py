@@ -190,3 +190,38 @@ def unite_satdics(s0, s1, extend=False):  # s1 as filter satdic
             elif extend and (b in s1):
                 res[b] = s1[b]
     return res
+
+
+def deb_01(d):
+    if len(d) == 12:
+        if d[11] == 1 and d[10] == 1 and d[9] == 1 and d[8] == 0 and d[7] == 0 and d[6] == 0 and d[5] == 0 and d[4] == 0 and d[3] == 1:
+            return '12.2.1'
+        if d[11] == 1 and d[10] == 0 and d[9] == 1 and d[8] == 1 and d[7] == 0 and d[6] == 0 and d[5] == 0 and d[4] == 1 and d[3] == 1:
+            return '12.4.1'
+        if d[11] == 1 and d[10] == 0 and d[9] == 1 and d[8] == 1 and d[7] == 0 and d[6] == 0 and d[5] == 1 and d[4] == 1 and d[3] == 0:
+            return '12.4.2'
+        if d[11] == 1 and d[10] == 0 and d[9] == 1 and d[8] == 1 and d[7] == 0 and d[6] == 0 and d[5] == 1 and d[4] == 1 and d[3] == 1:
+            return '12.4.3'
+        if d[11] == 1 and d[10] == 0 and d[9] == 1 and d[8] == 1 and d[7] == 0 and d[6] == 1 and d[5] == 0 and d[4] == 1 and d[3] == 1:
+            return '12.4.4'
+        if d[11] == 1 and d[10] == 0 and d[9] == 1 and d[8] == 1 and d[7] == 0 and d[6] == 1 and d[5] == 1 and d[4] == 1 and d[3] == 0:
+            return '12.4.5'
+        if d[11] == 1 and d[10] == 0 and d[9] == 1 and d[8] == 1 and d[7] == 0 and d[6] == 1 and d[5] == 1 and d[4] == 1 and d[3] == 1:
+            return '12.4.6'
+        if d[11] == 1 and d[10] == 0 and d[9] == 1 and d[8] == 1 and d[7] == 0 and d[6] == 0 and d[5] == 1 and d[4] == 1 and d[3] == 0:
+            return '12.4.7'
+        if d[11] == 1 and d[10] == 0 and d[9] == 1 and d[8] == 1 and d[7] == 0 and d[6] == 0 and d[5] == 1 and d[4] == 1 and d[3] == 0 and d[0] == 1:
+            return '12.4.8'
+        if d[11] == 1 and d[10] == 0 and d[9] == 1 and d[8] == 1 and d[7] == 0 and d[6] == 1 and d[5] == 1 and d[4] == 1 and d[3] == 0:
+            return '12.4.9'
+        if d[11] == 1 and d[10] == 0 and d[9] == 0 and d[8] == 1 and d[7] == 0 and d[6] == 0 and d[5] == 0 and d[4] == 0 and d[3] == 0:
+            return '12.5.1'
+        if d[11] == 1 and d[10] == 0 and d[9] == 0 and d[8] == 1 and d[7] == 0 and d[6] == 0 and d[5] == 0 and d[4] == 1 and d[3] == 0:
+            return '12.5.2'
+    else:
+        ln = len(d)
+        ks = sorted(list(d.keys()), reverse=True)
+        m = ''
+        for k in ks:
+            m += f'{k}:{d[k]}  '
+        return f'{ln}== <  {m}>'

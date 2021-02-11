@@ -1,4 +1,4 @@
-from basics import topbits, filter_sdic, unite_satdics, print_json, FINAL
+from basics import topbits, filter_sdic, unite_satdics, print_json, FINAL, deb_01
 from vklause import VKlause
 from satholder import SatHolder
 from TransKlauseEngine import TxEngine
@@ -59,6 +59,8 @@ class SatNode:
 
         while self.crwnmgr.state == 0:
             psats = self.crwnmgr.next_psat(satfilter)
+            dmsg = deb_01(psats)
+            print('psats: ' + dmsg)
             if psats == None:
                 print(f'{self.name} has no sats')
                 return None
