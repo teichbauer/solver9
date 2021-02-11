@@ -69,7 +69,7 @@ class CrownManager:
         s1 = self._filter_1kvpair(vk.bits[1], vk.dic[vk.bits[1]], satfilter)
         if s0:
             lst.append(s0)
-        if s1 and S1 != s0:
+        if s1 and s1 != s0:
             lst.append(s1)
         return lst
 
