@@ -13,6 +13,7 @@ class Crown:
         if type(vk12m) == type([]):        # vk12m is actually csats list
             # the single csat: [psats, vk12m]
             self.csats = [[psats, vk12m]]  # assign csat in csats list as [0]
+            self.sub_cursor = 0
             self.done = True
         else:
             self.vk12m = vk12m
