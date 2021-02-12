@@ -27,11 +27,24 @@ class VKManager:
         return VKManager(vkdic, self.nov)
 
     def morph(self, topbits):
-        ''' only called on a txed clone '''
-        crowns = {}  # {<cvr-val>: {kn, ..},..}
+        ''' only called on a txed (best-vks condensed to top 3 bits) clone.
+            ----------------------------------------------------------------
+            After cut-off top 3 bits, there will be 3 groups of vks:
+            1. the vks with no bits left-over. They are within the top bits
+               the values within 3 bits, covered by these vks (excl_cvs), will 
+               be taken away from 2**3 values.
+               rest of 2**3 values are the vals set into crowns
+               These vks will be taken off vkdic
+            2. the vks with no bit in the top bit - they remain 3-bit vks
+               they will have nov -= 3. They remain in vkdic
+            3. vks with bit in, and out of top bits. After cut, they will be
+               vk12. They are put into tdic, keyed by the top-bit value they
+               cover
+            '''
+        crowns = {}    # {<cvr-val>: {kn, ..},..}
         excl_cvs = set([])
         kns = list(self.vkdic.keys())
-        self.nov -= 3
+        self.nov -= 3  # top 3 bits will be cut off
 
         # tdic: dict for every touched vk: all are vk12, vk3 are in self.vkdic
         # key: tuple of covered-values, value: list of vks that
@@ -41,7 +54,7 @@ class VKManager:
             vk = self.vkdic[kn]
             cvr, odic = topbits_coverages(vk, topbits)
             ln = len(odic)
-            if ln < vk.nob:
+            if ln < vk.nob:  #
                 self.vkdic.pop(kn)
                 if ln == 0:     # vk is within topbits, no bit left
                     for v in cvr:  # collect vk's cover-value

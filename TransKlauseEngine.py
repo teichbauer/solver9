@@ -9,10 +9,9 @@ class TxEngine:
         transfered to a new klause compatible to self.klause
         """
 
-    def __init__(self, base_vklause,  # inst of VKlause 2b transfered to the
-                 nov):                # highst bits in nov-bits
+    def __init__(self, base_vklause):
+        # base_vklause: a vk 2b transfered to the highst bits in nov-bits
         self.start_vklause = base_vklause
-        self.nov = nov
         self.txs = {}
         self.setup_tx()
 
@@ -20,7 +19,8 @@ class TxEngine:
         # set of vk.bits
         bits = set(self.start_vklause.bits)
         # target bits
-        hi_bits = set(range(self.nov - 1, self.nov - 1 - len(bits), -1))
+        nov = self.start_vklause.nov
+        hi_bits = set(range(nov - 1, nov - 1 - len(bits), -1))
 
         targets = sorted(list(hi_bits - bits))
         source = sorted(list(bits - hi_bits))
@@ -41,14 +41,13 @@ class TxEngine:
     # ----- end of def setup_tx(self, hi_bits=None)
 
     def trans_varray(self, varray):
-        assert(self.nov == len(varray))
         lst = varray[:]
         for fr, to in self.txs.items():
             lst[to] = varray[fr]
         return lst
 
     def trans_klause(self, vklause):
-        # transfered vk still have the same kname
+        # transfered vk still have the same kname and the same nov
         tdic = {}
         for b, v in vklause.dic.items():
             if b in self.txs:
@@ -57,7 +56,7 @@ class TxEngine:
                 tdic[b] = v
         if len(tdic) == 0:
             raise Exception("222")
-        return VKlause(vklause.kname, tdic, self.nov)
+        return VKlause(vklause.kname, tdic, vklause.nov)
 
     # ----- end of trans_klause
 

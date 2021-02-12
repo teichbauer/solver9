@@ -28,7 +28,7 @@ class SatNode:
         choice = self.vkm.bestchoice()
         self.bvk = self.vkm.vkdic[choice['bestkey'][0]]
         if self.topbits != choice['bits']:  # the same as self.bvk.bits:
-            self.tx = TxEngine(self.bvk, self.nov)
+            self.tx = TxEngine(self.bvk)
             self.sh.transfer(self.tx)
             self.tx_vkm = self.vkm.txed_clone(self.tx)
         else:

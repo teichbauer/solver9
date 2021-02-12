@@ -119,7 +119,7 @@ class Node12:
 
         # what if > 1 bvks (nob==2), need cvs to be excluded in morph
         if self.vk12m.need_tx():
-            self.tx = TxEngine(self.vk12m.bvk, self.nov)
+            self.tx = TxEngine(self.vk12m.bvk)
             self.sh.transfer(self.tx)
             vk12m = self.vk12m.txed_clone(self.tx)
         else:

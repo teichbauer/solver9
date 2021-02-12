@@ -26,6 +26,10 @@ def set_bits(val, d):
     return val
 
 
+def oppo_binary(binary_value):
+    return (binary_value + 1) % 2
+
+
 def get_sdic(filename):
     path = './configs/' + filename
     sdic = eval(open(path).read())

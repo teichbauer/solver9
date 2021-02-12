@@ -1,6 +1,6 @@
 from vk12mgr import VK12Manager
 from crown import Crown
-from basics import filter_sdic, unite_satdics
+from basics import filter_sdic, unite_satdics, oppo_binary
 
 
 class CrownManager:
@@ -27,7 +27,7 @@ class CrownManager:
                 else:
                     csats = self._vk2_sdic(vk, satfilter)
             if len(csats) > 0:
-                crown = Crown(val, self.sh, psats, csats)
+                crown = Crown(val, self.sh.clone(), psats, csats)
                 self.crowns.append(crown)
                 self.crown_index = 0
             return
@@ -41,12 +41,9 @@ class CrownManager:
         return crown
     # end of def add_crown(..)
 
-    def _oppo(self, binary_value):
-        return (binary_value + 1) % 2
-
     def _filter_1kvpair(self, bit, value, satfilter):
         sd = {}
-        oppo = self._oppo(value)
+        oppo = oppo_binary(value)
         for b in range(self.sh.ln):
             vn = self.sh.varray[b]
             if b == bit:

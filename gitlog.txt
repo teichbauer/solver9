@@ -1,3 +1,10 @@
+2021-02-12->0.118
+- move crownmanager/_oppo to basic/oppo_binary
+- TxEngine constructor: use vk.nov, in stead of extra nov as input param.
+- remove TransKlauseEngine.py/trans_varray/assert(self.nov == len(varray))
+  not sure why this has cause issue.
+- made sure crown-mamager/add_crown: when creating a new crown, use 
+  self.sh.clone, not self.sh to feed Crown instance.
 2021-02-11->0.117
 - fix in crown
 2021-02-10->0.116

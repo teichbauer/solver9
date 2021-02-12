@@ -27,7 +27,7 @@ class Crown:
         tbs = topbits(self.vk12m.nov, nob)
 
         if self.vk12m.need_tx():
-            tx = TxEngine(self.vk12m.bvk, self.vk12m.nov)
+            tx = TxEngine(self.vk12m.bvk)
             self.sh.transfer(tx)
             vk12m = self.vk12m.txed_clone(tx)
         else:
