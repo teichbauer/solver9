@@ -1,3 +1,16 @@
+2021-02-12->0.119
+- extend basics/deb_01 to cover 12.6.1 and 12.6.2
+- TxEngine.trans_varray has again the 
+  assert(self.start_vklause.nov == len(varray)) this check is right to be there.
+- satnode.crown-mananger.sh and satnode.next(satnode).sh should be 2 insights
+  now use sh.clone to make sure of that.
+- TBD: from the 7 solutions(a,b,c,d,e,f,g), 
+  12.4.2 should cover d, but it didn't 
+  12.4.3 should cover e, but it didn't 
+  12.4.5 should cover c, but it didn't 
+  12.4.6 should cover g, but it didn't 
+  12.6.1 should cover a, but it didn't 
+  12.6.2 should cover c, but it didn't. b is covered by no one?
 2021-02-12->0.118
 - move crownmanager/_oppo to basic/oppo_binary
 - TxEngine constructor: use vk.nov, in stead of extra nov as input param.

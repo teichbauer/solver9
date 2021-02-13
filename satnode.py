@@ -39,7 +39,7 @@ class SatNode:
         self.sh.cut_tail(3)
         # after tx_vkm.morph, tx_vkm only has (.vkdic) vk3 left, if any
         self.raw_crown_dic = self.tx_vkm.morph(self.topbits)  # vkm.nov -= 3
-        self.next_stuff = (next_sh, self.tx_vkm)
+        self.next_stuff = (next_sh.clone(), self.tx_vkm)
     # end of def prepare(self):
 
     def spawn(self, satfilter=None):

@@ -41,6 +41,7 @@ class TxEngine:
     # ----- end of def setup_tx(self, hi_bits=None)
 
     def trans_varray(self, varray):
+        assert(self.start_vklause.nov == len(varray)), "!!!!!"
         lst = varray[:]
         for fr, to in self.txs.items():
             lst[to] = varray[fr]
