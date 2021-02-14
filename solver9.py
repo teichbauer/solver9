@@ -23,7 +23,6 @@ def make_vkm(cnf_fname):
 
 def process(cnfname):
     vkm = make_vkm(cnfname)
-    path = []
     satslots = list(range(vkm.nov))
     sh = SatHolder(satslots)
 
