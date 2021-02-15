@@ -49,12 +49,12 @@ class SatNode:
         # after morph, vkm.vkdic only have vk3s left, if any
         if satfilter:
             crown_dic = self.filter_children(self.raw_crown_dic, satfilter)
+            if len(crown_dic) > 0:
+                return self.verify_sat(satfilter)
         else:
             crown_dic = self._clone_chdic(self.raw_crown_dic)
         if len(crown_dic) == 0:
             return None
-        elif satfilter:
-            return self.verify_sat(satfilter)
 
         self.crwnmgr.init()
         for val, vkdic in crown_dic.items():
@@ -63,7 +63,8 @@ class SatNode:
 
         while self.crwnmgr.state == 0:
             psat = self.crwnmgr.next_psat(satfilter)
-            deb_01(psat)
+            if FINAL['debug']:
+                deb_01(psat)
             if psat == None:
                 print(f'{self.name} has no sats')
                 return None
@@ -89,10 +90,8 @@ class SatNode:
                     self.sats = unite_satdics(sats, psat, True)
                     FINAL['sats'].append(self.sats)
                     if FINAL['limit'] <= len(FINAL['sats']):
-                        return FINAL['sats']
-                    else:
-                        print(f'sat number limit {FINAL["limit"]} reached.')
-                        return  self.sats
+                        return FINAL
+        return FINAL
     # end of def spawn(self, satfilter=None):
 
     def verify_sat(self, sat):

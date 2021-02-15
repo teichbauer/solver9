@@ -1,6 +1,6 @@
 import sys
 import time
-from basics import get_sdic, topvalue, FINAL
+from basics import get_sdic, topvalue, FINAL, ordered_dic_string
 from satholder import SatHolder, Sat
 from satnode import SatNode
 from vkmgr import VKManager
@@ -63,17 +63,12 @@ def work():
     elif configfilename.endswith('.json'):
         start_time = time.time()
         sats = process(configfilename)
-        print(f'sats found: {sats}')
-        # sat = Sat(configfilename.split('.')[0], list(satdic.items()))
         now_time = time.time()
-        # if sat:
-        #     sat.cnf_file = configfilename
-        #     # result = sat.verify(Root_bitdic)
-        #     # if result:
-        #     print('saved under ' + sat.save_dir)
-        #     sat.save()  # save to verify/<cnf>.sat
-        # else:
-        #     print('No sat found')
+        ln = len(sats)
+        print(f'there are {ln} sats:')
+        for ind, sat in enumerate(sats):
+            msg = ordered_dic_string(sat)
+            print(f'{ind+1}: {msg}')
         time_used = now_time - start_time
         print(f'Time used: {time_used}')
     x = 1

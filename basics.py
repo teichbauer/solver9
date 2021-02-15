@@ -1,4 +1,5 @@
 FINAL = {
+    'debug': False,
     'limit': 7,
     'sats': [],
     'nov': 0    # to be set
@@ -34,6 +35,7 @@ def get_sdic(filename):
     path = './configs/' + filename
     sdic = eval(open(path).read())
     return sdic
+
 
 def split_satfilter(filter_dic):
     multi = []
@@ -239,4 +241,3 @@ def deb_01(d):
         ln = len(d)
         msg = f'|{ln}|==> {lst}'
     print(msg)
-    

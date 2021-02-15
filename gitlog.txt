@@ -1,3 +1,6 @@
+2021-02-15->0.122
+- polishing and completion in basics, satnode, solver9.
+  cfg12-45.json: got all 7 sats in 0.0086 sec.
 2021-02-15->0.121
 - basics/split_satfilter: if sdic has x:2 in it, 1 or n times, split sdic into
   1 or n: exhaust all (n<4) 2 ** n combinations. return a list of sdics.
