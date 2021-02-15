@@ -1,3 +1,10 @@
+2021-02-15->0.121
+- basics/split_satfilter: if sdic has x:2 in it, 1 or n times, split sdic into
+  1 or n: exhaust all (n<4) 2 ** n combinations. return a list of sdics.
+- get rid of basics/merge_sats and merge_satdics
+- satnode.verify_sat: when satfilter has no :2 in it, verify it with vk3 in .vkm
+- satnode handles multi-sats collection in FINAL.
+- vklause.hit now accept sdic as input.
 2021-02-13->0.120
 - see log.txt entry : 2021-02-13: analysis on a new satnode design, where
   it can handle psats with diff number of ':2'.

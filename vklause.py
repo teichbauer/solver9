@@ -71,3 +71,14 @@ class VKlause:
             # in_v==True:  every pair in dic is in v
             # in_v==False: at least one p not in v
             return in_v
+        elif type(v) == type({}):
+            hit = False
+            hit_cnt = 0
+            i = 0
+            while (not hit) and i < self.nob:
+                k = self.bits[i] 
+                if k in v and v[k] == self.dic[k]:
+                    hit_cnt += 1
+                i += 1
+            return hit_cnt == self.nob
+

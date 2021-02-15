@@ -35,6 +35,38 @@ def get_sdic(filename):
     sdic = eval(open(path).read())
     return sdic
 
+def split_satfilter(filter_dic):
+    multi = []
+    sdic = {}
+    sat2keys = []
+    for k, v in filter_dic.items():
+        if v == 2:
+            sat2keys.append(k)
+        else:
+            sdic[k] = v
+    ln = len(sat2keys)
+    if ln == 0:
+        return [sdic]
+    else:
+        ds = []
+        if ln < 4:
+            L = 2 ** ln
+            for i in range(L):
+                d = {}
+                for ind, key in enumerate(sat2keys):
+                    bv = get_bit(i, ind)
+                    d[key] = bv
+                ds.append(d)
+            for d in ds:
+                sd = sdic.copy()
+                sd.update(d)
+                multi.append(sd)
+            return multi
+        else:
+            msg = f'there are {ln} entries with :2'
+            print(msg)
+            raise Exception(f'TBD: {msg}')
+
 
 def ordered_dic_string(d):
     m = '{ '
@@ -44,32 +76,6 @@ def ordered_dic_string(d):
     m = m.strip(', ')
     m += ' }'
     return m
-
-
-def merge_sats(dic0, dic1):
-    # merge dic1 into dic0 - if a key has both 0 | 1, set its value = 2
-    for k, v in dic1.items():
-        if k in dic0:
-            if dic0[k] != v:
-                dic0[k] = 2
-        else:
-            dic0[k] = v
-    return dic0
-
-
-def merge_satdics(target_dic, src_dic):
-    # satdic is a dic with keys being bit-number(varaible names), and
-    # values are the boolena values 0 | 1
-    # if a value set to be 2, this is a "wild-card": can be either 0 or 1
-    # -------------------------------------------------------------------
-    # merge src_dic into target_dic - if a key has 0 and 1, set its value = 2
-    for k, v in src_dic.items():
-        if k in target_dic:
-            if target_dic[k] != v:
-                target_dic[k] = 2
-        else:
-            target_dic[k] = v
-    return target_dic
 
 
 def print_json(nov, vkdic, fname):
@@ -174,6 +180,8 @@ def unite_satdics(s0, s1, extend=False):  # s1 as filter satdic
                if extend==True: extend with s1[bit]
                if extend==False: doesn't take s1's bit/value. same leng as s0.
         '''
+    if s0 == s1:
+        return s0
     res = {}
     unified_keys = set(s0.keys()).union(set(s1.keys()))
     for b in unified_keys:
@@ -200,33 +208,35 @@ def deb_01(d):
     lst = sorted(list(d.items()), reverse=True)
     if len(d) == 12:
         if lst == [(11, 1), (10, 1), (9, 1), (8, 0), (7, 0), (6, 0), (5, 0), (4, 0), (3, 1), (2, 1), (1, 0), (0, 0)]:
-            return '12.2.1'
+            msg = f'12.2.1==> {lst}'
         if lst == [(11, 1), (10, 0), (9, 1), (8, 1), (7, 0), (6, 0), (5, 0), (4, 1), (3, 1), (2, 0), (1, 0), (0, 1)]:
-            return '12.4.1'
+            msg = f'12.4.1==> {lst}'
         if lst == [(11, 1), (10, 0), (9, 1), (8, 1), (7, 0), (6, 0), (5, 1), (4, 1), (3, 0), (2, 0), (1, 0), (0, 1)]:
-            return '12.4.2'
+            msg = f'12.4.2==> {lst}'
         if lst == [(11, 1), (10, 0), (9, 1), (8, 1), (7, 0), (6, 0), (5, 1), (4, 1), (3, 1), (2, 0), (1, 0), (0, 1)]:
-            return '12.4.3'
+            msg = f'12.4.3==> {lst}'
         if lst == [(11, 1), (10, 0), (9, 1), (8, 1), (7, 0), (6, 1), (5, 0), (4, 1), (3, 1), (2, 0), (1, 0), (0, 1)]:
-            return '12.4.4'
+            msg = f'12.4.4==> {lst}'
         if lst == [(11, 1), (10, 0), (9, 1), (8, 1), (7, 0), (6, 1), (5, 1), (4, 1), (3, 0), (2, 0), (1, 0), (0, 1)]:
-            return '12.4.5'
+            msg = f'12.4.5==> {lst}'
         if lst == [(11, 1), (10, 0), (9, 1), (8, 1), (7, 0), (6, 1), (5, 1), (4, 1), (3, 1), (2, 0), (1, 0), (0, 1)]:
-            return '12.4.6'
+            msg = f'12.4.6==> {lst}'
         if lst == [(11, 1), (10, 0), (9, 1), (8, 1), (7, 0), (6, 0), (5, 1), (4, 1), (3, 0), (2, 1), (1, 0), (0, 0)]:
-            return '12.4.7'
+            msg = f'12.4.7==> {lst}'
         if lst == [(11, 1), (10, 0), (9, 1), (8, 1), (7, 0), (6, 0), (5, 1), (4, 1), (3, 0), (2, 1), (1, 0), (0, 1)]:
-            return '12.4.8'
+            msg = f'12.4.8==> {lst}'
         if lst == [(11, 1), (10, 0), (9, 1), (8, 1), (7, 0), (6, 1), (5, 1), (4, 1), (3, 0), (2, 1), (1, 0), (0, 1)]:
-            return '12.4.9'
+            msg = f'12.4.9==> {lst}'
         if lst == [(11, 1), (10, 0), (9, 0), (8, 1), (7, 0), (6, 0), (5, 0), (4, 0), (3, 0), (2, 1), (1, 1), (0, 1)]:
-            return '12.5.1'
+            msg = f'12.5.1==> {lst}'
         if lst == [(11, 1), (10, 0), (9, 0), (8, 1), (7, 0), (6, 0), (5, 0), (4, 1), (3, 0), (2, 1), (1, 1), (0, 1)]:
-            return '12.5.2'
+            msg = f'12.5.2==> {lst}'
         if lst == [(11, 0), (10, 1), (9, 1), (8, 1), (7, 1), (6, 1), (5, 1), (4, 2), (3, 0), (2, 2), (1, 0), (0, 1)]:
-            return '12.6.1'
+            msg = f'12.6.1==> {lst}'
         if lst == [(11, 1), (10, 1), (9, 1), (8, 1), (7, 0), (6, 1), (5, 1), (4, 2), (3, 0), (2, 2), (1, 0), (0, 1)]:
-            return '12.6.2'
+            msg = f'12.6.2==> {lst}'
     else:
         ln = len(d)
-        return f'{ln} ==> {lst}'
+        msg = f'|{ln}|==> {lst}'
+    print(msg)
+    

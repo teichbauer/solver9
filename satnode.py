@@ -1,4 +1,5 @@
-from basics import topbits, filter_sdic, unite_satdics, print_json, FINAL, deb_01
+from basics import topbits, filter_sdic, unite_satdics, print_json
+from basics import split_satfilter, FINAL, deb_01
 from vklause import VKlause
 from satholder import SatHolder
 from TransKlauseEngine import TxEngine
@@ -52,37 +53,53 @@ class SatNode:
             crown_dic = self._clone_chdic(self.raw_crown_dic)
         if len(crown_dic) == 0:
             return None
+        elif satfilter:
+            return self.verify_sat(satfilter)
+
         self.crwnmgr.init()
         for val, vkdic in crown_dic.items():
             psats = self.sh.get_sats(val)
             self.crwnmgr.add_crown(val, psats, vkdic, satfilter)
 
         while self.crwnmgr.state == 0:
-            psats = self.crwnmgr.next_psat(satfilter)
-            dmsg = deb_01(psats)
-            print('psats: ' + dmsg)
-            if psats == None:
+            psat = self.crwnmgr.next_psat(satfilter)
+            deb_01(psat)
+            if psat == None:
                 print(f'{self.name} has no sats')
                 return None
+
             if self.next == None:
                 self.next = SatNode(
                     self, self.next_stuff[0], self.next_stuff[1])
-            sats = self.next.spawn(psats)
-            if not sats:  # psats resulted in nothing.
-                continue
-            if satfilter:
-                if filter_sdic(satfilter, sats):
-                    self.sats = sats
-                if self.sats and len(self.sats) > 0:
-                    self.sats = unite_satdics(psats, self.sats, True)
-                    # print(f'{self.name} has sats: {self.sats}')
-                return self.sats
-            else:  # if no satfilter, it is on top level - finalize
-                self.sats = unite_satdics(sats, psats, True)
-                FINAL['sats'].append(self.sats)
-                if FINAL['limit'] <= len(FINAL['sats']):
-                    return FINAL['sats']
+            psats = split_satfilter(psat)
+
+            for psat in psats:
+                sats = self.next.spawn(psat)
+                if not sats:  # psats resulted in nothing.
+                    continue
+
+                if satfilter:
+                    if filter_sdic(satfilter, sats):
+                        self.sats = sats
+                    if self.sats and len(self.sats) > 0:
+                        self.sats = unite_satdics(psat, self.sats, True)
+                        # print(f'{self.name} has sats: {self.sats}')
+                    return self.sats
+                else:  # if no satfilter, it is on top level - finalize
+                    self.sats = unite_satdics(sats, psat, True)
+                    FINAL['sats'].append(self.sats)
+                    if FINAL['limit'] <= len(FINAL['sats']):
+                        return FINAL['sats']
+                    else:
+                        print(f'sat number limit {FINAL["limit"]} reached.')
+                        return  self.sats
     # end of def spawn(self, satfilter=None):
+
+    def verify_sat(self, sat):
+        for vk in self.vkm.vkdic.values():
+            if vk.hit(sat):
+                return False
+        return sat
 
     def _clone_chdic(self, chdic):
         dic = {}
