@@ -1,9 +1,16 @@
 FINAL = {
-    'debug': False,
-    'limit': 7,
+    'debug': True,
+    'limit': 10,
     'sats': [],
     'nov': 0    # to be set
 }
+
+
+def verify_sat(vkdic, sat):
+    for vk in vkdic.values():
+        if vk.hit(sat):
+            return False
+    return True
 
 
 def get_bit(val, bit):

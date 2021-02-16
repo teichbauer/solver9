@@ -34,8 +34,8 @@ class SatNode:
             self.tx_vkm = self.vkm.txed_clone(self.tx)
         else:
             self.tx_vkm = self.vkm.clone()
-
-        next_sh = SatHolder(self.sh.spawn_tail(3))
+        self.tail_varray = self.sh.spawn_tail(3)
+        next_sh = SatHolder(self.tail_varray[:])
         self.crwnmgr = CrownManager(next_sh, self.nov - 3)
         self.sh.cut_tail(3)
         # after tx_vkm.morph, tx_vkm only has (.vkdic) vk3 left, if any
@@ -75,7 +75,8 @@ class SatNode:
             psats = split_satfilter(psat)
 
             for psat in psats:
-                sats = self.next.spawn(psat)
+                # sats = self.next.spawn(psat)
+                sats = self.verify_tail_sat(self.next.vkm.vkdic, psat)
                 if not sats:  # psats resulted in nothing.
                     continue
 
@@ -90,13 +91,20 @@ class SatNode:
                     self.sats = unite_satdics(sats, psat, True)
                     FINAL['sats'].append(self.sats)
                     if FINAL['limit'] <= len(FINAL['sats']):
+                        print(f'limit of {FINAL["limit"]} reached.')
                         return FINAL
         return FINAL
     # end of def spawn(self, satfilter=None):
 
-    def verify_sat(self, sat):
-        for vk in self.vkm.vkdic.values():
-            if vk.hit(sat):
+    def verify_tail_sat(self, vkdic, sat):
+        for vk in vkdic.values():
+            Skip = False
+            for b, v in vk.dic.items():
+                key = self.tail_varray[b]
+                if sat[key] != v:
+                    Skip = True
+                    break
+            if not Skip:
                 return False
         return sat
 

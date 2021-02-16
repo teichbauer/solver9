@@ -1,6 +1,30 @@
+2021-02-15->0.123
+- now all 7 sats from cfg12-45.json are found right, with built in verification
+- FINAL['limit'] set to be 10
+- basics/verify_sat for verifying sat in solver9
+- intro of satnode.tail_varray: verify tail-satnode, where it is used for
+  sh-shifting vk.bits so that they can be compared with satfilter 
+- satnode.verify_tail_sat
+- refactore solver9
+- TBD: when there are more than 3 sat entries with :2 - should I do recursion
+  with satnode(nov - 3)? This issue will apear when the number of variables is
+  high: now I am testing with cfg12-45, with 12 vars. 
+  I will be analyzing and redesigning when doing bigger var-numbers, later.
 2021-02-15->0.122
 - polishing and completion in basics, satnode, solver9.
-  cfg12-45.json: got all 7 sats in 0.0086 sec.
+  cfg12-45.json: 
+ray@thinkpad-x1:~/lab/solver9$ python solver9.py
+there are 7 sats:
+1: { 11: 1, 10: 0, 9: 1, 8: 1, 7: 0, 6: 0, 5: 1, 4: 1, 3: 0, 2: 0, 1: 0, 0: 1 }
+2: { 11: 1, 10: 0, 9: 1, 8: 1, 7: 0, 6: 0, 5: 1, 4: 1, 3: 1, 2: 0, 1: 0, 0: 1 }
+3: { 11: 1, 10: 0, 9: 1, 8: 1, 7: 0, 6: 1, 5: 1, 4: 1, 3: 0, 2: 0, 1: 0, 0: 1 }
+4: { 11: 1, 10: 0, 9: 1, 8: 1, 7: 0, 6: 1, 5: 1, 4: 1, 3: 1, 2: 0, 1: 0, 0: 1 }
+5: { 11: 1, 10: 0, 9: 1, 8: 1, 7: 0, 6: 0, 5: 1, 4: 1, 3: 0, 2: 1, 1: 0, 0: 0 }
+6: { 11: 1, 10: 0, 9: 1, 8: 1, 7: 0, 6: 0, 5: 1, 4: 1, 3: 0, 2: 1, 1: 0, 0: 1 }
+7: { 11: 0, 10: 1, 9: 1, 8: 1, 7: 1, 6: 1, 5: 1, 4: 1, 3: 0, 2: 0, 1: 0, 0: 1 }
+  Time used: 0.008653402328491211
+7:b 
+
 2021-02-15->0.121
 - basics/split_satfilter: if sdic has x:2 in it, 1 or n times, split sdic into
   1 or n: exhaust all (n<4) 2 ** n combinations. return a list of sdics.

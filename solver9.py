@@ -1,6 +1,6 @@
 import sys
 import time
-from basics import get_sdic, topvalue, FINAL, ordered_dic_string
+from basics import get_sdic, topvalue, FINAL, ordered_dic_string, verify_sat
 from satholder import SatHolder, Sat
 from satnode import SatNode
 from vkmgr import VKManager
@@ -16,9 +16,8 @@ def make_vkdic(kdic, nov):
 
 
 def make_vkm(cnf_fname):
-    sdic = get_sdic(cnf_fname)
-    vkdic = make_vkdic(sdic['kdic'], sdic['nov'])
-    return VKManager(vkdic, sdic['nov'], True)
+    vkdic, nov = get_vkdic_from_cfg(cnf_fname)
+    return VKManager(vkdic, nov, True)
 
 
 def process(cnfname):
@@ -32,16 +31,33 @@ def process(cnfname):
     return final['sats']
 
 
-def test_topvalue():
-    sdic = get_sdic('config1.json')
+def get_vkdic_from_cfg(cfgfile):
+    sdic = get_sdic(cfgfile)
     vkdic = make_vkdic(sdic['kdic'], sdic['nov'])
-    for kn, vk in vkdic.items():
-        d = str(vk.dic)
-        v = topvalue(vk)
-        print(f'{d} has topvalue: {v}')
+    return vkdic, sdic['nov']
 
 
-def work():
+def work(configfilename, verify=True):
+    start_time = time.time()
+    sats = process(configfilename)
+    now_time = time.time()
+    time_used = now_time - start_time
+    ln = len(sats)
+    print(f'there are {ln} sats:')
+
+    vkdic, dummy = get_vkdic_from_cfg(configfilename)
+
+    for ind, sat in enumerate(sats):
+        msg = ordered_dic_string(sat)
+        m = f'{ind+1}: {msg}'
+        if verify:
+            verified = verify_sat(vkdic, sat)
+            m += f', verified: {verified}'
+        print(m)
+    print(f'Time used: {time_used}')
+
+
+if __name__ == '__main__':
     # configfilename = 'cfg100-450.json'
     # configfilename = 'cfg60-266.json'
     # configfilename = 'cfg60-262.json'
@@ -53,27 +69,6 @@ def work():
     if len(sys.argv) > 1:
         configfilename = sys.argv[1].strip()
 
-    if configfilename.endswith('.sat'):
-        result, value = verify_satfile(configfilename)
-        if result:
-            print(f'Verified: {value}')
-        else:
-            print('Not verified')
+    work(configfilename)
 
-    elif configfilename.endswith('.json'):
-        start_time = time.time()
-        sats = process(configfilename)
-        now_time = time.time()
-        ln = len(sats)
-        print(f'there are {ln} sats:')
-        for ind, sat in enumerate(sats):
-            msg = ordered_dic_string(sat)
-            print(f'{ind+1}: {msg}')
-        time_used = now_time - start_time
-        print(f'Time used: {time_used}')
-    x = 1
-
-
-if __name__ == '__main__':
-    work()
     x = 1
