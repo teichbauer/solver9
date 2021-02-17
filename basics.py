@@ -214,6 +214,9 @@ def unite_satdics(s0, s1, extend=False):  # s1 as filter satdic
 
 
 def deb_01(d):
+    if not d:
+        print('deb_01 input: None')
+        return
     lst = sorted(list(d.items()), reverse=True)
     if len(d) == 12:
         if lst == [(11, 1), (10, 1), (9, 1), (8, 0), (7, 0), (6, 0), (5, 0), (4, 0), (3, 1), (2, 1), (1, 0), (0, 0)]:

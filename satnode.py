@@ -63,11 +63,11 @@ class SatNode:
 
         while self.crwnmgr.state == 0:
             psat = self.crwnmgr.next_psat(satfilter)
-            if FINAL['debug']:
-                deb_01(psat)
             if psat == None:
                 print(f'{self.name} has no sats')
-                return None
+                return FINAL
+            if FINAL['debug']:
+                deb_01(psat)
 
             if self.next == None:
                 self.next = SatNode(

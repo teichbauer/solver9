@@ -34,6 +34,7 @@ class Crown:
             vk12m = self.vk12m.clone()
         chdic = vk12m.morph(tbs)
         if len(chdic) == 0:
+            self.done = True
             return
         shtail = self.sh.spawn_tail(nob)
         new_sh = SatHolder(shtail)
@@ -74,7 +75,7 @@ class Crown:
     def resolve(self, satfilter):
         if not self.done:
             self.initial_nodes()
-            self.done = len(self.nodes) == 0
+            self.done = self.done or len(self.nodes) == 0
             if not self.done:
                 nodes = self.nodes
                 nexts = []
