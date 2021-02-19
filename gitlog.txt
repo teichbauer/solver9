@@ -1,3 +1,37 @@
+2021-02-18->0.126
+- new: basics/vkdic_sat_test, /vkdic_remove
+-satnode: when psat returns a dict{1:{}, 2:[]}
+2021-02-18->0.125
+- test with cfg12-55.json, it has 9 sats(solver4 used 0.053735971450805664):
+   [915, 2362, 2325, 2320, 2321, 2322, 2323, 785, 787]
+   a.(915):   001110010011
+   b.(2362):  100100111010
+   c.(2325):  100100010101
+   d.(2320):  100100010000
+   e.(2321):  100100010001
+   f.(2322):  100100010010
+   g.(2323):  100100010011
+   h.(785):   001100010001
+   i.(787):   001100010011
+ray@thinkpad-x1:~/lab/solver9$ python solver9.py cfg12-55.json
+there are 9 sats:
+1: { 11: 0, 10: 0, 9: 1, 8: 1, 7: 0, 6: 0, 5: 0, 4: 1, 3: 0, 2: 0, 1: 0, 0: 1 }, verified: True
+2: { 11: 1, 10: 0, 9: 0, 8: 1, 7: 0, 6: 0, 5: 0, 4: 1, 3: 0, 2: 0, 1: 0, 0: 0 }, verified: True
+3: { 11: 1, 10: 0, 9: 0, 8: 1, 7: 0, 6: 0, 5: 0, 4: 1, 3: 0, 2: 0, 1: 0, 0: 1 }, verified: True
+4: { 11: 1, 10: 0, 9: 0, 8: 1, 7: 0, 6: 0, 5: 0, 4: 1, 3: 0, 2: 1, 1: 0, 0: 1 }, verified: True
+5: { 11: 0, 10: 0, 9: 1, 8: 1, 7: 0, 6: 0, 5: 0, 4: 1, 3: 0, 2: 0, 1: 1, 0: 1 }, verified: True
+6: { 11: 0, 10: 0, 9: 1, 8: 1, 7: 1, 6: 0, 5: 0, 4: 1, 3: 0, 2: 0, 1: 1, 0: 1 }, verified: True
+7: { 11: 1, 10: 0, 9: 0, 8: 1, 7: 0, 6: 0, 5: 0, 4: 1, 3: 0, 2: 0, 1: 1, 0: 0 }, verified: True
+8: { 11: 1, 10: 0, 9: 0, 8: 1, 7: 0, 6: 0, 5: 0, 4: 1, 3: 0, 2: 0, 1: 1, 0: 1 }, verified: True
+9: { 11: 1, 10: 0, 9: 0, 8: 1, 7: 0, 6: 0, 5: 1, 4: 1, 3: 1, 2: 0, 1: 1, 0: 0 }, verified: True
+Time used: 0.008216619491577148
+1->h, 2->d, 3->e, 4->c, 5->i, 6->a, 7->f, 8->g, 9->b. 
+All right.
+- testing cfg60-266.json, run into issue with Exception: 
+  TBD: there are 32 entries with :2, 
+  in basics.py:75. Need to design a way to handle this.
+  solver4.py found 8 sats using 26.8 secs.
+
 2021-02-17->0.124
 - minor fix in crown.py/satnode.py so config1.json with nov==8 comes thru.
 2021-02-15->0.123

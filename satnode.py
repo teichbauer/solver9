@@ -1,10 +1,10 @@
 from basics import topbits, filter_sdic, unite_satdics, print_json
-from basics import split_satfilter, FINAL, deb_01
+from basics import split_satfilter, vkdic_sat_test, vkdic_remove, FINAL, deb_01
 from vklause import VKlause
 from satholder import SatHolder
 from TransKlauseEngine import TxEngine
 from node12 import Node12
-from vk12mgr import VK12Manager
+from vkmgr import VKManager
 from crownmanager import CrownManager
 
 
@@ -74,25 +74,42 @@ class SatNode:
                     self, self.next_stuff[0], self.next_stuff[1])
             psats = split_satfilter(psat)
 
-            for psat in psats:
-                # sats = self.next.spawn(psat)
-                sats = self.verify_tail_sat(self.next.vkm.vkdic, psat)
-                if not sats:  # psats resulted in nothing.
+            if type(psats) == type({}):  # {1: {*:0|1,..}, 2:[kns of ':2'-vks]}
+                if vkdic_sat_test(self.next.vkm.vkdic, psats[1]):
+                    kd = vkdic_remove(self.next.vkm.vkdic, psats[2])
+                    snode = SatNode(self, self.next_stuff[0],
+                                    VKManager(kd, self.nov - 3, True))
+                    ss = snode.spawn()
+                    if ss:
+                        ss.update(psats[1])
+                        FINAL['sats'].append(ss)
+                        if FINAL['limit'] <= len(FINAL['sats']):
+                            print(f'limit of {FINAL["limit"]} reached.')
+                            return FINAL
+                    else:
+                        continue
+                else:
                     continue
+            elif type(psats) == type([]):
+                for psat in psats:
+                    # sats = self.next.spawn(psat)
+                    sats = self.verify_tail_sat(self.next.vkm.vkdic, psat)
+                    if not sats:  # psats resulted in nothing.
+                        continue
 
-                if satfilter:
-                    if filter_sdic(satfilter, sats):
-                        self.sats = sats
-                    if self.sats and len(self.sats) > 0:
-                        self.sats = unite_satdics(psat, self.sats, True)
-                        # print(f'{self.name} has sats: {self.sats}')
-                    return self.sats
-                else:  # if no satfilter, it is on top level - finalize
-                    self.sats = unite_satdics(sats, psat, True)
-                    FINAL['sats'].append(self.sats)
-                    if FINAL['limit'] <= len(FINAL['sats']):
-                        print(f'limit of {FINAL["limit"]} reached.')
-                        return FINAL
+                    if satfilter:
+                        if filter_sdic(satfilter, sats):
+                            self.sats = sats
+                        if self.sats and len(self.sats) > 0:
+                            self.sats = unite_satdics(psat, self.sats, True)
+                            # print(f'{self.name} has sats: {self.sats}')
+                        return self.sats
+                    else:  # if no satfilter, it is on top level - finalize
+                        self.sats = unite_satdics(sats, psat, True)
+                        FINAL['sats'].append(self.sats)
+                        if FINAL['limit'] <= len(FINAL['sats']):
+                            print(f'limit of {FINAL["limit"]} reached.')
+                            return FINAL
         return FINAL
     # end of def spawn(self, satfilter=None):
 

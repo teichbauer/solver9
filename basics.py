@@ -1,5 +1,5 @@
 FINAL = {
-    'debug': True,
+    'debug': False,
     'limit': 10,
     'sats': [],
     'nov': 0    # to be set
@@ -72,9 +72,10 @@ def split_satfilter(filter_dic):
                 multi.append(sd)
             return multi
         else:
-            msg = f'there are {ln} entries with :2'
-            print(msg)
-            raise Exception(f'TBD: {msg}')
+            return {1: sdic, 2: sat2keys}
+            # msg = f'there are {ln} entries with :2'
+            # print(msg)
+            # raise Exception(f'TBD: {msg}')
 
 
 def ordered_dic_string(d):
@@ -131,7 +132,7 @@ def topbits(nov, nob):
 
 def topbits_coverages(vk, topbits):
     ''' example: vk.dic: {7:1, 4:1, 1:0}, topbits:[7,6]. for the 2 bits
-        allvalues: [00,01,10,11]/[0,1,2,3] vk only hit 10/2,11/3, 
+        allvalues: [00,01,10,11]/[0,1,2,3] vk only hit 10/2,11/3,
         {4:1, 1:0} lying outside of topbits - outdic: {4:1, 1:0}
         return [2,3], {4:1, 1:0}   '''
     outdic = {}
@@ -157,9 +158,32 @@ def topbits_coverages(vk, topbits):
     return cvs, outdic
 
 
+def vkdic_sat_test(vk3dic, sat):
+    ''' for every vk in vk3dic, if a single one vk.hit(sat) == True,
+        then vk3dic fails the test
+        '''
+    for vk in vk3dic.values():
+        if vk.hit(sat):
+            return False
+    return True
+
+
+def vkdic_remove(vkdic, kns):
+    ''' remove vk from vkdic, if vk.kname is in kns(a list)
+        '''
+    kd = {}
+    for kn, vk in vkdic.items():
+        if kn not in kns:
+            kd[kn] = vk
+    return kd
+
+
 def filter_sdic(filter, sdic):
-    ''' see if sdic has <key>:<value> pair violating filter. if sdic has
-        v:2, and filter[v] = 0 or 1, sdic[v] will be modified to 0 or 1
+    ''' see if sdic has <key>:<value> pair violating filter. 
+        if filter is violated, return False; if not return sdic.
+        sdic may have been updated/modified when returned:
+        if sdic has v:2, and filter[v] = 0 or 1, sdic[v] will be modified 
+        to 0 or 1
         '''
     if not filter:
         return sdic
@@ -217,6 +241,7 @@ def deb_01(d):
     if not d:
         print('deb_01 input: None')
         return
+    ln = len(d)
     lst = sorted(list(d.items()), reverse=True)
     if len(d) == 12:
         if lst == [(11, 1), (10, 1), (9, 1), (8, 0), (7, 0), (6, 0), (5, 0), (4, 0), (3, 1), (2, 1), (1, 0), (0, 0)]:
@@ -247,7 +272,8 @@ def deb_01(d):
             msg = f'12.6.1==> {lst}'
         if lst == [(11, 1), (10, 1), (9, 1), (8, 1), (7, 0), (6, 1), (5, 1), (4, 2), (3, 0), (2, 2), (1, 0), (0, 1)]:
             msg = f'12.6.2==> {lst}'
+        else:
+            msg = f'|{ln}|==> {lst}'
     else:
-        ln = len(d)
         msg = f'|{ln}|==> {lst}'
     print(msg)
