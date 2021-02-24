@@ -29,7 +29,7 @@ def process(cnfname):
     while sn and not sn.done:
         sn = sn.spawn()
 
-    final = sn.resolve()
+    final = sn.parent.resolve([sn.sats])
 
     return final['sats']
 

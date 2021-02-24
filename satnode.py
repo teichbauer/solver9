@@ -58,7 +58,7 @@ class SatNode:
     def resolve(self, satfilters=None):
         psats = []
         if satfilters:
-            for satfilter in satfilters:
+            for satfilter in satfilters:  # ? clone each satfilter ?
                 self.crwnmgr.init()
                 for val, vkdic in crown_dic.items():
                     self.crwnmgr.add_crown(val, vkdic, satfilter)

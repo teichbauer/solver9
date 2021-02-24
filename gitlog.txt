@@ -1,3 +1,5 @@
+2021-02-24->0.128
+- small fixes
 2021-02-24->0.127
 - new design: leave crowns un-resolved, first do satnode.next_>next,... untill 
   the satnodehas 0 vk, of nov==3. Then use the sat resulting from here(it may
