@@ -1,10 +1,12 @@
 from vk12mgr import VK12Manager
+from node12 import Node12
 from crown import Crown
 from basics import filter_sdic, unite_satdics, oppo_binary
 
 
 class CrownManager:
-    def __init__(self, sh, nov):
+    def __init__(self, satnode, sh, nov):
+        self.satnode = satnode
         self.sh = sh
         self.nov = nov
         self.state = 0
@@ -14,7 +16,9 @@ class CrownManager:
         self.crown_index = -1
         self.csat_cursor = 0
 
-    def add_crown(self, val, psats, vkdic, satfilter=None):
+    def add_crown(self, val, vkdic, satfilter=None):
+        psat = self.satnode.sh.get_sats(val)
+        vname = self.satnode.nov * 100 + 30 + val
         ln = len(vkdic)
         if ln < 2:
             if ln == 0:
@@ -27,18 +31,17 @@ class CrownManager:
                 else:
                     csats = self._vk2_sdic(vk, satfilter)
             if len(csats) > 0:
-                crown = Crown(val, self.sh.clone(), psats, csats)
-                self.crowns.append(crown)
+                node12 = Node12(vname, self, csats, self.sh.clone(), psat)
+                self.crowns.append(node12)
                 self.crown_index = 0
             return
-
         vk12m = VK12Manager(vkdic, self.nov)
         if vk12m.terminated:
             return None
-        crown = Crown(val, self.sh.clone(), psats, vk12m)
-        self.crowns.append(crown)
+        node12 = Node12(vname, self, vk12m, self.sh.clone(), psat)
+        self.crowns.append(node12)
         self.crown_index = 0
-        return crown
+        return node12
     # end of def add_crown(..)
 
     def _filter_1kvpair(self, bit, value, satfilter):
@@ -69,6 +72,13 @@ class CrownManager:
         if s1 and s1 != s0:
             lst.append(s1)
         return lst
+
+    def resolve(self, satfilter, node12=None):
+        if not node12:
+            return self.resolve(self.crowns[0])
+        else:
+            nexts = node12.spawn(satfilter)
+            return {}
 
     def next_psat(self, satfilter):
         # if self.crown_index == 4:

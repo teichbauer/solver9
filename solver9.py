@@ -1,7 +1,7 @@
 import sys
 import time
 from basics import get_sdic, topvalue, FINAL, ordered_dic_string, verify_sat
-from satholder import SatHolder, Sat
+from satholder import SatHolder
 from satnode import SatNode
 from vkmgr import VKManager
 from vklause import VKlause
@@ -26,8 +26,11 @@ def process(cnfname):
     sh = SatHolder(satslots)
 
     sn = SatNode(None, sh, vkm)
-    # while sn.sats == None:
-    final = sn.spawn()
+    while sn and not sn.done:
+        sn = sn.spawn()
+
+    final = sn.resolve()
+
     return final['sats']
 
 
@@ -60,11 +63,11 @@ def work(configfilename, verify=True):
 if __name__ == '__main__':
     global FINAL
     # configfilename = 'cfg100-450.json'
-    configfilename = 'cfg60-266.json'
+    # configfilename = 'cfg60-266.json'
     # configfilename = 'cfg60-262.json'
     # configfilename = 'config1.json'
     # configfilename = 'cfg12-45.json'
-    # configfilename = 'cfg12-55.json'
+    configfilename = 'cfg12-55.json'
 
     if len(sys.argv) > 1:
         configfilename = sys.argv[1].strip()

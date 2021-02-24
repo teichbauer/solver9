@@ -5,10 +5,11 @@ from satholder import SatHolder
 
 
 class Crown:
-    def __init__(self, val, sh, psats, vk12m):
+    def __init__(self, vname, parent, vk12m, sh, psat):
         self.sh = sh
-        self.val = val
-        self.satpath = [psats]
+        self.parent = parent
+        self.vname = vname
+        self.psat = psat
         # {<node-name>: <sat-dic>, ..}
         if type(vk12m) == type([]):        # vk12m is actually csats list
             # the single csat: [psats, vk12m]
@@ -56,7 +57,6 @@ class Crown:
                     None)
             # node.state can be 0 or 2
             self.nodes.append(node)
-            node.satpath.append(self.sh.get_sats(val))
 
     def crown_psat(self, index):
         ' combine rootsats with csats[index][0] '
@@ -83,8 +83,6 @@ class Crown:
                     for node in nodes:
                         if node.state == 0:
                             nexts += node.spawn(satfilter)
-                        elif node.state == 2:
-                            node.collect_sats(satfilter)
                     if len(nexts) == 0:
                         break
                     else:

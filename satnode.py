@@ -36,31 +36,47 @@ class SatNode:
             self.tx_vkm = self.vkm.clone()
         self.tail_varray = self.sh.spawn_tail(3)
         next_sh = SatHolder(self.tail_varray[:])
-        self.crwnmgr = CrownManager(next_sh, self.nov - 3)
+        self.crwnmgr = CrownManager(self, next_sh, self.nov - 3)
         self.sh.cut_tail(3)
         # after tx_vkm.morph, tx_vkm only has (.vkdic) vk3 left, if any
         self.raw_crown_dic = self.tx_vkm.morph(self.topbits)  # vkm.nov -= 3
         self.next_stuff = (next_sh.clone(), self.tx_vkm)
     # end of def prepare(self):
 
-    def spawn(self, satfilter=None):
+    def spawn(self):
         if self.done:
             return self.sats
         # after morph, vkm.vkdic only have vk3s left, if any
-        if satfilter:
-            crown_dic = self.filter_children(self.raw_crown_dic, satfilter)
-            if len(crown_dic) > 0:
-                return self.verify_sat(satfilter)
-        else:
-            crown_dic = self._clone_chdic(self.raw_crown_dic)
-        if len(crown_dic) == 0:
+        if len(self.raw_crown_dic) == 0:
+            self.sats = self.sh.full_sats()
+            self.done = True
             return None
 
-        self.crwnmgr.init()
-        for val, vkdic in crown_dic.items():
-            psats = self.sh.get_sats(val)
-            self.crwnmgr.add_crown(val, psats, vkdic, satfilter)
+        self.next = SatNode(self, self.next_stuff[0], self.next_stuff[1])
+        return self.next
 
+    def resolve(self, satfilters=None):
+        psats = []
+        if satfilters:
+            for satfilter in satfilters:
+                self.crwnmgr.init()
+                for val, vkdic in crown_dic.items():
+                    self.crwnmgr.add_crown(val, vkdic, satfilter)
+                while self.crwnmgr.state == 0:
+                    psat = self.crwnmgr.resolve(self.sats)
+                    if psat:
+                        psats.append(psat)
+        else:
+            while self.crwnmgr.state == 0:
+                psat = self.crwnmgr.resolve(self.sats)
+                if psat:
+                    psats.append(psat)
+        if self.parent:
+            return self.parent.resolve(psats)
+        else:
+            return psats
+
+    def tmp(self):
         while self.crwnmgr.state == 0:
             psat = self.crwnmgr.next_psat(satfilter)
             if psat == None:
@@ -69,9 +85,9 @@ class SatNode:
             if FINAL['debug']:
                 deb_01(psat)
 
-            if self.next == None:
-                self.next = SatNode(
-                    self, self.next_stuff[0], self.next_stuff[1])
+            # if self.next == None:
+            #     self.next = SatNode(
+            #         self, self.next_stuff[0], self.next_stuff[1])
             psats = split_satfilter(psat)
 
             if type(psats) == type({}):  # {1: {*:0|1,..}, 2:[kns of ':2'-vks]}
