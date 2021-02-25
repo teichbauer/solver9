@@ -27,7 +27,7 @@ class Node12:
 
     def collect_sats(self, satfilter):
 
-        def filter(sat, sfilter):
+        def filter(sfilter, sat):
             if type(sat) == type({}):
                 if filter_sdic(sfilter, sat):
                     return [sat]
@@ -36,12 +36,12 @@ class Node12:
             else:
                 lst = []
                 for sx in sat:
-                    s = filter(sx, sfilter)
+                    s = filter(sfilter, sx)
                     if len(s) > 0:
                         lst += s
                 return lst
 
-        ss = filter(self.sats, satfilter)
+        ss = filter(satfilter, self.sats)
         if len(ss) == 0:
             return
         # find crown

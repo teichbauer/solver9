@@ -184,6 +184,7 @@ def filter_sdic(filter, sdic):
         sdic may have been updated/modified when returned:
         if sdic has v:2, and filter[v] = 0 or 1, sdic[v] will be modified 
         to 0 or 1
+        filter remains unchanged.
         '''
     if not filter:
         return sdic
