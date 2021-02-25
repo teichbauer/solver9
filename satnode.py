@@ -20,7 +20,7 @@ class SatNode:
         self.next = None
         self.done = False
         if len(vkm.vkdic) == 0:
-            self.sats = self.sh.full_sats()
+            self.sats = None  # self.sh.full_sats() all :2 means: no filter
             self.done = True
         else:
             self.prepare()
@@ -60,10 +60,10 @@ class SatNode:
         if satfilters:
             for satfilter in satfilters:  # ? clone each satfilter ?
                 self.crwnmgr.init()
-                for val, vkdic in crown_dic.items():
+                for val, vkdic in self.raw_crown_dic.items():
                     self.crwnmgr.add_crown(val, vkdic, satfilter)
                 while self.crwnmgr.state == 0:
-                    psat = self.crwnmgr.resolve(self.sats)
+                    psat = self.crwnmgr.resolve(satfilter)
                     if psat:
                         psats.append(psat)
         else:
