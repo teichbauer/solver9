@@ -13,7 +13,7 @@ class Node12:
         self.vname = vname    # vname // 10: is the parent-nob
         self.nexts = []
         self.sh = sh
-        if type(vk12m) == type({}):  # when vk12m is a dict(full-sats)
+        if type(vk12m) == type([]):  # when vk12m is a list of dict(full-sats)
             self.sats = vk12m        # save the full-sats
             self.nov = len(vk12m)
             self.state = 2           # this will trigger collect_sats() call
@@ -118,7 +118,7 @@ class Node12:
                     node = Node12(
                         name_base + val,  # %10 -> val, //10 -> nob
                         self,
-                        tail_sat,
+                        [tail_sat],
                         None,
                         psat)
                 self.nexts.append(node)

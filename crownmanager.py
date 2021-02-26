@@ -23,7 +23,7 @@ class CrownManager:
         if ln < 2:
             if ln == 0:
                 sdic = {v: 2 for v in self.sh.varray}
-                csats = [sdic]
+                csats = [filter_sdic(satfilter, sdic)]
             elif ln == 1:
                 vk = list(vkdic.values())[0]
                 if vk.nob == 1:

@@ -53,7 +53,7 @@ class Crown:
                 node = Node12(
                     name_base + val,
                     self,
-                    tail_sat,
+                    [tail_sat],
                     None)
             # node.state can be 0 or 2
             self.nodes.append(node)
