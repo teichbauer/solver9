@@ -39,7 +39,8 @@ class SatNode:
         self.crwnmgr = CrownManager(self, next_sh, self.nov - 3)
         self.sh.cut_tail(3)
         # after tx_vkm.morph, tx_vkm only has (.vkdic) vk3 left, if any
-        self.raw_crown_dic = self.tx_vkm.morph(self.topbits)  # vkm.nov -= 3
+        # and nov decreased by 3
+        self.crwnmgr.raw_crown_dic = self.tx_vkm.morph(self.topbits)
         self.next_stuff = (next_sh.clone(), self.tx_vkm)
     # end of def prepare(self):
 
@@ -47,34 +48,13 @@ class SatNode:
         if self.done:
             return self.sats
         # after morph, vkm.vkdic only have vk3s left, if any
-        if len(self.raw_crown_dic) == 0:
-            self.sats = self.sh.full_sats()
+        if len(self.crwnmgr.raw_crown_dic) == 0:
+            self.sats = None
             self.done = True
             return None
 
         self.next = SatNode(self, self.next_stuff[0], self.next_stuff[1])
         return self.next
-
-    def resolve(self, satfilters=None):
-        psats = []
-        if satfilters:
-            for satfilter in satfilters:  # ? clone each satfilter ?
-                self.crwnmgr.init()
-                for val, vkdic in self.raw_crown_dic.items():
-                    self.crwnmgr.add_crown(val, vkdic, satfilter)
-                while self.crwnmgr.state == 0:
-                    psat = self.crwnmgr.resolve(satfilter)
-                    if psat:
-                        psats.append(psat)
-        else:
-            while self.crwnmgr.state == 0:
-                psat = self.crwnmgr.resolve(self.sats)
-                if psat:
-                    psats.append(psat)
-        if self.parent:
-            return self.parent.resolve(psats)
-        else:
-            return psats
 
     def tmp(self):
         while self.crwnmgr.state == 0:

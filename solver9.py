@@ -2,6 +2,7 @@ import sys
 import time
 from basics import get_sdic, topvalue, FINAL, ordered_dic_string, verify_sat
 from satholder import SatHolder
+from satmgr import SatManager
 from satnode import SatNode
 from vkmgr import VKManager
 from vklause import VKlause
@@ -29,13 +30,15 @@ def process(cnfname):
     while sn and not sn.done:
         sn = sn.spawn()
 
-    final = sn.parent.resolve([sn.sats])
+    satmgr = SatManager()
+    satmgr.resolve(sn.parent, sn.sats)
 
-    return final['sats']
+    return satmgr.sats
 
 
 def get_vkdic_from_cfg(cfgfile):
     sdic = get_sdic(cfgfile)
+
     vkdic = make_vkdic(sdic['kdic'], sdic['nov'])
     return vkdic, sdic['nov']
 

@@ -6,11 +6,11 @@ from satholder import SatHolder
 
 
 class Node12:
-    def __init__(self, vname, parent, vk12m, sh, psat):
+    def __init__(self, vname, parent, vk12m, sh, hsat):
         self.parent = parent
-        self.psat = psat
-        # vname is 2 ditigs number. vname % 10 is the given val
-        self.vname = vname    # vname // 10: is the parent-nob
+        self.hsat = hsat
+        # vname//100:nov, (vname%100)//10:nob,  vname%10:val
+        self.vname = vname
         self.nexts = []
         self.sh = sh
         if type(vk12m) == type([]):  # when vk12m is a list of dict(full-sats)
@@ -24,6 +24,17 @@ class Node12:
             self.state = 0
             if self.nov <= 3:  # for nov=3 or less: get all sats by looping
                 self.sats = self.nov321_sats()
+        self.reset_satcur()
+
+    def reset_satcur(self):
+        self.sat_cur = 0
+
+    def next_sat(self):
+        if self.sat_cur < len(self.sats):
+            sat = {**self.hsat, **self.sats[self.sat_cur]}
+            self.sat_cur += 1
+            return sat
+        return None
 
     def collect_sats(self, satfilter):
 
@@ -104,15 +115,15 @@ class Node12:
             new_sh = SatHolder(shtail)
             self.sh.cut_tail(nob)
             for val, vkm in chdic.items():
-                psat = self.psat.copy()
-                psat.update(self.sh.get_sats(val))
+                hsat = self.hsat.copy()
+                hsat.update(self.sh.get_sats(val))
                 if vkm:
                     node = Node12(
                         name_base + val,  # %10 -> val, //10 -> nob
                         self,             # node's parent
                         vkm,              # vk12m for node
                         new_sh.clone(),   # sh - clone: for sh.varray is a ref
-                        psat)
+                        hsat)
                 else:
                     tail_sat = new_sh.full_sats()
                     node = Node12(
@@ -120,7 +131,7 @@ class Node12:
                         self,
                         [tail_sat],
                         None,
-                        psat)
+                        hsat)
                 self.nexts.append(node)
         return self.nexts
     # end of def spawn(self, satfilter):
