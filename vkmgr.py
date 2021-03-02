@@ -91,6 +91,7 @@ class VKManager:
         best_choice = None
         max_tsleng = -1
         max_tcleng = -1
+        max_bitsum = -1  # final ranking: bits sitting higher
         best_bits = None
         kns = set(self.vkdic.keys())  # candidates-set of kn for besy-key
         while len(kns) > 0:
@@ -127,6 +128,7 @@ class VKManager:
                 max_tsleng = ltsvk
                 max_tcleng = ltcvk
                 best_bits = bits
+                max_bitsum = sum(bits)
             else:
                 if best_choice[0] == tsvk:
                     continue
@@ -137,6 +139,11 @@ class VKManager:
                 elif max_tsleng == ltsvk:
                     if max_tcleng < ltcvk:
                         replace = True
+                    else:
+                        bsum =  sum(bits)
+                        if bsum > max_bitsum:
+                            replace = True
+                            max_bitsum = bsum
                 if replace:
                     best_choice = chc
                     max_tsleng = ltsvk

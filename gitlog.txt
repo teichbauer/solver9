@@ -1,3 +1,6 @@
+2021-03-02->0.133
+- vkmgr.bestchoice: when tsvk/tcvk are the same length, choose the one with bits
+  sitting higher positions. This make the choice reproduceable.
 2021-02-27->0.132
 - SatMgr
 2021-02-26->0.131
